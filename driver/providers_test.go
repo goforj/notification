@@ -225,10 +225,15 @@ func TestNativeProviders(t *testing.T) {
 			mu.Lock()
 			status = 429
 			body = "private provider response"
+			expectedAdvice := 7 * time.Second
+			if entry.name == "telegram" {
+				body = `{"ok":false,"error_code":429,"parameters":{"retry_after":9}}`
+				expectedAdvice = 9 * time.Second
+			}
 			mu.Unlock()
 			err = notification.New(driver).Send(nil, message)
 			var failure *notification.DeliveryError
-			if !errors.Is(err, notification.ErrThrottled) || !errors.As(err, &failure) || failure.RetryAfter() != 7*time.Second || strings.Contains(err.Error(), "private") {
+			if !errors.Is(err, notification.ErrThrottled) || !errors.As(err, &failure) || failure.RetryAfter() != expectedAdvice || strings.Contains(err.Error(), "private") {
 				t.Fatal("retry evidence lost", err)
 			}
 			if entry.limit > 0 {

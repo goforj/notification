@@ -42,6 +42,13 @@ func (c *Client) Close() error {
 func (c *Client) Request(ctx context.Context, method, endpoint string, headers http.Header, body []byte, acknowledge func([]byte) error) error {
 	response, outcome, err := httptransport.Request(c.client, ctx, method, endpoint, headers, body)
 	if err != nil {
+		if errors.Is(err, notification.ErrThrottled) && response.Complete && acknowledge != nil {
+			var detail *notification.DeliveryError
+			native := acknowledge(response.Body)
+			if errors.Is(native, notification.ErrThrottled) && errors.As(native, &detail) {
+				outcome.RetryAfter = max(outcome.RetryAfter, detail.RetryAfter())
+			}
+		}
 		return notification.NewDeliveryError(c.name, outcome, err)
 	}
 	if acknowledge != nil {
