@@ -52,7 +52,7 @@
       "id": "clicksend",
       "package": "driver/clicksend",
       "configuration": "Username/API key, recipient and optional sender",
-      "acceptance": "Native envelope and per-message result",
+      "acceptance": "Native per-message success and ID; throttling and incomplete evidence never advance fallback",
       "verification": "Local protocol tests; hosted verification pending",
       "protocol_source": "https://developers.clicksend.com/docs/",
       "acceptance_summary": "Native envelope and per-message result"
@@ -394,10 +394,10 @@
       "id": "vonage",
       "package": "driver/vonage",
       "configuration": "API key/secret, sender and E.164 recipient; Unicode SMS",
-      "acceptance": "Per-message native status and ID",
+      "acceptance": "Every counted segment has a distinct native message ID and the configured recipient; partial acceptance remains unknown",
       "verification": "Local protocol tests; hosted verification pending",
       "protocol_source": "https://developer.vonage.com/en/api/sms",
-      "acceptance_summary": "Per-message native status and ID"
+      "acceptance_summary": "All SMS segments accepted"
     },
     {
       "id": "waha",

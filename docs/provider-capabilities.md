@@ -33,7 +33,7 @@ The Graph API version is required configuration. Text sends combine title and bo
 
 ## SMS
 
-Twilio, Plivo, Vonage, Telnyx and ClickSend reuse the plain-text message path with configured destinations. The four added SMS drivers require E.164 recipient numbers; sender formats follow the provider configuration. Title and body are joined without truncation. New drivers reject more than 1600 runes before I/O. This is an application bound, not a guarantee of one billable SMS segment. Providers own encoding, segmentation, sender registration, opt-out policy and billing. The library never sends an extra segment or retries independently. Native response parsing checks per-message results where available.
+Twilio, Plivo, Vonage, Telnyx and ClickSend reuse the plain-text message path with configured destinations. The four added SMS drivers require E.164 recipient numbers; sender formats follow the provider configuration. Title and body are joined without truncation. New drivers reject more than 1600 runes before I/O. This is an application bound, not a guarantee of one billable SMS segment. Providers own encoding, segmentation, sender registration, opt-out policy and billing. The library never sends an extra segment or retries independently. Native response parsing checks per-message results where available. Vonage checks every counted SMS segment, distinct message IDs and recipient identity. A response containing both accepted and rejected segments remains unknown, so neither fallback nor journal resubmission can resend the whole message. ClickSend preserves native throttling and authentication failures; missing status or internal-error evidence remains unknown.
 
 ## On-call lifecycle
 

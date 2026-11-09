@@ -1,5 +1,7 @@
 # Notification API review
 
+Current status is recorded in [release readiness](release-readiness.md). Earlier recommendations and counts below are historical checkpoints, not the current release verdict.
+
 Reviewed 2026-11-09 against baseline commit 023f2c0. This review covers the common sender API, sender composition, typed extension points, and standard Go interoperability. The earlier [provider review](provider-review.md) covers provider extraction and ecosystem research.
 
 ## Pass 1: Common application usage

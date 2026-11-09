@@ -54,7 +54,7 @@ Generated from the driver catalog by `go -C docs run ./readme`. See [portable de
 [Package source](../driver/clicksend)
 
 - Configuration: Username/API key, recipient and optional sender.
-- Accepted when: Native envelope and per-message result.
+- Accepted when: Native per-message success and ID; throttling and incomplete evidence never advance fallback.
 - Verification: Local protocol tests; hosted verification pending.
 - [Provider protocol reference](https://developers.clicksend.com/docs/).
 
@@ -394,7 +394,7 @@ Generated from the driver catalog by `go -C docs run ./readme`. See [portable de
 [Package source](../driver/vonage)
 
 - Configuration: API key/secret, sender and E.164 recipient; Unicode SMS.
-- Accepted when: Per-message native status and ID.
+- Accepted when: Every counted segment has a distinct native message ID and the configured recipient; partial acceptance remains unknown.
 - Verification: Local protocol tests; hosted verification pending.
 - [Provider protocol reference](https://developer.vonage.com/en/api/sms).
 
