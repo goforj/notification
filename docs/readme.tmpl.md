@@ -51,7 +51,7 @@ The root module uses only the standard library. Mail, APNs, SNS and Web Push are
 Install the verified unreleased revision through the public Go module proxy:
 
 ```sh
-go get github.com/goforj/notification@v0.0.0-20261109215621-1a1b304b2d8a
+go get github.com/goforj/notification@v0.0.0-20261109224653-6d077e3cda12
 ```
 
 Most HTTP providers and the log driver are included in the root module:
@@ -74,7 +74,7 @@ driver, err := webhook.New(webhook.Config{
 Install the optional Mail adapter at the same revision:
 
 ```sh
-go get github.com/goforj/notification/driver/mail@v0.0.0-20261109215621-1a1b304b2d8a
+go get github.com/goforj/notification/driver/mail@v0.0.0-20261109224653-6d077e3cda12
 ```
 
 It borrows an ordinary `*mail.Mailer` and configured recipients. Mail continues to own sender defaults, email composition, and transport. APNs, SNS and Web Push follow the same optional-module pattern: substitute `apns`, `sns` or `webpush` for `mail` in the command above. Their cryptographic or AWS SDK dependencies stay outside the root module. See [provider capabilities](docs/provider-capabilities.md) for supported operations and protocol limits.
