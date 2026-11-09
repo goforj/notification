@@ -46,7 +46,7 @@ The log driver captures locally. A nil error means the driver handled the messag
 
 Hosted verification is pending unless explicitly stated above. Local protocol fixtures exercise native requests, rejection codes and acknowledgements. Real-server tests run immutable ntfy and Gotify images; see [integration evidence](docs/integration-results.json). HTTP or native acceptance never proves recipient delivery.
 
-The [complete Uptime Gopher inventory](docs/providers/uptime-gopher.md) records all 88 IDs. All 20 distinct dedicated demo adapters have library implementations, with SMTP sharing Mail. The 67 compatibility aliases remain a protocol-review backlog, not native support claims. Opsgenie is legacy migration support. Teams uses Workflows; LINE uses the Messaging API.
+Mail supports SMTP through its configured Mailer. Teams uses Workflows, LINE uses the Messaging API, and Opsgenie provides legacy integration support.
 
 The root module uses only the standard library. Mail is an optional module using goforj/mail v0.3.1. Drivers own their configured destinations; a `Message` contains only content. Errors preserve safe cancellation and provider classifications without returning provider prose. See [delivery contracts](docs/contracts.md) for bounds and ownership.
 

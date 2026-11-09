@@ -35,7 +35,7 @@ func main() {
 		Key:      key,
 		Title:    "API unavailable",
 		Body:     "Health check failed.",
-		Source:   "uptime-gopher",
+		Source:   "health-checks",
 		Severity: notification.SeverityCritical,
 	})
 	if err != nil {
