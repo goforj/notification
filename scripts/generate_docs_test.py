@@ -22,7 +22,7 @@ class GenerationTests(unittest.TestCase):
                 generator.snippet(bad)
 
     def test_badge(self):
-        svg = generator.badge('A & B', '100%', icon=True)
+        svg = generator.badge('A & B', '100%')
         self.assertIn('A &amp; B', svg)
         self.assertIn('<title>', svg)
         self.assertIn('<path', svg)
@@ -35,6 +35,8 @@ class GenerationTests(unittest.TestCase):
             (root / 'docs/providers').mkdir(parents=True)
             (root / 'docs/assets/driver-icons').mkdir(parents=True)
             (root / 'docs/assets/driver-icons/presentation.json').write_text('{}')
+            (root / 'docs/assets/feature-icons').mkdir(parents=True)
+            (root / 'docs/assets/feature-icons/presentation.json').write_text('{}')
             (root / 'docs/providers/drivers.json').write_text(json.dumps({'drivers': []}))
             (root / 'docs/readme.tmpl.md').write_text('## Demo\n{{snippet:demo}}\n{{api-index}}')
             with patch.object(generator, 'ROOT', root), patch.object(generator, 'APIS', [('New', '.', 'New', 'demo', 'Demo')]), patch.object(generator.subprocess, 'run'):
@@ -57,6 +59,8 @@ class GenerationTests(unittest.TestCase):
             (root / 'docs/providers').mkdir(parents=True)
             (root / 'docs/assets/driver-icons').mkdir(parents=True)
             (root / 'docs/assets/driver-icons/presentation.json').write_text('{}')
+            (root / 'docs/assets/feature-icons').mkdir(parents=True)
+            (root / 'docs/assets/feature-icons/presentation.json').write_text('{}')
             (root / 'integration').mkdir()
             (root / 'docs/readme.tmpl.md').write_text('{{drivers}}\n{{api-index}}')
             entry = {'id': 'ntfy', 'package': 'driver/ntfy', 'configuration': 'topic',
@@ -80,7 +84,7 @@ class GenerationTests(unittest.TestCase):
                 (root / 'driver/ntfy').mkdir(parents=True)
                 (root / 'docs/assets/driver-icons/presentation.json').write_text(json.dumps({'ntfy': {'label': 'ntfy', 'icon': 'ntfy.svg'}}))
                 (root / 'docs/assets/driver-icons/ntfy.svg').write_text('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M0 0h24v24z"/></svg>')
-                self.assertIn('[![ntfy](docs/assets/badges/driver-ntfy.svg)](driver/ntfy)', generator.outputs()['README.md'])
+                self.assertIn('> ntfy](driver/ntfy)', generator.outputs()['README.md'])
 
 
 if __name__ == '__main__':

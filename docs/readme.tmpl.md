@@ -18,12 +18,12 @@
 
 | Feature | What you get |
 | --- | --- |
-| ![Simple messages](docs/assets/badges/intent.svg) | Send a title and body through one configured driver. |
-| ![Recipient policy](docs/assets/badges/policy.svg) | Add scoped recipient resolution and fallback when an application needs them. |
-| ![Typed channels](docs/assets/badges/channels.svg) | Optional semantic templates pair typed renderers and transports. |
-| ![Explicit identity](docs/assets/badges/identity.svg) | Optional process-local deduplication preserves accepted channels during partial retries. |
-| ![Safe diagnostics](docs/assets/badges/diagnostics.svg) | Errors and built-in logs omit endpoints and message content. |
-| ![Isolated testing](docs/assets/badges/testing.svg) | Capture messages through the same small Sender interface used by applications. |
+| <img src="docs/assets/badges/intent.svg" width="22" height="22" alt="" align="middle"> Simple messages | Send a title and body through one configured driver. |
+| <img src="docs/assets/badges/policy.svg" width="22" height="22" alt="" align="middle"> Recipient policy | Add scoped recipient resolution and fallback when an application needs them. |
+| <img src="docs/assets/badges/channels.svg" width="22" height="22" alt="" align="middle"> Typed channels | Optional semantic templates pair typed renderers and transports. |
+| <img src="docs/assets/badges/identity.svg" width="22" height="22" alt="" align="middle"> Explicit identity | Optional process-local deduplication preserves accepted channels during partial retries. |
+| <img src="docs/assets/badges/diagnostics.svg" width="22" height="22" alt="" align="middle"> Safe diagnostics | Errors and built-in logs omit endpoints and message content. |
+| <img src="docs/assets/badges/testing.svg" width="22" height="22" alt="" align="middle"> Isolated testing | Capture messages through the same small Sender interface used by applications. |
 
 ## Quick Start
 

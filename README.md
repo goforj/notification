@@ -18,12 +18,12 @@
 
 | Feature | What you get |
 | --- | --- |
-| ![Simple messages](docs/assets/badges/intent.svg) | Send a title and body through one configured driver. |
-| ![Recipient policy](docs/assets/badges/policy.svg) | Add scoped recipient resolution and fallback when an application needs them. |
-| ![Typed channels](docs/assets/badges/channels.svg) | Optional semantic templates pair typed renderers and transports. |
-| ![Explicit identity](docs/assets/badges/identity.svg) | Optional process-local deduplication preserves accepted channels during partial retries. |
-| ![Safe diagnostics](docs/assets/badges/diagnostics.svg) | Errors and built-in logs omit endpoints and message content. |
-| ![Isolated testing](docs/assets/badges/testing.svg) | Capture messages through the same small Sender interface used by applications. |
+| <img src="docs/assets/badges/intent.svg" width="22" height="22" alt="" align="middle"> Simple messages | Send a title and body through one configured driver. |
+| <img src="docs/assets/badges/policy.svg" width="22" height="22" alt="" align="middle"> Recipient policy | Add scoped recipient resolution and fallback when an application needs them. |
+| <img src="docs/assets/badges/channels.svg" width="22" height="22" alt="" align="middle"> Typed channels | Optional semantic templates pair typed renderers and transports. |
+| <img src="docs/assets/badges/identity.svg" width="22" height="22" alt="" align="middle"> Explicit identity | Optional process-local deduplication preserves accepted channels during partial retries. |
+| <img src="docs/assets/badges/diagnostics.svg" width="22" height="22" alt="" align="middle"> Safe diagnostics | Errors and built-in logs omit endpoints and message content. |
+| <img src="docs/assets/badges/testing.svg" width="22" height="22" alt="" align="middle"> Isolated testing | Capture messages through the same small Sender interface used by applications. |
 
 ## Quick Start
 
@@ -57,26 +57,26 @@ The log driver captures locally. A nil error means the driver handled the messag
 
 | Driver | Configuration | Successful handling | Verification |
 | ---: | --- | --- | --- |
-| [![DingTalk](docs/assets/badges/driver-dingding.svg)](driver/dingtalk) | Webhook and optional signing secret | Native errcode; HMAC signature at send time | Local protocol tests; hosted verification pending |
-| [![Discord](docs/assets/badges/driver-discord.svg)](driver/discord) | Webhook URL and optional thread | Native message acknowledgement; mentions disabled | Local protocol tests; hosted verification pending |
-| [![Mail](docs/assets/badges/driver-email.svg)](driver/mail) | Borrowed Mailer and recipients | Mail acceptance | Mail composition tests; hosted verification pending |
-| [![Feishu](docs/assets/badges/driver-feishu.svg)](driver/feishu) | V2 bot webhook and optional signing secret | Native code; timestamped HMAC when configured | Local protocol tests; hosted verification pending |
-| [![Google Chat](docs/assets/badges/driver-googlechat.svg)](driver/googlechat) | Space webhook URL | Native message resource acknowledgement | Local protocol tests; hosted verification pending |
-| [![Gotify](docs/assets/badges/driver-gotify.svg)](driver/gotify) | Server, application token and integer priority | Native message identity and content acknowledgement | Real Gotify 3.1.1 server verified |
-| [![Jira Service Management](docs/assets/badges/driver-jiraservicemanagement.svg)](driver/jsm) | Cloud ID, email and API token | Asynchronous request acceptance; stable alias lookup for actions | Local protocol tests; hosted verification pending |
-| [![LINE](docs/assets/badges/driver-line.svg)](driver/line) | Channel access token and recipient ID | Messaging API push acknowledgement; LINE Notify excluded | Local protocol tests; hosted verification pending |
-| [![Log](docs/assets/badges/driver-log.svg)](driver/log) | Borrowed slog logger | Local capture | Local capture tests |
-| [![ntfy](docs/assets/badges/driver-ntfy.svg)](driver/ntfy) | Topic, optional authentication and integer priority | Native message identity and topic acknowledgement | Real ntfy 2.37.2 server verified |
-| [![Opsgenie](docs/assets/badges/driver-opsgenie.svg)](driver/opsgenie) | Legacy integration key and incident alias | Asynchronous request acceptance; legacy migration support | Local protocol tests; hosted verification pending |
-| [![PagerDuty](docs/assets/badges/driver-pagerduty.svg)](driver/pagerduty) | Routing key and explicit incident key | Events v2 acknowledgement; trigger, acknowledge, resolve | Local protocol tests; hosted verification pending |
-| [![Slack](docs/assets/badges/driver-slack.svg)](driver/slack) | Incoming webhook URL | HTTP 2xx and ok acknowledgement | Local protocol tests; hosted verification pending |
-| [![Teams](docs/assets/badges/driver-teams.svg)](driver/teams) | Workflows webhook URL | Adaptive Card submitted; HTTP 2xx acceptance | Local protocol tests; hosted verification pending |
-| [![Telegram](docs/assets/badges/driver-telegram.svg)](driver/telegram) | Bot token, chat and optional topic | Native message identity; JSON retry advice retained | Local protocol tests; hosted verification pending |
-| [![Twilio](docs/assets/badges/driver-twilio.svg)](driver/twilio) | Account, token, E.164 recipient and sender or service | Native Message SID and accepted status | Local protocol tests; hosted verification pending |
-| [![WAHA](docs/assets/badges/driver-waha.svg)](driver/waha) | Server, API key, existing session and chat | HTTP acceptance across engine response schemas | Local protocol tests; paired-session verification pending |
-| [![Webhook](docs/assets/badges/driver-webhook.svg)](driver/webhook) | Trusted endpoint | HTTP 2xx acceptance | Local protocol tests; hosted verification pending |
-| [![WeCom](docs/assets/badges/driver-wecom.svg)](driver/wecom) | Group robot webhook URL | Native errcode acknowledgement | Local protocol tests; hosted verification pending |
-| [![Whapi](docs/assets/badges/driver-whapi.svg)](driver/whapi) | Channel token and recipient | Native sent acknowledgement | Local protocol tests; hosted verification pending |
+| [<img src="docs/assets/badges/driver-dingding.svg" width="22" height="22" alt="" align="middle"> DingTalk](driver/dingtalk) | Webhook and optional signing secret | Native errcode; HMAC signature at send time | Local protocol tests; hosted verification pending |
+| [<img src="docs/assets/badges/driver-discord.svg" width="22" height="22" alt="" align="middle"> Discord](driver/discord) | Webhook URL and optional thread | Native message acknowledgement; mentions disabled | Local protocol tests; hosted verification pending |
+| [<img src="docs/assets/badges/driver-email.svg" width="22" height="22" alt="" align="middle"> Mail](driver/mail) | Borrowed Mailer and recipients | Mail acceptance | Mail composition tests; hosted verification pending |
+| [<img src="docs/assets/badges/driver-feishu.svg" width="22" height="22" alt="" align="middle"> Feishu](driver/feishu) | V2 bot webhook and optional signing secret | Native code; timestamped HMAC when configured | Local protocol tests; hosted verification pending |
+| [<img src="docs/assets/badges/driver-googlechat.svg" width="22" height="22" alt="" align="middle"> Google Chat](driver/googlechat) | Space webhook URL | Native message resource acknowledgement | Local protocol tests; hosted verification pending |
+| [<img src="docs/assets/badges/driver-gotify.svg" width="22" height="22" alt="" align="middle"> Gotify](driver/gotify) | Server, application token and integer priority | Native message identity and content acknowledgement | Real Gotify 3.1.1 server verified |
+| [<img src="docs/assets/badges/driver-jiraservicemanagement.svg" width="22" height="22" alt="" align="middle"> Jira Service Management](driver/jsm) | Cloud ID, email and API token | Asynchronous request acceptance; stable alias lookup for actions | Local protocol tests; hosted verification pending |
+| [<img src="docs/assets/badges/driver-line.svg" width="22" height="22" alt="" align="middle"> LINE](driver/line) | Channel access token and recipient ID | Messaging API push acknowledgement; LINE Notify excluded | Local protocol tests; hosted verification pending |
+| [<img src="docs/assets/badges/driver-log.svg" width="22" height="22" alt="" align="middle"> Log](driver/log) | Borrowed slog logger | Local capture | Local capture tests |
+| [<img src="docs/assets/badges/driver-ntfy.svg" width="22" height="22" alt="" align="middle"> ntfy](driver/ntfy) | Topic, optional authentication and integer priority | Native message identity and topic acknowledgement | Real ntfy 2.37.2 server verified |
+| [<img src="docs/assets/badges/driver-opsgenie.svg" width="22" height="22" alt="" align="middle"> Opsgenie](driver/opsgenie) | Legacy integration key and incident alias | Asynchronous request acceptance; legacy migration support | Local protocol tests; hosted verification pending |
+| [<img src="docs/assets/badges/driver-pagerduty.svg" width="22" height="22" alt="" align="middle"> PagerDuty](driver/pagerduty) | Routing key and explicit incident key | Events v2 acknowledgement; trigger, acknowledge, resolve | Local protocol tests; hosted verification pending |
+| [<img src="docs/assets/badges/driver-slack.svg" width="22" height="22" alt="" align="middle"> Slack](driver/slack) | Incoming webhook URL | HTTP 2xx and ok acknowledgement | Local protocol tests; hosted verification pending |
+| [<img src="docs/assets/badges/driver-teams.svg" width="22" height="22" alt="" align="middle"> Teams](driver/teams) | Workflows webhook URL | Adaptive Card submitted; HTTP 2xx acceptance | Local protocol tests; hosted verification pending |
+| [<img src="docs/assets/badges/driver-telegram.svg" width="22" height="22" alt="" align="middle"> Telegram](driver/telegram) | Bot token, chat and optional topic | Native message identity; JSON retry advice retained | Local protocol tests; hosted verification pending |
+| [<img src="docs/assets/badges/driver-twilio.svg" width="22" height="22" alt="" align="middle"> Twilio](driver/twilio) | Account, token, E.164 recipient and sender or service | Native Message SID and accepted status | Local protocol tests; hosted verification pending |
+| [<img src="docs/assets/badges/driver-waha.svg" width="22" height="22" alt="" align="middle"> WAHA](driver/waha) | Server, API key, existing session and chat | HTTP acceptance across engine response schemas | Local protocol tests; paired-session verification pending |
+| [<img src="docs/assets/badges/driver-webhook.svg" width="22" height="22" alt="" align="middle"> Webhook](driver/webhook) | Trusted endpoint | HTTP 2xx acceptance | Local protocol tests; hosted verification pending |
+| [<img src="docs/assets/badges/driver-wecom.svg" width="22" height="22" alt="" align="middle"> WeCom](driver/wecom) | Group robot webhook URL | Native errcode acknowledgement | Local protocol tests; hosted verification pending |
+| [<img src="docs/assets/badges/driver-whapi.svg" width="22" height="22" alt="" align="middle"> Whapi](driver/whapi) | Channel token and recipient | Native sent acknowledgement | Local protocol tests; hosted verification pending |
 
 Hosted verification is pending unless explicitly stated above. Local protocol fixtures exercise native requests, rejection codes and acknowledgements. Real-server tests run immutable ntfy and Gotify images; see [integration evidence](docs/integration-results.json). HTTP or native acceptance never proves recipient delivery.
 

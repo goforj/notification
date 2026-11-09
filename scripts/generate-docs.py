@@ -52,23 +52,19 @@ def text_width(text):
     return sum(3 if c in "ilI.,:;!|' " else 9 if c in "mwMW@%" else 7 if c.isupper() or c.isdigit() else 6 for c in text)
 
 
-def badge(label, value, color='#007ec6', icon=False):
-    """Render compact status segments or a single icon and feature label."""
+def badge(label, value, color='#007ec6'):
+    """Render compact status segments from measured repository evidence."""
     title = html.escape(label + (': ' + value if value else ''))
-    if icon:
-        width = text_width(label) + 32
-        return f'''<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="22" role="img" aria-label="{title}"><title>{title}</title><rect width="{width}" height="22" rx="3" fill="{color}"/><path d="M7 14h9l-2-3V8a2.5 2.5 0 0 0-5 0v3l-2 3m3 3h3" fill="none" stroke="white" stroke-width="1.3"/><text x="23" y="15" fill="white" font-family="Verdana,DejaVu Sans,sans-serif" font-size="11">{html.escape(label)}</text></svg>\n'''
     left = text_width(label) + 12
     right = text_width(value) + 12
     width = left + right
     return f'''<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="20" role="img" aria-label="{title}"><title>{title}</title><clipPath id="badge"><rect width="{width}" height="20" rx="3"/></clipPath><g clip-path="url(#badge)"><path fill="#555" d="M0 0h{left}v20H0z"/><path fill="{color}" d="M{left} 0h{right}v20H{left}z"/></g><g fill="#fff" text-anchor="middle" font-family="Verdana,DejaVu Sans,sans-serif" font-size="11"><text x="{left / 2:g}" y="14">{html.escape(label)}</text><text x="{left + right / 2:g}" y="14">{html.escape(value)}</text></g></svg>\n'''
 
 
-def driver_badge(presentation):
-    """Embed provider artwork locally at a consistent readable size and baseline."""
-    path = ROOT / 'docs/assets/driver-icons' / presentation['icon']
+def artwork_badge(presentation, directory):
+    """Embed driver and feature artwork with shared dimensions, spacing and colors."""
+    path = ROOT / 'docs/assets' / directory / presentation['icon']
     label = html.escape(presentation['label'])
-    width = text_width(presentation['label']) + 38
     accent = presentation.get('accent', '#576574')
     channels = [int(accent[index:index+2], 16) for index in (1, 3, 5)]
     background = '#' + ''.join(f'{round(channel * 0.08 + 255 * 0.92):02x}' for channel in channels)
@@ -80,14 +76,14 @@ def driver_badge(presentation):
             for child in list(parent):
                 if child.tag.endswith('foreignObject'):
                     parent.remove(child)
-        icon.attrib.update(x='7', y='3', width='16', height='16')
+        icon.attrib.update(x='3', y='3', width='16', height='16')
         if 'fill' in presentation:
             icon.set('fill', presentation['fill'])
         artwork = ET.tostring(icon, encoding='unicode')
     else:
         encoded = base64.b64encode(path.read_bytes()).decode('ascii')
-        artwork = f'<image x="7" y="3" width="16" height="16" href="data:image/png;base64,{encoded}"/>'
-    return f'''<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="22" role="img" aria-label="{label}"><title>{label}</title><rect x=".5" y=".5" width="{width - 1}" height="21" rx="4" fill="{background}" stroke="{border}"/>{artwork}<text x="30" y="15" fill="#24292f" font-family="Verdana,DejaVu Sans,sans-serif" font-size="11">{label}</text></svg>\n'''
+        artwork = f'<image x="3" y="3" width="16" height="16" href="data:image/png;base64,{encoded}"/>'
+    return f'''<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" role="img" aria-label="{label}"><title>{label}</title><rect x=".5" y=".5" width="21" height="21" rx="4" fill="{background}" stroke="{border}"/>{artwork}</svg>\n'''
 
 
 def outputs():
@@ -121,8 +117,8 @@ def outputs():
             raise ValueError('missing driver package: ' + entry['package'])
         presentation = presentations[entry['id']]
         asset = f"docs/assets/badges/driver-{entry['id']}.svg"
-        driver_assets[asset] = driver_badge(presentation)
-        driver_rows.append(f"| [![{presentation['label']}]({asset})]({entry['package']}) | {entry['configuration']} | {entry['acceptance']} | {entry['verification']} |")
+        driver_assets[asset] = artwork_badge(presentation, 'driver-icons')
+        driver_rows.append(f'''| [<img src="{asset}" width="22" height="22" alt="" align="middle"> {presentation['label']}]({entry['package']}) | {entry['configuration']} | {entry['acceptance']} | {entry['verification']} |''')
     templates['README.md'] = templates['README.md'].replace('{{drivers}}', '\n'.join(driver_rows))
     readme = templates['README.md']
     rows = ['| API | Example |', '| --- | --- |']
@@ -143,8 +139,9 @@ def outputs():
     result.update(driver_assets)
     for name, label, value, color in [('status', 'status', 'unreleased', '#6e7681'), ('go', 'Go', '1.24+', '#007d9c'), ('license', 'license', 'MIT', '#007ec6'), ('coverage', 'coverage', '100%', '#2e8540'), ('tests', 'tests', str(evidence['unit_tests_passed']), '#5368bd')]:
         result[f'docs/assets/badges/{name}.svg'] = badge(label, value, color)
-    for name, label in [('intent', 'Simple messages'), ('policy', 'Recipient policy'), ('channels', 'Typed channels'), ('identity', 'Explicit identity'), ('diagnostics', 'Safe diagnostics'), ('testing', 'Isolated testing')]:
-        result[f'docs/assets/badges/{name}.svg'] = badge(label, '', '#33436b', True)
+    features = json.loads((ROOT / 'docs/assets/feature-icons/presentation.json').read_text())
+    for name, presentation in features.items():
+        result[f'docs/assets/badges/{name}.svg'] = artwork_badge(presentation, 'feature-icons')
     return result
 
 
