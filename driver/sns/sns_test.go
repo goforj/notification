@@ -128,6 +128,13 @@ func TestValidationAndEvidence(t *testing.T) {
 		if err := driver.Send(nil, notification.Message{Body: "body"}); !errors.Is(err, entry.want) || strings.Contains(err.Error(), "private") {
 			t.Fatal("SDK error evidence", err)
 		}
+		if entry.want == notification.ErrRetryable {
+			var detail *notification.DeliveryError
+			err := driver.Send(nil, notification.Message{Body: "server failure"})
+			if !errors.Is(err, notification.ErrOutcomeUnknown) || !errors.As(err, &detail) || detail.Status() != notification.Unknown {
+				t.Fatal("server fault falsely proves rejection", err)
+			}
+		}
 	}
 	ctx, cancel := context.WithCancel(context.Background())
 	driver, _ := New(Config{TopicARN: "arn:aws:sns:r:a:t", Client: publisherFunc(func(context.Context, *sns.PublishInput, ...func(*sns.Options)) (*sns.PublishOutput, error) {

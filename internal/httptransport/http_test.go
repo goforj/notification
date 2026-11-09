@@ -102,3 +102,17 @@ func TestGlobalTLSDialHooksCannotBypassPolicy(t *testing.T) {
 		})
 	}
 }
+
+// TestEmptyHTTPHost rejects malformed authorities before clients can attempt resolution or transport.
+func TestEmptyHTTPHost(t *testing.T) {
+	for _, address := range []string{"http://:80", "https://:443/path", "http://[]:8080"} {
+		if _, err := Destination(address); !errors.Is(err, notification.ErrPermanent) {
+			t.Fatal("empty hostname accepted", address, err)
+		}
+	}
+	for _, address := range []string{"http://example.com:80", "https://[2001:db8::1]:443"} {
+		if _, err := Destination(address); err != nil {
+			t.Fatal("valid authority rejected", err)
+		}
+	}
+}

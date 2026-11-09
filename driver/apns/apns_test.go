@@ -106,11 +106,17 @@ func TestNativeHTTP2(t *testing.T) {
 	for _, entry := range []struct {
 		status int
 		want   error
-	}{{202, notification.ErrOutcomeUnknown}, {429, notification.ErrThrottled}, {403, notification.ErrUnauthorized}, {410, notification.ErrPermanent}, {503, notification.ErrRetryable}} {
+	}{{202, notification.ErrOutcomeUnknown}, {429, notification.ErrThrottled}, {403, notification.ErrUnauthorized}, {410, notification.ErrPermanent}, {408, notification.ErrRetryable}, {503, notification.ErrRetryable}} {
 		code.Store(int64(entry.status))
 		err := driver.Send(nil, notification.Message{Body: "status check"})
 		if !errors.Is(err, entry.want) {
 			t.Fatal("APNs status classification", entry.status, err)
+		}
+		if entry.want == notification.ErrRetryable {
+			var detail *notification.DeliveryError
+			if !errors.Is(err, notification.ErrOutcomeUnknown) || !errors.As(err, &detail) || detail.Status() != notification.Unknown || detail.RetryAfter() != 7*time.Second {
+				t.Fatal("APNs server failure lost uncertainty or retry advice", err)
+			}
 		}
 	}
 	code.Store(200)

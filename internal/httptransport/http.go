@@ -137,8 +137,9 @@ func Request(client *http.Client, ctx context.Context, method, address string, h
 		return bounded, notification.Outcome{Status: notification.Failed, RetryAfter: RetryAfter(response.Header.Get("Retry-After"), time.Now())}, notification.ErrThrottled
 	case response.StatusCode == 401 || response.StatusCode == 403:
 		return bounded, notification.Outcome{Status: notification.Failed}, notification.ErrUnauthorized
-	case response.StatusCode >= 500:
-		return bounded, notification.Outcome{Status: notification.Failed}, notification.ErrRetryable
+	case response.StatusCode == http.StatusRequestTimeout || response.StatusCode >= 500:
+		// Receivers and proxies can fail after committing work, so transient HTTP failure cannot prove rejection.
+		return bounded, notification.Outcome{Status: notification.Unknown, RetryAfter: RetryAfter(response.Header.Get("Retry-After"), time.Now())}, notification.ErrRetryable
 	default:
 		return bounded, notification.Outcome{Status: notification.Failed}, notification.ErrPermanent
 	}
@@ -150,7 +151,7 @@ func Destination(address string) (*url.URL, error) {
 		return nil, notification.ErrPermanent
 	}
 	u, err := url.Parse(address)
-	if err != nil || u.Host == "" || u.User != nil || u.Fragment != "" || (u.Scheme != "https" && u.Scheme != "http") || len(u.String()) > 4096 {
+	if err != nil || u.Host == "" || u.Hostname() == "" || u.User != nil || u.Fragment != "" || (u.Scheme != "https" && u.Scheme != "http") || len(u.String()) > 4096 {
 		return nil, notification.ErrPermanent
 	}
 	if port := u.Port(); port != "" {

@@ -121,7 +121,7 @@ func classify(ctx context.Context, err error) (notification.Status, error) {
 		case smithy.FaultClient:
 			return notification.Failed, notification.ErrPermanent
 		case smithy.FaultServer:
-			return notification.Failed, notification.ErrRetryable
+			return notification.Unknown, notification.ErrRetryable
 		}
 	}
 	return notification.Unknown, notification.ErrOutcomeUnknown

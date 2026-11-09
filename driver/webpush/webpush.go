@@ -170,8 +170,8 @@ func (d *Driver) Send(ctx context.Context, message notification.Message) error {
 	case http.StatusUnauthorized, http.StatusForbidden:
 		return notification.NewDeliveryError("webpush", notification.Outcome{Status: notification.Failed}, notification.ErrUnauthorized)
 	}
-	if response.StatusCode >= 500 {
-		return notification.NewDeliveryError("webpush", notification.Outcome{Status: notification.Failed}, notification.ErrRetryable)
+	if response.StatusCode == http.StatusRequestTimeout || response.StatusCode >= 500 {
+		return notification.NewDeliveryError("webpush", notification.Outcome{Status: notification.Unknown, RetryAfter: httptransport.RetryAfter(response.Header.Get("Retry-After"), time.Now())}, notification.ErrRetryable)
 	}
 	if response.StatusCode >= 200 && response.StatusCode < 300 {
 		return notification.NewDeliveryError("webpush", notification.Outcome{Status: notification.Unknown}, notification.ErrOutcomeUnknown)

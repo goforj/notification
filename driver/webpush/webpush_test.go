@@ -19,6 +19,7 @@ import (
 	"strings"
 	"sync/atomic"
 	"testing"
+	"time"
 
 	"github.com/SherClockHolmes/webpush-go"
 	"github.com/goforj/notification"
@@ -142,10 +143,17 @@ func TestNativeEncryption(t *testing.T) {
 	for _, entry := range []struct {
 		status int
 		want   error
-	}{{200, notification.ErrOutcomeUnknown}, {429, notification.ErrThrottled}, {401, notification.ErrUnauthorized}, {410, notification.ErrPermanent}, {503, notification.ErrRetryable}} {
+	}{{200, notification.ErrOutcomeUnknown}, {429, notification.ErrThrottled}, {401, notification.ErrUnauthorized}, {410, notification.ErrPermanent}, {408, notification.ErrRetryable}, {503, notification.ErrRetryable}} {
 		status.Store(int64(entry.status))
-		if err := driver.Send(nil, notification.Message{Body: "status check"}); !errors.Is(err, entry.want) {
+		err := driver.Send(nil, notification.Message{Body: "status check"})
+		if !errors.Is(err, entry.want) {
 			t.Fatal("push status classification", entry.status, err)
+		}
+		if entry.want == notification.ErrRetryable {
+			var detail *notification.DeliveryError
+			if !errors.Is(err, notification.ErrOutcomeUnknown) || !errors.As(err, &detail) || detail.Status() != notification.Unknown || detail.RetryAfter() != 7*time.Second {
+				t.Fatal("server error lost uncertainty or retry advice", err)
+			}
 		}
 	}
 	if err := driver.Send(nil, notification.Message{Body: strings.Repeat("x", 3900)}); !errors.Is(err, notification.ErrRender) {
