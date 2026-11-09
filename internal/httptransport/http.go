@@ -91,10 +91,11 @@ func newClient(transport http.RoundTripper, timeout time.Duration) *http.Client 
 
 // Response retains bounded wire evidence for provider-owned acknowledgement parsing.
 type Response struct {
-	StatusCode int
-	Header     http.Header
-	Body       []byte
-	Complete   bool
+	ProtocolMajor int
+	StatusCode    int
+	Header        http.Header
+	Body          []byte
+	Complete      bool
 }
 
 // Request executes one request without redirects, retries, raw error causes or unbounded bodies.
@@ -128,7 +129,7 @@ func Request(client *http.Client, ctx context.Context, method, address string, h
 	}
 	defer response.Body.Close()
 	data, readErr := io.ReadAll(io.LimitReader(response.Body, 65537))
-	bounded := Response{StatusCode: response.StatusCode, Header: response.Header.Clone(), Body: data, Complete: readErr == nil && len(data) <= 65536}
+	bounded := Response{ProtocolMajor: response.ProtoMajor, StatusCode: response.StatusCode, Header: response.Header.Clone(), Body: data, Complete: readErr == nil && len(data) <= 65536}
 	switch {
 	case response.StatusCode >= 200 && response.StatusCode < 300:
 		return bounded, notification.Outcome{Status: notification.Accepted}, nil
