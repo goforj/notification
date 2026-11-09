@@ -22,7 +22,7 @@ Install the repository-pinned scanner with `go install golang.org/x/vuln/cmd/gov
 
 Do not change optional requirements to an unpublished root release before its tag is available: the public consumer check would correctly fail. Commit and verify those requirement changes after publishing the root, before tagging the optional modules.
 
-The public consumer check is implemented in Go under `docs/consumer` and `docs/gen/consumer.go`. CI runs it for each push after the quality and native integration jobs pass. It resolves the actual pushed commit without rewriting requirements, disables private-module bypasses and local overlays, and uses the standard public checksum database. A successful candidate-archive test alone does not establish public installation.
+The public consumer check is implemented in Go under `docs/consumer` and `docs/gen/consumer.go`. CI runs it for each push after the quality and native integration jobs pass. It resolves the actual pushed commit without rewriting requirements, disables private-module bypasses and local overlays, and uses the standard public checksum database. It checks a combined consumer plus the root and every optional module independently, so an explicitly upgraded root cannot hide an adapter's invalid minimum requirement. A successful candidate-archive test alone does not establish public installation.
 
 A root tag does not publish the optional modules. No version, release badge, published checksum, hosted provider integration, or Codecov upload is implied by passing local tests.
 

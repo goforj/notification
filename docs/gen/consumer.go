@@ -33,8 +33,8 @@ func CheckConsumer(ctx context.Context, root, revision string, output io.Writer)
 	if err := readJSON(root, "docs/providers/drivers.json", &catalog); err != nil {
 		return err
 	}
-	source, err := consumerSource(catalog.Drivers)
-	if err != nil {
+
+	if _, err := consumerSource(catalog.Drivers); err != nil {
 		return err
 	}
 	directory, err := os.MkdirTemp("", "notification-consumer-")
@@ -42,13 +42,61 @@ func CheckConsumer(ctx context.Context, root, revision string, output io.Writer)
 		return err
 	}
 	defer os.RemoveAll(directory)
+	environment := consumerEnvironment(filepath.Join(directory, "modcache"))
+	for index, phase := range consumerPhases(modules, catalog.Drivers) {
+		target := filepath.Join(directory, fmt.Sprintf("consumer-%d", index))
+		if err := os.Mkdir(target, 0700); err != nil {
+			return err
+		}
+		if err := checkConsumerAt(ctx, target, revision, phase, environment, output); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// consumerPhase separates a full composition from each independently resolved runtime module.
+type consumerPhase struct {
+	modules  []string
+	required []string
+	drivers  []Driver
+}
+
+// consumerPhases prevents the combined consumer's root requirement from masking an adapter's invalid minimum.
+func consumerPhases(modules []string, drivers []Driver) []consumerPhase {
+	phases := []consumerPhase{{modules, modules, drivers}}
+	var rootDrivers []Driver
+	for _, driver := range drivers {
+		optional := false
+		for _, module := range modules[1:] {
+			if module == modules[0]+"/"+driver.Package {
+				optional = true
+				break
+			}
+		}
+		if !optional {
+			rootDrivers = append(rootDrivers, driver)
+		}
+	}
+	phases = append(phases, consumerPhase{modules: modules[:1], required: modules[:1], drivers: rootDrivers})
+	for _, module := range modules[1:] {
+		phases = append(phases, consumerPhase{modules: []string{module}, required: []string{modules[0], module}, drivers: []Driver{{Package: strings.TrimPrefix(module, modules[0]+"/")}}})
+	}
+	return phases
+}
+
+// checkConsumerAt exercises one public selection without carrying module requirements between phases.
+func checkConsumerAt(ctx context.Context, directory, revision string, phase consumerPhase, environment []string, output io.Writer) error {
+	source, err := consumerSource(phase.drivers)
+	if err != nil {
+		return err
+	}
 	for name, data := range map[string][]byte{"go.mod": []byte("module notification-consumer\n\ngo 1.24.0\n"), "main.go": source} {
 		if err := os.WriteFile(filepath.Join(directory, name), data, 0600); err != nil {
 			return err
 		}
 	}
 	goCommand := filepath.Join(runtime.GOROOT(), "bin", "go")
-	environment := consumerEnvironment(filepath.Join(directory, "modcache"))
 	run := func(stdout io.Writer, args ...string) error {
 		command := exec.CommandContext(ctx, goCommand, args...)
 		command.Dir = directory
@@ -58,10 +106,10 @@ func CheckConsumer(ctx context.Context, root, revision string, output io.Writer)
 		return command.Run()
 	}
 	arguments := []string{"get"}
-	for _, module := range modules {
+	for _, module := range phase.modules {
 		arguments = append(arguments, module+"@"+revision)
 	}
-	fmt.Fprintln(output, "Resolving public runtime modules with checksum verification...")
+	fmt.Fprintf(output, "Resolving %s with public checksum verification...\n", strings.Join(phase.modules, ", "))
 	if err := run(output, arguments...); err != nil {
 		return fmt.Errorf("public module resolution failed: %w", err)
 	}
@@ -69,10 +117,10 @@ func CheckConsumer(ctx context.Context, root, revision string, output io.Writer)
 	if err := run(&selected, "list", "-m", "-json", "all"); err != nil {
 		return err
 	}
-	if err := checkConsumerSelection(selected.Bytes(), modules); err != nil {
+	if err := checkConsumerSelection(selected.Bytes(), phase.required); err != nil {
 		return err
 	}
-	fmt.Fprintf(output, "Compiling all %d drivers and exercising Sender...\n", len(catalog.Drivers))
+	fmt.Fprintf(output, "Compiling %d drivers and exercising Sender...\n", len(phase.drivers))
 	return run(output, "run", ".")
 }
 
@@ -120,6 +168,7 @@ func consumerSource(drivers []Driver) ([]byte, error) {
 		source.WriteString("_ " + strconv.Quote("github.com/goforj/notification/"+driver.Package) + "\n")
 	}
 	source.WriteString(`)
+// main checks the public API without contacting a notification provider.
 func main(){
  calls:=0
  sender:=notification.New(notification.SenderFunc(func(ctx context.Context,message notification.Message)error{

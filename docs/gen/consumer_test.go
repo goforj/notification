@@ -96,3 +96,21 @@ func TestConsumerModuleInventory(t *testing.T) {
 		t.Fatal("empty catalog accepted")
 	}
 }
+
+// TestConsumerPhases keeps independent adapter checks from explicitly upgrading their root dependency.
+func TestConsumerPhases(t *testing.T) {
+	const base = "github.com/goforj/notification"
+	modules := []string{base, base + "/driver/mail", base + "/driver/sns"}
+	phases := consumerPhases(modules, []Driver{{Package: "driver/log"}, {Package: "driver/mail"}, {Package: "driver/sns"}})
+	if len(phases) != 4 || len(phases[0].drivers) != 3 || len(phases[1].drivers) != 1 || phases[1].drivers[0].Package != "driver/log" {
+		t.Fatal("runtime composition incomplete")
+	}
+	for i, phase := range phases[2:] {
+		if len(phase.modules) != 1 || phase.modules[0] != modules[i+1] || len(phase.required) != 2 || phase.required[0] != base || len(phase.drivers) != 1 {
+			t.Fatal("independent module is forced to newest root")
+		}
+	}
+	if len(modules) != 3 {
+		t.Fatal("module inventory mutated")
+	}
+}
