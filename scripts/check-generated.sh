@@ -1,12 +1,16 @@
 #!/usr/bin/env bash
 set -euo pipefail
 cd "$(dirname "$0")/.."
-first=$(mktemp)
-second=$(mktemp)
-trap 'rm -f "$first" "$second"' EXIT
-python3 scripts/generate-docs.py --check
-python3 scripts/generate-docs.py
-find README.md docs/advanced.md docs/assets/badges -type f -exec shasum -a 256 {} \; | sort > "$first"
-python3 scripts/generate-docs.py
-find README.md docs/advanced.md docs/assets/badges -type f -exec shasum -a 256 {} \; | sort > "$second"
-cmp "$first" "$second"
+snapshot="$(mktemp -d "${TMPDIR:-/tmp}/notification-generated.XXXXXX")"
+trap 'rm -rf "$snapshot"' EXIT
+cp README.md "$snapshot/README.md"
+cp docs/advanced.md "$snapshot/advanced.md"
+cp -R examples "$snapshot/examples"
+cp -R docs/assets/badges "$snapshot/badges"
+GOWORK=off go -C docs run ./readme -check
+GOWORK=off go -C docs run ./readme
+GOWORK=off go -C docs run ./readme
+diff -u "$snapshot/README.md" README.md
+diff -u "$snapshot/advanced.md" docs/advanced.md
+diff -ru "$snapshot/examples" examples
+diff -ru "$snapshot/badges" docs/assets/badges

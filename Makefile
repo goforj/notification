@@ -11,7 +11,7 @@ test-race: ## Run all modules and real example programs with race detection.
 	@scripts/test-modules.sh race
 
 test-integration: ## Run pinned ntfy and Gotify servers using Docker.
-	@python3 scripts/test-integration.py
+	@scripts/test-integration.sh
 
 test-coverage: test ## Produce the unit coverage profile and measured evidence.
 
@@ -22,10 +22,10 @@ tidy: ## Tidy every module while retaining development replacements.
 	@scripts/test-modules.sh tidy
 
 modules-check: ## Verify the complete module inventory.
-	@python3 scripts/check-modules.py
+	@GOWORK=off go -C docs run ./modules
 
 generate: ## Generate README snippets, API links, and local SVG badges.
-	@python3 scripts/generate-docs.py
+	@GOWORK=off go -C docs run ./readme
 
 check-generated: ## Verify source parity and deterministic regeneration.
 	@scripts/check-generated.sh

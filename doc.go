@@ -5,4 +5,4 @@
 // Successful handling never proves recipient delivery.
 package notification
 
-//go:generate python3 scripts/generate-docs.py
+//go:generate go -C docs run ./readme

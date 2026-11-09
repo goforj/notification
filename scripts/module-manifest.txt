@@ -2,3 +2,4 @@
 driver/mail
 examples/mail
 integration
+docs
