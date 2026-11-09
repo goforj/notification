@@ -1,0 +1,6 @@
+Generated with the built-in imagegen tool.
+Style references: original goforj/search and goforj/mail README PNGs, inspected locally.
+Output: docs/assets/logo.png, transparent PNG.
+
+Prompt:
+Create an original transparent PNG GoForj library mascot logo named exactly "notification". Use the two recently viewed images as style references only: a friendly sky-blue Go gopher with huge white eyes, cream muzzle and paws, thick dark navy outlines, subtle shading and white sticker border. The gopher holds a golden notification bell next to a small blue chat bubble with a white check. A large, extremely legible rounded white lowercase wordmark "notification" with a thick navy outline anchors the bottom. Compact centered complete silhouette, balanced for display at 300px wide. True transparent background, no background scenery, no extra words. Create new artwork, do not copy the search or mail domain props.

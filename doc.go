@@ -4,4 +4,4 @@
 // recipient delivery. See docs/contracts.md for ownership and retry guarantees.
 package notification
 
-//go:generate go run ./internal/readme
+//go:generate python3 scripts/generate-docs.py
