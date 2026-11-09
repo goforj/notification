@@ -15,6 +15,7 @@ import (
 	"time"
 
 	"github.com/goforj/notification"
+	"github.com/goforj/notification/internal/httptransport"
 	"github.com/goforj/notification/notificationtest"
 )
 
@@ -154,16 +155,16 @@ func (f resolverFunc) LookupNetIP(ctx context.Context, network, host string) ([]
 // TestDestinationPolicy rejects mixed answers and validates the actual dial path.
 func TestDestinationPolicy(t *testing.T) {
 	for _, address := range []string{"127.0.0.1", "10.0.0.1", "169.254.169.254", "192.0.2.1", "100.64.0.1", "0.0.0.0", "224.0.0.1", "240.0.0.1", "::1", "::ffff:127.0.0.1", "fc00::1", "fe80::1", "64:ff9b::1", "2001:db8::1", "2002::1"} {
-		if public(netip.MustParseAddr(address)) {
+		if httptransport.Public(netip.MustParseAddr(address)) {
 			t.Fatalf("special address accepted: %s", address)
 		}
 	}
 	for _, address := range []string{"8.8.8.8", "2606:4700:4700::1111"} {
-		if !public(netip.MustParseAddr(address)) {
+		if !httptransport.Public(netip.MustParseAddr(address)) {
 			t.Fatal(address)
 		}
 	}
-	if public(netip.Addr{}) {
+	if httptransport.Public(netip.Addr{}) {
 		t.Fatal("invalid IP accepted")
 	}
 	d, err := New(Config{Resolver: resolverFunc(func(context.Context, string, string) ([]netip.Addr, error) {
@@ -221,7 +222,7 @@ func TestRetryAfter(t *testing.T) {
 		value string
 		want  time.Duration
 	}{{"5", 5 * time.Second}, {"-1", 0}, {"bad", 0}, {"999999", 24 * time.Hour}, {now.Add(2 * time.Minute).Format(http.TimeFormat), 2 * time.Minute}, {now.Add(-time.Hour).Format(http.TimeFormat), 0}} {
-		if got := retryAfter(tt.value, now); got != tt.want {
+		if got := httptransport.RetryAfter(tt.value, now); got != tt.want {
 			t.Fatal(tt.value, got)
 		}
 	}
