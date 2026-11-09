@@ -135,11 +135,6 @@ func outputsFor(root string, apis []API) (map[string][]byte, error) {
 		}
 	}
 	outputs := map[string][]byte{}
-	coverageBadges, err := packageCoverageBadges(unit, outputs)
-	if err != nil {
-		return nil, err
-	}
-	templates["README.md"] = strings.ReplaceAll(templates["README.md"], "{{package-coverage}}", coverageBadges)
 	integrationBadge := ""
 	if nativeTests > 0 {
 		outputs["docs/assets/badges/integration-tests.svg"] = StatusBadge("integration tests", fmt.Sprint(nativeTests), "#007ec6")

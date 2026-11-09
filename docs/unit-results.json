@@ -102,8 +102,8 @@
     }
   },
   "toolchain": "go version go1.27.3 darwin/arm64",
-  "source_fingerprint": "5c28f4a5265c59be7c4c521478c8e083ae81c54a3b127f3fbab6a296a175bc94",
-  "unit_tests_passed": 226,
+  "source_fingerprint": "724cb7df355bd9639d1c2b782ed81886326560b36281fd3689ef2714d416b682",
+  "unit_tests_passed": 224,
   "covered_statements": 1206,
   "total_statements": 1206,
   "command_statements": 106,

@@ -13,29 +13,6 @@
   <a href="docs/unit-results.json"><img src="docs/assets/badges/coverage.svg" alt="Unit statement coverage"></a>
   <a href="docs/unit-results.json"><img src="docs/assets/badges/tests.svg" alt="Executed unit tests"></a>
   <a href="docs/integration-results.json"><img src="docs/assets/badges/integration-tests.svg" alt="Executed native integration tests"></a>
-  <a href="docs/unit-results.json"><img src="docs/assets/badges/coverage-notification.svg" alt="notification unit statement coverage"></a>
-  <a href="docs/unit-results.json"><img src="docs/assets/badges/coverage-driver-dingtalk.svg" alt="dingtalk unit statement coverage"></a>
-  <a href="docs/unit-results.json"><img src="docs/assets/badges/coverage-driver-discord.svg" alt="discord unit statement coverage"></a>
-  <a href="docs/unit-results.json"><img src="docs/assets/badges/coverage-driver-feishu.svg" alt="feishu unit statement coverage"></a>
-  <a href="docs/unit-results.json"><img src="docs/assets/badges/coverage-driver-googlechat.svg" alt="googlechat unit statement coverage"></a>
-  <a href="docs/unit-results.json"><img src="docs/assets/badges/coverage-driver-gotify.svg" alt="gotify unit statement coverage"></a>
-  <a href="docs/unit-results.json"><img src="docs/assets/badges/coverage-driver-jsm.svg" alt="jsm unit statement coverage"></a>
-  <a href="docs/unit-results.json"><img src="docs/assets/badges/coverage-driver-line.svg" alt="line unit statement coverage"></a>
-  <a href="docs/unit-results.json"><img src="docs/assets/badges/coverage-driver-log.svg" alt="log unit statement coverage"></a>
-  <a href="docs/unit-results.json"><img src="docs/assets/badges/coverage-driver-mail.svg" alt="mail unit statement coverage"></a>
-  <a href="docs/unit-results.json"><img src="docs/assets/badges/coverage-driver-ntfy.svg" alt="ntfy unit statement coverage"></a>
-  <a href="docs/unit-results.json"><img src="docs/assets/badges/coverage-driver-opsgenie.svg" alt="opsgenie unit statement coverage"></a>
-  <a href="docs/unit-results.json"><img src="docs/assets/badges/coverage-driver-pagerduty.svg" alt="pagerduty unit statement coverage"></a>
-  <a href="docs/unit-results.json"><img src="docs/assets/badges/coverage-driver-slack.svg" alt="slack unit statement coverage"></a>
-  <a href="docs/unit-results.json"><img src="docs/assets/badges/coverage-driver-teams.svg" alt="teams unit statement coverage"></a>
-  <a href="docs/unit-results.json"><img src="docs/assets/badges/coverage-driver-telegram.svg" alt="telegram unit statement coverage"></a>
-  <a href="docs/unit-results.json"><img src="docs/assets/badges/coverage-driver-twilio.svg" alt="twilio unit statement coverage"></a>
-  <a href="docs/unit-results.json"><img src="docs/assets/badges/coverage-driver-waha.svg" alt="waha unit statement coverage"></a>
-  <a href="docs/unit-results.json"><img src="docs/assets/badges/coverage-driver-webhook.svg" alt="webhook unit statement coverage"></a>
-  <a href="docs/unit-results.json"><img src="docs/assets/badges/coverage-driver-wecom.svg" alt="wecom unit statement coverage"></a>
-  <a href="docs/unit-results.json"><img src="docs/assets/badges/coverage-driver-whapi.svg" alt="whapi unit statement coverage"></a>
-  <a href="docs/unit-results.json"><img src="docs/assets/badges/coverage-notificationfake.svg" alt="notificationfake unit statement coverage"></a>
-  <a href="docs/unit-results.json"><img src="docs/assets/badges/coverage-notificationtest.svg" alt="notificationtest unit statement coverage"></a>
 </p>
 
 <p align="center"><a href="#features">Features</a> · <a href="#quick-start">Quick Start</a> · <a href="#drivers">Drivers</a> · <a href="#runnable-examples">Examples</a> · <a href="#api-index">API</a></p>

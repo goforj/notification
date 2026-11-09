@@ -56,7 +56,7 @@ func main(){
  // hello
  // snippet:end
 }`)
-	put(t, root, "docs/readme.tmpl.md", "{{package-coverage}}\n{{integration-badge}}\n## Demo\n{{snippet:demo}}\n{{drivers}}\n{{api-index}}\n")
+	put(t, root, "docs/readme.tmpl.md", "{{integration-badge}}\n## Demo\n{{snippet:demo}}\n{{drivers}}\n{{api-index}}\n")
 	put(t, root, "docs/advanced.tmpl.md", "# Advanced\n")
 	putJSON(t, root, "docs/providers/drivers.json", map[string]any{"drivers": []Driver{}})
 	putJSON(t, root, "docs/assets/driver-icons/presentation.json", map[string]Presentation{})
