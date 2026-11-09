@@ -314,3 +314,29 @@ func TestUnknownCancellationNeverRetries(t *testing.T) {
 		t.Fatal("unknown delivery repeated")
 	}
 }
+
+// TestSuccessfulFallbackIsTerminal prevents duplicate submissions from returning
+// to a preferred channel after a fallback already satisfied the route.
+func TestSuccessfulFallbackIsTerminal(t *testing.T) {
+	for _, policy := range []Policy{Any, FirstSuccess, BestEffort} {
+		t.Run(string(policy), func(t *testing.T) {
+			r := request()
+			calls := 0
+			n := setup(t, policy, Plan{Deliveries: []PlannedDelivery{delivery(r.Recipients[0], "a"), delivery(r.Recipients[0], "b")}}, map[string]DriverFunc[TextPayload]{"a": func(context.Context, Delivery[TextPayload]) (Outcome, error) {
+				calls++
+				return Outcome{Status: Failed}, ErrRetryable
+			}, "b": success}, WithJournal(NewMemoryJournal()))
+			route := n.routes[r.Route]
+			route.ContinueOnRetryable = true
+			n.routes[r.Route] = route
+			for i := 0; i < 2; i++ {
+				if _, err := n.Send(nil, r); err != nil {
+					t.Fatal(err)
+				}
+			}
+			if calls != 1 {
+				t.Fatal("completed policy repeated primary delivery")
+			}
+		})
+	}
+}

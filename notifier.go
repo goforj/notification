@@ -160,7 +160,7 @@ func (n *Notifier) Send(ctx context.Context, r Request) (Result, error) {
 	result.Succeeded = err == nil
 	e.result = result.Clone()
 	e.err = err
-	e.complete = !retry
+	e.complete = result.Succeeded || !retry
 	return result, err
 }
 
