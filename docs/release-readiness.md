@@ -8,7 +8,7 @@ This record separates tested source, installable modules, hosted-provider verifi
 | Delivery evidence | WhatsApp encoded-body bounds, incident.io request-key correlation, Vonage multi-segment acceptance and ClickSend rejection classifications have direct regressions. Missing or partial evidence stops fallback. |
 | Module requirements | The four runtime adapters, four example modules and integration module now pin an actual public revision instead of the nonexistent v0.0.0. Relative development replacements remain intact. |
 | Public consumer | Passed at 1a1b304b2d8a: all five modules resolved through the public proxy and checksum database, all 51 drivers compiled together, and each of the five modules also compiled independently with its declared dependencies. Sender executed in all six consumers without replacements. The old eafcce8 revision failed this same check. |
-| Source validation | Passed: 353 tests, exact 2146/2146 library statement coverage, all-module race/vet, pinned real ntfy/Gotify/Synapse tests, deterministic generation and no reachable vulnerabilities. Measured reports are linked below. |
+| Source validation | Passed: 360 tests, exact 2146/2146 library statement coverage, all-module race/vet, pinned real ntfy/Gotify/Synapse tests, deterministic generation and no reachable vulnerabilities. Measured reports are linked below. |
 | Hosted providers | Live hosted-provider tests and paired Signal verification remain pending, as recorded per driver. Native protocol fixtures are not live delivery evidence. |
 | Publication | No release version is selected or tagged by this review. Publish and verify the root, then pin and independently tag the four optional modules, then verify every actual version publicly. |
 
@@ -19,3 +19,13 @@ The packaging pass reproduced a real external-consumer failure: every optional m
 See [unit evidence](unit-results.json), [native integration evidence](integration-results.json), [driver verification scope](drivers.md) and [publication sequence](development.md#independent-release). The root module remains standard-library-only. No hosted-delivery or public-release claim follows from passing local tests.
 
 The README now installs the publicly verified unreleased revision directly. Local replacements are for repository development, rather than a requirement for application consumers. The publication and hosted-verification gates remain open.
+
+## Further reliability and protocol passes
+
+The next reliability pass reproduced a receiver committing work and then returning HTTP 500. A repeated journaled Send previously delivered it twice. HTTP 408 and server failures now retain transient advice while preserving unknown acceptance, including APNs through the shared transport, Web Push and SNS server faults. The journal retains uncertainty and fallback stops. Direct regressions cover the replay counter, transient status evidence and bounded advice. See [the runtime compatibility note](contracts.md#transient-errors-and-uncertain-acceptance).
+
+The native response pass found that Better Stack action responses accepted an unrelated resource type when its ID matched. Acknowledge and Resolve now require the incident type as well as the requested ID. The input-boundary pass also rejects HTTP authorities with an empty hostname before any transport or resolver call.
+
+A suspected Zulip form-encoding issue was ruled out against the actual [server parser](https://github.com/zulip/zulip/blob/main/zerver/actions/message_send.py): it explicitly supports raw channel names and JSON-encoded names or IDs. Existing configuration remains intact.
+
+Adapter minimum requirements must also move to a public root revision containing the uncertainty correction. Public consumer checks will then exercise that behavior independently rather than only compiling the APIs.

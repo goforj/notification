@@ -47,7 +47,7 @@ Twilio, Plivo, Vonage, Telnyx and ClickSend reuse the plain-text message path wi
 
 incident.io accepts a success acknowledgement only when its deduplication key matches that specific trigger or recovery request.
 
-Partial lifecycle drivers intentionally do not satisfy `IncidentSender`. Their ordinary Send requires a fixed configured key, while explicit Trigger accepts a key per incident. Better Stack Send creates an incident without retaining its ID; applications that need subsequent actions use Create and persist the native ID. Escalation flags and policies are explicit configuration. No unsupported acknowledgement is simulated, and accepted asynchronous requests are not polled.
+Partial lifecycle drivers intentionally do not satisfy `IncidentSender`. Their ordinary Send requires a fixed configured key, while explicit Trigger accepts a key per incident. Better Stack Send creates an incident without retaining its ID; applications that need subsequent actions use Create and persist the native ID. Better Stack action acknowledgements must echo the native incident ID and the incident resource type. Escalation flags and policies are explicit configuration. No unsupported acknowledgement is simulated, and accepted asynchronous requests are not polled.
 
 ## Horizontal Mail integration
 

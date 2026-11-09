@@ -45,7 +45,7 @@ Generated from the driver catalog by `go -C docs run ./readme`. See [portable de
 [Package source](../driver/betterstack)
 
 - Configuration: API token, requester and escalation choices; Create returns a native incident ID.
-- Accepted when: Native incident ID; actions preserve ID.
+- Accepted when: Native incident ID and resource type; actions preserve the requested ID.
 - Verification: Local protocol tests; hosted verification pending.
 - [Provider protocol reference](https://betterstack.com/docs/uptime/api/create-a-new-incident/).
 

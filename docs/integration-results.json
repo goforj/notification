@@ -1,6 +1,6 @@
 {
-  "verified_at": "2026-11-09T22:00:55.736615Z",
-  "source_fingerprint": "56a8349e27676197c7f37edd5932504fb2783867c59e45fb149e5276ae00780b",
+  "verified_at": "2026-11-09T22:20:46.654025Z",
+  "source_fingerprint": "6e1bff0f5e3ab6ad2e3b96bb5aa75866dd977edba7e3c0dc77a14567934e5b78",
   "toolchain": "go version go1.27.3 darwin/arm64",
   "passed_tests": [
     "TestGotify",

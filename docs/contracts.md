@@ -18,6 +18,14 @@ Applications own recipient authorization, endpoint verification, preferences, tr
 
 `DeliveryError` retains a bounded driver identity, rejection versus uncertainty and up to 24 hours of retry advice. `TargetError.Index` identifies the zero-based composition target. The facade preserves these types through `errors.As` and safe sentinels through `errors.Is`, including joined failures. Custom `Is` methods and standard wrapped causes retain all explicit safe classifications. Reaching the error traversal depth, width, or node budget retains unknown evidence instead of assuming that hidden causes prove rejection. Arbitrary provider prose, URLs and underlying network errors are removed. None of this advice schedules a retry.
 
+## Transient errors and uncertain acceptance
+
+HTTP 408 and server errors, Web Push server failures, and SNS server faults do not prove that the receiver rejected the operation. Built-in senders retain ErrRetryable while reporting Unknown and ErrOutcomeUnknown. Retry-After advice remains bounded metadata. Typed Deliver callers must inspect Outcome.Status; Send callers should check ErrOutcomeUnknown before deciding what ErrRetryable permits.
+
+A journaled dispatcher retains these unknown outcomes across resubmissions of the same scoped ID. Reconcile provider state before another attempt. A custom typed driver may report Failed with ErrRetryable when its native protocol actually proves rejection; that explicit case can still resume on a later Send.
+
+This is a runtime correction: journaled sends no longer replay HTTP server failures as though rejection were proven, and HTTP 408 no longer advances ordinary fallback. Preserving automatic replay would permit duplicate notifications. Public interfaces, configuration, persisted formats and the minimum Go version are unchanged. Applications that relied on the old replay behavior must handle uncertainty explicitly rather than treating every retryable error as permission to resend.
+
 ## Incident capability
 
 `IncidentSender` is optional. PagerDuty, JSM, legacy Opsgenie, SIGNL4, PagerTree and ilert support explicit Trigger, Acknowledge and Resolve operations with a stable `IncidentKey`. Keys are bounded to 255 bytes and must use application-owned scoped identities. Display names must not determine correlation. Incident titles and bodies follow Message validation, with a required title and additional provider limits. Empty severity and source use configured defaults. Ordinary Send on these drivers requires a fixed configured key.

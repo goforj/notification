@@ -43,7 +43,7 @@
       "id": "betterstack",
       "package": "driver/betterstack",
       "configuration": "API token, requester and escalation choices; Create returns a native incident ID",
-      "acceptance": "Native incident ID; actions preserve ID",
+      "acceptance": "Native incident ID and resource type; actions preserve the requested ID",
       "verification": "Local protocol tests; hosted verification pending",
       "protocol_source": "https://betterstack.com/docs/uptime/api/create-a-new-incident/",
       "acceptance_summary": "Native incident ID; actions preserve ID"
