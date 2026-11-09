@@ -27,7 +27,7 @@ jobs:
           test -z "$(gofmt -l .)"
           make modules-check
           make tidy
-          git diff --exit-code -- go.mod driver/mail/go.mod driver/mail/go.sum examples/mail/go.mod examples/mail/go.sum
+          git diff --exit-code -- go.mod driver/mail/go.mod driver/mail/go.sum examples/mail/go.mod examples/mail/go.sum integration/go.mod integration/go.sum
       - name: Test all libraries and executable examples
         run: |
           make test
@@ -47,3 +47,14 @@ jobs:
           fail_ci_if_error: true
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+  integration:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version: '1.24.x'
+          cache-dependency-path: '**/go.sum'
+      - name: Verify pinned native servers
+        run: make test-integration

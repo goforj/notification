@@ -10,9 +10,8 @@ test: ## Run all unit tests and examples with exact coverage enforcement.
 test-race: ## Run all modules and real example programs with race detection.
 	@scripts/test-modules.sh race
 
-test-integration: ## Run real local HTTP transport and Mail composition tests.
-	@GOWORK=off go test -count=1 ./driver/webhook
-	@GOWORK=off go -C driver/mail test -count=1 ./...
+test-integration: ## Run pinned ntfy and Gotify servers using Docker.
+	@python3 scripts/test-integration.py
 
 test-coverage: test ## Produce the unit coverage profile and measured evidence.
 
@@ -34,6 +33,7 @@ check-generated: ## Verify source parity and deterministic regeneration.
 security: ## Scan every module with the pinned vulnerability scanner.
 	@command -v govulncheck >/dev/null
 	@while IFS= read -r module; do (cd "$$module" && GOWORK=off govulncheck ./...) || exit; done < scripts/module-manifest.txt
+	@cd integration && GOWORK=off govulncheck -test -tags=integration ./...
 
 release-plan: ## Plan independent root and Mail tags, VERSION=v0.1.0.
 	@scripts/release-plan.sh $(VERSION)

@@ -1,0 +1,10 @@
+{
+  "ntfy": {
+    "version": "2.37.2",
+    "image": "binwiederhier/ntfy@sha256:1875ddcf815c8a3c981d6d78c67a93452d0abba79b1ab9520b1f5f5238902bd7"
+  },
+  "gotify": {
+    "version": "3.1.1",
+    "image": "gotify/server@sha256:44fc5bbd1c0618878e33073d38c2c13126b48f245c3fe12236b1da48eb203b86"
+  }
+}
