@@ -9,6 +9,7 @@ import (
 	"github.com/goforj/mail"
 	"github.com/goforj/mail/mailfake"
 	"github.com/goforj/notification"
+	"github.com/goforj/notification/notificationtest"
 )
 
 // mailerFunc scripts legacy error-only Mail behavior.
@@ -53,5 +54,46 @@ func TestMail(t *testing.T) {
 		if p.Validate() == nil {
 			t.Fatal("invalid email accepted")
 		}
+	}
+}
+
+// TestSender verifies real Mail composition through the simple configured-recipient path.
+func TestSender(t *testing.T) {
+	fake := mailfake.New()
+	mailer := mail.New(fake, mail.WithDefaultFrom("sender@example.com", "Sender"))
+	driver := New(mailer, "recipient@example.com")
+	notificationtest.Sender(t, func() notification.Sender { return driver })
+	message := notification.Message{Title: "Ticket", Body: "T-42 changed"}
+	for _, addresses := range [][]string{nil, {"invalid"}, make([]string, 101)} {
+		driver := New(mailer, addresses...)
+		if err := driver.Send(context.Background(), message); err == nil {
+			t.Fatal("invalid recipients accepted")
+		}
+	}
+	if err := driver.Send(context.Background(), notification.Message{Body: "no subject"}); !errors.Is(err, notification.ErrInvalidMessage) {
+		t.Fatal(err)
+	}
+}
+
+// TestSenderOwnership prevents a borrowed Mailer from mutating configured recipients.
+func TestSenderOwnership(t *testing.T) {
+	calls := 0
+	addresses := []string{"recipient@example.com"}
+	driver := New(mailerFunc(func(_ context.Context, message mail.Message) error {
+		calls++
+		if message.From != nil || len(message.To) != 1 || message.To[0].Email != "recipient@example.com" || message.Subject != "Ticket" || message.Text != "hello" {
+			t.Fatal("Mail composition changed")
+		}
+		message.To[0].Email = "changed@example.com"
+		return errors.New("private provider prose")
+	}), addresses...)
+	addresses[0] = "changed@example.com"
+	for i := 0; i < 2; i++ {
+		if err := driver.Send(context.Background(), notification.Message{Title: "Ticket", Body: "hello"}); !errors.Is(err, notification.ErrOutcomeUnknown) {
+			t.Fatal(err)
+		}
+	}
+	if calls != 2 {
+		t.Fatal("missing Mail calls")
 	}
 }

@@ -1,4 +1,4 @@
-// Command fake captures intent without reporting execution or provider acceptance.
+// Command fake captures messages without contacting a provider.
 package main
 
 import (
@@ -9,35 +9,20 @@ import (
 	"github.com/goforj/notification/notificationfake"
 )
 
-// main demonstrates isolated application tests through the Sender capability.
+// main demonstrates testing application code through the Sender capability.
 func main() {
 	// snippet:start
 	fake := notificationfake.New()
 	var sender notification.Sender = fake
 
-	request := notification.Request{
-		ID:    "assignment-42",
-		Route: "ticket.updated",
-		Recipients: []notification.RecipientRef{
-			{
-				Type: "user",
-				ID:   "user-42",
-			},
-		},
-		Content: notification.Content{
-			Key: "ticket.changed",
-			Values: []notification.Value{
-				notification.String("ticket", "T-42"),
-			},
-		},
-	}
-	result, err := sender.Send(context.Background(), request)
+	err := sender.Send(context.Background(), notification.Message{
+		Title: "Ticket updated",
+		Body:  "Ticket T-42 has a new owner.",
+	})
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println("captured requests:", len(fake.Requests()))
-	// captured requests: 1
-	fmt.Println("provider outcomes:", len(result.Deliveries))
-	// provider outcomes: 0
+	fmt.Println("captured messages:", len(fake.Messages()))
+	// captured messages: 1
 	// snippet:end
 }

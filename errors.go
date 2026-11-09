@@ -6,6 +6,8 @@ import (
 )
 
 var (
+	// ErrInvalidMessage indicates malformed or oversized plain-text content.
+	ErrInvalidMessage = errors.New("notification: invalid message")
 	// ErrInvalidRequest indicates malformed or oversized caller intent.
 	ErrInvalidRequest = errors.New("notification: invalid request")
 	// ErrInvalidPlan indicates an unscoped, incomplete, or incompatible plan.
@@ -38,7 +40,7 @@ var (
 
 // safeError prevents untrusted collaborator prose from entering public errors.
 func safeError(err error, fallback error) error {
-	for _, safe := range []error{context.Canceled, context.DeadlineExceeded, ErrRender, ErrThrottled, ErrUnauthorized, ErrPermanent, ErrRetryable, ErrOutcomeUnknown} {
+	for _, safe := range []error{context.Canceled, context.DeadlineExceeded, ErrInvalidMessage, ErrInvalidRequest, ErrRender, ErrThrottled, ErrUnauthorized, ErrPermanent, ErrRetryable, ErrOutcomeUnknown} {
 		if errors.Is(err, safe) {
 			return safe
 		}

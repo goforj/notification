@@ -71,7 +71,7 @@ func main() {
 		notification.NewAdapter("webhook", "backup", "v1", renderer, driver),
 	}
 
-	notifier, err := notification.New(
+	notifier, err := notification.NewDispatcher(
 		scope,
 		planner,
 		routes,

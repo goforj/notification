@@ -241,3 +241,42 @@ func TestDNSPinning(t *testing.T) {
 		t.Fatal(out, err)
 	}
 }
+
+// TestSender verifies configured destinations through the shared message contract.
+func TestSender(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		var message notification.TextPayload
+		if json.NewDecoder(r.Body).Decode(&message) != nil || message.Title != "Ticket" || message.Body != "T-42 changed" {
+			t.Error("plain message changed")
+		}
+		w.WriteHeader(http.StatusAccepted)
+	}))
+	defer server.Close()
+	driver, err := New(Config{URL: server.URL, AllowPrivate: true})
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer driver.Close()
+	notificationtest.Sender(t, func() notification.Sender { return driver })
+	if _, err := New(Config{URL: "https://user:secret@example.com"}); !errors.Is(err, notification.ErrInvalidRequest) {
+		t.Fatal(err)
+	}
+	unconfigured := newDriver(t, Generic)
+	if err := unconfigured.Send(context.Background(), notification.Message{Body: "hello"}); !errors.Is(err, notification.ErrInvalidRequest) {
+		t.Fatal(err)
+	}
+}
+
+// TestSenderFailure preserves safe transport classifications through the simple API.
+func TestSenderFailure(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) { w.WriteHeader(429); _, _ = w.Write([]byte("secret")) }))
+	defer server.Close()
+	driver, err := New(Config{URL: server.URL, AllowPrivate: true})
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer driver.Close()
+	if err := notification.New(driver).Send(nil, notification.Message{Body: "hello"}); !errors.Is(err, notification.ErrThrottled) || strings.Contains(err.Error(), "secret") {
+		t.Fatal(err)
+	}
+}

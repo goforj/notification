@@ -37,6 +37,8 @@ type Resolver interface {
 
 // Config controls a driver without credentials in endpoint URLs or logs.
 type Config struct {
+	// URL is the trusted destination used by Send; Deliver uses its planned endpoint.
+	URL          string
 	Format       Format
 	Timeout      time.Duration
 	BearerToken  string
@@ -50,6 +52,7 @@ type Driver struct {
 	transport *http.Transport
 	format    Format
 	token     string
+	endpoint  notification.Endpoint
 }
 
 // New constructs a reusable driver without network activity. AllowPrivate is an
@@ -63,6 +66,11 @@ func New(config Config) (*Driver, error) {
 	}
 	if (config.Format != Generic && config.Format != Slack) || config.Timeout < time.Millisecond || config.Timeout > 30*time.Second || len(config.BearerToken) > 4096 || strings.ContainsAny(config.BearerToken, "\r\n") {
 		return nil, notification.ErrInvalidRequest
+	}
+	if config.URL != "" {
+		if _, err := destination(config.URL); err != nil {
+			return nil, notification.ErrInvalidRequest
+		}
 	}
 	resolver := config.Resolver
 	if resolver == nil {
@@ -97,7 +105,20 @@ func New(config Config) (*Driver, error) {
 		}
 		return nil, notification.ErrRetryable
 	}
-	return &Driver{&http.Client{Transport: transport, Timeout: config.Timeout, CheckRedirect: func(*http.Request, []*http.Request) error { return http.ErrUseLastResponse }}, transport, config.Format, config.BearerToken}, nil
+	return &Driver{
+		client: &http.Client{
+			Transport:     transport,
+			Timeout:       config.Timeout,
+			CheckRedirect: func(*http.Request, []*http.Request) error { return http.ErrUseLastResponse },
+		},
+		transport: transport,
+		format:    config.Format,
+		token:     config.BearerToken,
+		endpoint: notification.Endpoint{
+			Identity: "configured",
+			Address:  notification.Address(config.URL),
+		},
+	}, nil
 }
 
 // Close releases idle connections; callers own shutdown and in-flight cancellation.
@@ -112,16 +133,11 @@ func (d *Driver) Deliver(ctx context.Context, delivery notification.Delivery[not
 	if err := delivery.Payload.Validate(); err != nil {
 		return failed(notification.ErrRender)
 	}
-	u, err := url.Parse(delivery.Endpoint.Address.Reveal())
-	if err != nil || u.Host == "" || u.User != nil || u.Fragment != "" || (u.Scheme != "https" && u.Scheme != "http") || len(u.String()) > 4096 {
-		return failed(notification.ErrPermanent)
+	u, err := destination(delivery.Endpoint.Address.Reveal())
+	if err != nil {
+		return failed(err)
 	}
-	if port := u.Port(); port != "" {
-		n, err := strconv.Atoi(port)
-		if err != nil || n < 1 || n > 65535 {
-			return failed(notification.ErrPermanent)
-		}
-	}
+
 	var data []byte
 	if d.format == Slack {
 		text := delivery.Payload.Body
@@ -168,6 +184,42 @@ func (d *Driver) Deliver(ctx context.Context, delivery notification.Delivery[not
 	default:
 		return failed(notification.ErrPermanent)
 	}
+}
+
+// destination validates trusted configuration before constructing an HTTP request.
+func destination(address string) (*url.URL, error) {
+	if len(address) > 4096 {
+		return nil, notification.ErrPermanent
+	}
+	u, err := url.Parse(address)
+	if err != nil || u.Host == "" || u.User != nil || u.Fragment != "" || (u.Scheme != "https" && u.Scheme != "http") || len(u.String()) > 4096 {
+		return nil, notification.ErrPermanent
+	}
+	if port := u.Port(); port != "" {
+		n, err := strconv.Atoi(port)
+		if err != nil || n < 1 || n > 65535 {
+			return nil, notification.ErrPermanent
+		}
+	}
+	return u, nil
+}
+
+// Send delivers plain text to Config.URL without accepting destinations in messages.
+func (d *Driver) Send(ctx context.Context, message notification.Message) error {
+	if err := ctx.Err(); err != nil {
+		return err
+	}
+	if err := message.Validate(); err != nil {
+		return err
+	}
+	if d.endpoint.Address.Reveal() == "" {
+		return notification.ErrInvalidRequest
+	}
+	_, err := d.Deliver(ctx, notification.Delivery[notification.TextPayload]{
+		Payload:  notification.TextPayload{Title: message.Title, Body: message.Body},
+		Endpoint: d.endpoint,
+	})
+	return err
 }
 
 // failed constructs proved rejection without exposing transport or provider prose.

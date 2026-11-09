@@ -1,4 +1,4 @@
-// Command mail demonstrates the optional Mail adapter using real Mail composition.
+// Command mail sends through the optional Mail adapter with a fake transport.
 package main
 
 import (
@@ -11,73 +11,22 @@ import (
 	notificationmail "github.com/goforj/notification/driver/mail"
 )
 
-// main demonstrates acceptance through a Mail fake, without claiming real email delivery.
+// main demonstrates Mail defaults and a configured recipient without a plan.
 func main() {
 	// snippet:start
 	transport := mailfake.New()
 	mailer := mail.New(transport, mail.WithDefaultFrom("sender@example.com", "Helpdesk"))
-	driver := notificationmail.New(mailer)
-	renderer := notification.RendererFunc[notificationmail.Payload](
-		func(context.Context, notification.RenderRequest) (notificationmail.Payload, error) {
-			return notificationmail.Payload{
-				Subject: "Ticket updated",
-				Text:    "Ticket T-42 changed.",
-			}, nil
-		},
-	)
+	driver := notificationmail.New(mailer, "recipient@example.com")
+	notifier := notification.New(driver)
 
-	recipient := notification.RecipientRef{
-		Type: "user",
-		ID:   "user-42",
-	}
-	planner := notification.NewMemoryPlanner(map[string]notification.Plan{
-		"ticket.updated": {
-			Deliveries: []notification.PlannedDelivery{
-				{
-					Recipient: recipient,
-					Channel:   "email",
-					Driver:    "mail",
-					Endpoint: notification.Endpoint{
-						Identity: "verified-email-42",
-						Address:  notification.Address("recipient@example.com"),
-					},
-					Locale:   "en",
-					TimeZone: "UTC",
-				},
-			},
-		},
+	err := notifier.Send(context.Background(), notification.Message{
+		Title: "Ticket updated",
+		Body:  "Ticket T-42 has a new owner.",
 	})
-
-	scope := notification.Scope{
-		Application: "helpdesk",
-	}
-	routes := []notification.Route{
-		{
-			Name:     "ticket.updated",
-			Revision: "v1",
-			Policy:   notification.AllRequired,
-		},
-	}
-	adapter := notification.NewAdapter("email", "mail", "v1", renderer, driver)
-
-	notifier, err := notification.New(scope, planner, routes, []notification.Adapter{adapter})
 	if err != nil {
 		panic(err)
 	}
-
-	request := notification.Request{
-		ID:         "mail-42",
-		Route:      "ticket.updated",
-		Recipients: []notification.RecipientRef{recipient},
-		Content: notification.Content{
-			Key: "ticket.changed",
-		},
-	}
-	result, err := notifier.Send(context.Background(), request)
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println("adapter evidence:", result.Deliveries[0].Outcome.Status)
-	// adapter evidence: accepted
+	fmt.Println("captured mail:", transport.SentCount())
+	// captured mail: 1
 	// snippet:end
 }

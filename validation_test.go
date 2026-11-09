@@ -72,7 +72,7 @@ func TestConstruction(t *testing.T) {
 		adapters []Adapter
 	}{{Scope{}, []Route{route}, []Adapter{a}}, {Scope{Application: "app", Tenant: " bad"}, []Route{route}, []Adapter{a}}, {Scope{Application: "app"}, nil, []Adapter{a}}, {Scope{Application: "app"}, []Route{route}, nil}, {Scope{Application: "app"}, []Route{route, route}, []Adapter{a}}, {Scope{Application: "app"}, []Route{{Name: "bad", Revision: "v1", Policy: "bad"}}, []Adapter{a}}, {Scope{Application: "app"}, []Route{{Name: "Bad", Revision: "v1", Policy: Any}}, []Adapter{a}}, {Scope{Application: "app"}, []Route{{Name: "route", Policy: Any}}, []Adapter{a}}, {Scope{Application: "app"}, []Route{route}, []Adapter{a, a}}, {Scope{Application: "app"}, []Route{route}, []Adapter{{}}}}
 	for i, c := range cases {
-		if _, err := New(c.scope, p, c.routes, c.adapters); !errors.Is(err, ErrInvalidRequest) {
+		if _, err := NewDispatcher(c.scope, p, c.routes, c.adapters); !errors.Is(err, ErrInvalidRequest) {
 			t.Fatalf("case %d", i)
 		}
 	}
@@ -122,7 +122,9 @@ func TestPlanValidation(t *testing.T) {
 func TestAdapterFailures(t *testing.T) {
 	r := request()
 	n := setup(t, Any, Plan{Deliveries: []PlannedDelivery{delivery(r.Recipients[0], "a")}}, map[string]DriverFunc[TextPayload]{"a": success})
-	for _, renderer := range []TextRenderer{func(context.Context, RenderRequest) (TextPayload, error) { return TextPayload{}, errors.New("secret") }, Literal("", "")} {
+	for _, renderer := range []TextRenderer{func(context.Context, RenderRequest) (TextPayload, error) {
+		return TextPayload{}, errors.New("secret")
+	}, Literal("", "")} {
 		n.adapters["chat/a"] = NewAdapter("chat", "a", "v1", renderer, DriverFunc[TextPayload](success))
 		if _, err := n.Send(nil, r); !errors.Is(err, ErrRender) {
 			t.Fatal(err)

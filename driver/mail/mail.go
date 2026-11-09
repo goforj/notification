@@ -15,7 +15,10 @@ type Mailer interface {
 }
 
 // Driver delegates email transport to a required wired Mailer.
-type Driver struct{ mailer Mailer }
+type Driver struct {
+	mailer     Mailer
+	recipients []mail.Recipient
+}
 
 // Payload contains the email presentation before one resolved recipient is applied.
 type Payload struct {
@@ -36,8 +39,15 @@ func (p Payload) Validate() error {
 	return nil
 }
 
-// New constructs an adapter without taking ownership of the Mailer lifecycle.
-func New(mailer Mailer) *Driver { return &Driver{mailer} }
+// New configures trusted recipients for Send without owning the Mailer lifecycle.
+// Recipients may be omitted when only planner-resolved Deliver is used.
+func New(mailer Mailer, recipients ...string) *Driver {
+	to := make([]mail.Recipient, len(recipients))
+	for i, address := range recipients {
+		to[i] = mail.Recipient{Email: address}
+	}
+	return &Driver{mailer: mailer, recipients: to}
+}
 
 // Deliver maps nil-error legacy Mail success to acceptance with no idempotency claim.
 func (d *Driver) Deliver(ctx context.Context, delivery notification.Delivery[Payload]) (notification.Outcome, error) {
@@ -48,7 +58,12 @@ func (d *Driver) Deliver(ctx context.Context, delivery notification.Delivery[Pay
 		return notification.Outcome{Status: notification.Failed}, err
 	}
 	p := delivery.Payload
-	err := d.mailer.Send(ctx, mail.Message{To: []mail.Recipient{{Email: delivery.Endpoint.Address.Reveal()}}, Subject: p.Subject, Text: p.Text, HTML: p.HTML})
+	return d.deliver(ctx, mail.Message{To: []mail.Recipient{{Email: delivery.Endpoint.Address.Reveal()}}, Subject: p.Subject, Text: p.Text, HTML: p.HTML})
+}
+
+// deliver classifies the legacy Mail boundary without leaking provider prose.
+func (d *Driver) deliver(ctx context.Context, message mail.Message) (notification.Outcome, error) {
+	err := d.mailer.Send(ctx, message)
 	if err == nil {
 		return notification.Outcome{Status: notification.Accepted}, nil
 	}
@@ -59,4 +74,30 @@ func (d *Driver) Deliver(ctx context.Context, delivery notification.Delivery[Pay
 		}
 	}
 	return notification.Outcome{Status: notification.Unknown}, notification.ErrOutcomeUnknown
+}
+
+// Send delivers plain text to the recipients configured by New. Mail retains
+// sender-default and transport ownership; nil means legacy provider acceptance.
+func (d *Driver) Send(ctx context.Context, message notification.Message) error {
+	if err := ctx.Err(); err != nil {
+		return err
+	}
+	if err := message.Validate(); err != nil {
+		return err
+	}
+	if len(d.recipients) == 0 || len(d.recipients) > 100 {
+		return notification.ErrInvalidRequest
+	}
+	envelope := mail.Message{
+		From:    &mail.Recipient{Email: "sender@example.com"},
+		To:      append([]mail.Recipient(nil), d.recipients...),
+		Subject: message.Title,
+		Text:    message.Body,
+	}
+	if err := envelope.Validate(); err != nil {
+		return notification.ErrInvalidMessage
+	}
+	envelope.From = nil
+	_, err := d.deliver(ctx, envelope)
+	return err
 }

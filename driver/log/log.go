@@ -25,3 +25,16 @@ func (d *Driver) Deliver(ctx context.Context, delivery notification.Delivery[not
 	d.logger.LogAttrs(ctx, slog.LevelInfo, "notification captured", slog.String("status", "captured"))
 	return notification.Outcome{Status: notification.Unknown}, notification.ErrOutcomeUnknown
 }
+
+// Send captures a validated message without logging its content. A nil error
+// means local capture succeeded and makes no claim about provider acceptance.
+func (d *Driver) Send(ctx context.Context, message notification.Message) error {
+	if err := ctx.Err(); err != nil {
+		return err
+	}
+	if err := message.Validate(); err != nil {
+		return err
+	}
+	d.logger.LogAttrs(ctx, slog.LevelInfo, "notification captured", slog.String("status", "captured"))
+	return nil
+}

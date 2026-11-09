@@ -9,9 +9,9 @@ import (
 	"github.com/goforj/notification"
 )
 
-// TestFake verifies validation, isolation and explicit outcome scripting.
-func TestFake(t *testing.T) {
-	f := New()
+// TestDispatchFake verifies validation, isolation and explicit outcome scripting.
+func TestDispatchFake(t *testing.T) {
+	f := NewDispatcher()
 	r := notification.Request{ID: "one", Route: "ticket.updated", Recipients: []notification.RecipientRef{{Type: "user", ID: "one"}}, Content: notification.Content{Key: "ticket.changed", Values: []notification.Value{notification.String("ticket", "T-42")}}}
 	out, err := f.Send(nil, r)
 	if err != nil || out.RequestID != "one" || len(out.Deliveries) != 0 || out.Succeeded {
@@ -49,9 +49,9 @@ func TestFake(t *testing.T) {
 	}
 }
 
-// TestConcurrentCapture proves independent concurrent test use.
-func TestConcurrentCapture(t *testing.T) {
-	f := New()
+// TestConcurrentDispatchCapture proves independent concurrent test use.
+func TestConcurrentDispatchCapture(t *testing.T) {
+	f := NewDispatcher()
 	var wg sync.WaitGroup
 	for i := 0; i < 16; i++ {
 		wg.Add(1)

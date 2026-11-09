@@ -25,3 +25,13 @@ func TestDriver(t *testing.T) {
 		t.Fatal("log evidence or redaction")
 	}
 }
+
+// TestSender verifies simple capture semantics without exposing message content.
+func TestSender(t *testing.T) {
+	var out bytes.Buffer
+	driver := New(slog.New(slog.NewJSONHandler(&out, nil)))
+	notificationtest.Sender(t, func() notification.Sender { return driver })
+	if strings.Contains(out.String(), "T-42") || strings.Contains(out.String(), "Ticket") {
+		t.Fatal("captured content leaked")
+	}
+}

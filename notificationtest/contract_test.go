@@ -57,3 +57,26 @@ func TestInventory(t *testing.T) {
 		t.Fatalf("unknown faults detected: %d", r.count)
 	}
 }
+
+// TestSenderInventory proves the common contract rejects a faulty implementation.
+func TestSenderInventory(t *testing.T) {
+	r := &report{}
+	Sender(r, func() notification.Sender {
+		return notification.SenderFunc(func(ctx context.Context, m notification.Message) error {
+			if err := ctx.Err(); err != nil {
+				return err
+			}
+			return m.Validate()
+		})
+	})
+	if r.count != 0 {
+		t.Fatal("valid sender rejected")
+	}
+	r = &report{}
+	Sender(r, func() notification.Sender {
+		return notification.SenderFunc(func(context.Context, notification.Message) error { return notification.ErrPermanent })
+	})
+	if r.count != 12 {
+		t.Fatalf("sender faults detected: %d", r.count)
+	}
+}
