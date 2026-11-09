@@ -1,6 +1,6 @@
 # Delivery contracts
 
-`notification.New(driver)` constructs a synchronous notifier. `Send(ctx, Message{Title: ..., Body: ...})` validates plain text and calls the configured driver once, returning an error. It has no framework, database, Queue, Auth, or localization dependency.
+`notification.New(driver)` constructs a synchronous notifier. Built-in message senders normalize a nil context to context.Background; application code should pass its caller context to preserve cancellation. `Send(ctx, Message{Title: ..., Body: ...})` validates plain text and calls the configured driver once, returning an error. It has no framework, database, Queue, Auth, or localization dependency.
 
 ## Common message path
 
@@ -44,7 +44,7 @@ Suppression is acceptable only with `AllowSuppressed`. Deferral always leaves th
 
 Without a journal, each call is independent. `WithJournal(NewMemoryJournal())` enables process-local arbitration by application, tenant, and request ID. Concurrent identical requests return `ErrInProgress`. Different caller intent returns `ErrConflict`. Recipient order, tag order, and value order do not affect intent. Route and renderer revisions are execution snapshots, not caller intent.
 
-The memory journal retains the original route, plan, adapter revisions, and results. While the route remains unsatisfied, an explicit repeat of `Send` retries transient rejected attempts and unattempted canceled work, preserving accepted and permanently failed deliveries. Unknown outcomes, including transport cancellation after possible dispatch, are never automatically retried. Unavailable pinned adapter revisions return `ErrConflict` before transport execution. A successful policy is terminal even when optional attempts failed transiently. Completed requests return copied prior outcomes.
+The memory journal retains the original route, plan, adapter revisions, and results. While the route remains unsatisfied, an explicit repeat of `Send` retries transient rejected attempts and unattempted canceled work, preserving accepted and permanently failed deliveries. Unknown outcomes, including transport cancellation after possible dispatch, are never automatically retried. Explicit unknown-acceptance error evidence overrides a failed outcome from a custom driver; conflicting evidence cannot enable fallback or journal retries. Unavailable pinned adapter revisions return `ErrConflict` before transport execution. A successful policy is terminal even when optional attempts failed transiently. Completed requests return copied prior outcomes.
 
 The journal retains suppression and deferral classifications as the result of that planning snapshot. It does not reevaluate quiet hours or schedule deferred work. An application that needs future preference evaluation must own a separate scheduling workflow and follow-up request identity. Durable deferral recovery remains part of the framework proposal, not this release.
 
@@ -58,7 +58,7 @@ Observer hooks must return promptly and be concurrency-safe. Dispatch recovers o
 
 ## HTTP behavior
 
-Built-in HTTP drivers use trusted configured HTTP or HTTPS URLs. The advanced webhook adapter also accepts trusted planner-resolved endpoints. They disable redirects and environment proxies, and validate all DNS answers at connection time before dialing a resolved IP. Default policy rejects private and special addresses; `AllowPrivate` explicitly permits internal services and local tests. Configure it at construction, never from an untrusted request. Production credentials should travel over HTTPS.
+Built-in HTTP drivers use trusted configured HTTP or HTTPS URLs. The advanced webhook adapter also accepts trusted planner-resolved endpoints. The default transport disables environment proxies and validates all DNS answers at connection time before dialing a resolved IP. The client disables redirects even when a custom transport is supplied. Default policy rejects private and special addresses; `AllowPrivate` explicitly permits internal services and local tests. Configure it at construction, never from an untrusted request. Production credentials should travel over HTTPS.
 
 Generic JSON sends `{ "title": "...", "body": "..." }` and classifies 2xx as provider acceptance. Slack-compatible mode sends plain text with `mrkdwn: false` and additionally requires the `ok` acknowledgement. 429 is throttled, 401/403 unauthorized, 5xx retryable, and other non-2xx responses permanent. Transport uncertainty remains unknown. Responses are bounded to 64 KiB plus one detection byte; provider bodies never enter errors. No generic idempotency header is advertised or silently assumed.
 

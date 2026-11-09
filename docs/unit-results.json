@@ -1,8 +1,8 @@
 {
   "packages": {
     "github.com/goforj/notification": {
-      "covered_statements": 439,
-      "total_statements": 439
+      "covered_statements": 442,
+      "total_statements": 442
     },
     "github.com/goforj/notification/driver/dingtalk": {
       "covered_statements": 20,
@@ -21,8 +21,8 @@
       "total_statements": 11
     },
     "github.com/goforj/notification/driver/gotify": {
-      "covered_statements": 19,
-      "total_statements": 19
+      "covered_statements": 21,
+      "total_statements": 21
     },
     "github.com/goforj/notification/driver/jsm": {
       "covered_statements": 66,
@@ -33,16 +33,16 @@
       "total_statements": 19
     },
     "github.com/goforj/notification/driver/log": {
-      "covered_statements": 13,
-      "total_statements": 13
+      "covered_statements": 15,
+      "total_statements": 15
     },
     "github.com/goforj/notification/driver/mail": {
-      "covered_statements": 37,
-      "total_statements": 37
+      "covered_statements": 39,
+      "total_statements": 39
     },
     "github.com/goforj/notification/driver/ntfy": {
-      "covered_statements": 30,
-      "total_statements": 30
+      "covered_statements": 32,
+      "total_statements": 32
     },
     "github.com/goforj/notification/driver/opsgenie": {
       "covered_statements": 52,
@@ -73,8 +73,8 @@
       "total_statements": 12
     },
     "github.com/goforj/notification/driver/webhook": {
-      "covered_statements": 47,
-      "total_statements": 47
+      "covered_statements": 49,
+      "total_statements": 49
     },
     "github.com/goforj/notification/driver/wecom": {
       "covered_statements": 10,
@@ -102,10 +102,10 @@
     }
   },
   "toolchain": "go version go1.27.3 darwin/arm64",
-  "source_fingerprint": "143db15fc125b2d17bddaef109d00dffb474f221103f5363841bc3bd1182a269",
-  "unit_tests_passed": 262,
-  "covered_statements": 1238,
-  "total_statements": 1238,
+  "source_fingerprint": "a32f56089d3ff8ac64bd8f8716df112dbe5ed992ce5034a9c36434c66cbca513",
+  "unit_tests_passed": 263,
+  "covered_statements": 1251,
+  "total_statements": 1251,
   "command_statements": 134,
   "covered_command_statements": 114,
   "coverage_percent": 100,

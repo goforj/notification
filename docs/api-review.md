@@ -71,3 +71,41 @@ The ecosystem comparison remains consistent with [nikoksr/notify's context-aware
 Go's [error handling guidance](https://go.dev/blog/error-handling-and-go) supports ordinary error returns and typed inspection. The relevant interoperability contracts are [errors.Is and errors.As](https://pkg.go.dev/errors) and [http.RoundTripper](https://pkg.go.dev/net/http#RoundTripper).
 
 Verification covers the changed regression cases, every repository module, executable examples, race checks, vet, exact library unit coverage, pinned real ntfy/Gotify integration, and deterministic generated documentation. Hosted provider verification remains outside this review's executed scope.
+
+## Release candidate review
+
+Reviewed 2026-11-09 after explicit HTTP transport injection, against baseline 077b5b0. This is a readiness assessment of the implemented library, not a claim that every future provider or payload feature belongs in the first release.
+
+### Consumer ergonomics and compatibility
+
+The primary workflow remains typed driver construction followed by Send(context.Context, Message) error. Destinations, credentials and connection policy stay in configuration; title and body stay in the message. Applications can depend on Sender without importing a specific driver. Fanout, Fallback, SenderFunc and the capture fake use the same interface. No new builders, positional overloads, configuration maps or framework-specific adapters are needed.
+
+Message senders now consistently normalize nil contexts, including direct use of log, webhook, ntfy, Gotify and Mail. Previously those paths could panic while other built-in senders and the facade accepted nil. Regression checks exercise direct calls, not just calls through New. Application code should still propagate its real context. Typed Deliver and user-supplied function adapters retain their existing context contracts.
+
+This review adds no exported names, struct fields, dependencies, module boundaries or minimum Go requirements. It preserves ordinary keyed configuration and constructor usage. It changes runtime behavior only for nil message contexts and contradictory failure evidence described below.
+
+### Failure evidence and recovery
+
+A custom typed transport could return Failed together with ErrOutcomeUnknown. The dispatcher retained the sentinel but trusted the failed status when deciding FirstSuccess fallback and journal retries. The regression reproduced a backup send after an ambiguous primary attempt.
+
+Normalization now promotes a failed outcome to Unknown when the sanitized error contains unknown acceptance, including unclassified errors normalized to that sentinel. Unknown evidence blocks ordered fallback even with ContinueOnRetryable and prevents journal replay. Tests submit the same request twice with plain, retryable, canceled and opaque contradictory errors. Positive Accepted and Delivered evidence keeps its existing semantics. The same normalization protects DeliveryError status inspection.
+
+### Driver protocols and resources
+
+The common Sender suite and provider-specific fixtures cover the implemented drivers, including configured destinations, native acknowledgements, malformed successes, bounds, authentication, cancellation, concurrent use and safe failures. Incident operations retain explicit stable correlation. ntfy and Gotify have separate pinned real-server verification. Hosted providers and paired sessions retain the maintainer-approved local-protocol scope, with external verification pending.
+
+An explicit RoundTripper remains borrowed unchanged and caller-owned. Default transports retain destination checks. Client timeouts, redirects and response body bounds remain library-controlled. The manual HTTPX interoperability check exercised a Slack send and confirmed full request and response body dumping through the injected transport. This check does not certify HTTPX middleware, client-level retry options or all future HTTPX versions.
+
+### Security and documentation
+
+Review covered public error redaction, endpoint and scalar formatting, request bounds, response bounds, default DNS and TLS routing, and ownership at borrowed-resource boundaries. Debugging through a supplied transport remains an explicit caller policy and can expose raw content. Root runtime dependencies remain standard-library-only; Mail and test/tooling dependencies remain isolated in their existing modules.
+
+Executable examples own the README snippets. The release checks execute them, verify output, instrument child processes for coverage and races, and enforce generation parity. The HTTP behavior contract now explicitly distinguishes the default destination policy from caller-supplied transport policy. The README keeps the simple path visible and labels hosted verification honestly.
+
+### Release operations and limits
+
+All five modules are inventoried. Only the root and driver/mail modules are independently published libraries. Tidy parity preserves their intentional local replacements. The release planner reports separate root and Mail tags; there are no published tags at review time. Publication still requires selecting a version, publishing the root, updating Mail's root requirement from v0.0.0, publishing Mail independently, and testing both from an external consumer with GOWORK=off and no replacements. These are publication steps, not API design defects.
+
+Codecov upload configuration could not be inspected with the available credential: the repository variable and secret metadata endpoints returned HTTP 403. Exact unit coverage enforcement is verified independently; a successful Codecov upload is not claimed. This review does not change repository administration settings.
+
+Final checks passed across all five modules: 263 executed unit tests, exact 1251/1251 library statement coverage, race detection, vet, tidy and module-inventory parity, pinned real ntfy/Gotify integration, deterministic documentation generation, and vulnerability scans on Go 1.27.3. The implementation is suitable for an initial release with the documented verification scope. Hosted verification, the inventoried compatibility aliases, durable journals and framework integration remain explicit future work. No release tag or GitHub release is created by this review.
