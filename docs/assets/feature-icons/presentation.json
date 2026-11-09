@@ -9,13 +9,13 @@
     "label": "Recipient policy",
     "icon": "policy.svg",
     "accent": "#7c3aed",
-    "description": "Resolve scoped recipients and apply channel policy."
+    "description": "Optionally resolve recipients and apply channel preferences and fallback."
   },
   "channels": {
     "label": "Typed channels",
     "icon": "channels.svg",
     "accent": "#0891b2",
-    "description": "Pair typed renderers and transports."
+    "description": "Render channel-specific content with typed renderers and transports."
   },
   "identity": {
     "label": "Explicit identity",
@@ -27,7 +27,7 @@
     "label": "Safe diagnostics",
     "icon": "diagnostics.svg",
     "accent": "#16803c",
-    "description": "Keep endpoints and message content out of errors and logs."
+    "description": "Built-in errors and logs omit endpoints, credentials and message content."
   },
   "testing": {
     "label": "Isolated testing",

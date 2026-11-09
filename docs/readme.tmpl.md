@@ -15,7 +15,7 @@
 {{integration-badge}}
 </p>
 
-<p align="center"><a href="#features">Features</a> · <a href="#quick-start">Quick Start</a> · <a href="#drivers">Drivers</a> · <a href="#runnable-examples">Examples</a> · <a href="#api-index">API</a></p>
+<p align="center"><a href="#features">Features</a> · <a href="#quick-start">Quick Start</a> · <a href="#drivers">Drivers</a> · <a href="#installation">Installation</a> · <a href="#runnable-examples">Examples</a> · <a href="#api-index">API</a></p>
 
 ## Features
 
@@ -23,18 +23,21 @@
 
 ## Quick Start
 
-Requires Go 1.24+. This is an unreleased library. From the local checkout:
+Requires Go 1.24+. Try the complete example without credentials or an external service:
 
 ```sh
-cd ~/code/notification
+git clone https://github.com/goforj/notification.git
+cd notification
 go run ./examples/quickstart
 ```
 
-Configure a driver once, then send a message:
+Configure a driver once, then send a title and body. The [complete program](examples/quickstart/main.go) includes the imports:
 
 {{snippet:quickstart}}
 
-The log driver captures locally. A nil error means the driver handled the message; it never proves recipient delivery. Send performs no retries or background work.
+The log driver records a local capture without logging message content. Replace it with a provider driver to use the same `Send` call for real notifications. `Send` is synchronous and performs no retries or background work. Success means the driver handled the message, not that the recipient received it.
+
+For your own application, use the [installation commands](#installation) below. The library is currently unreleased; the commands pin a publicly verified revision.
 
 ## Drivers
 
@@ -42,9 +45,9 @@ The log driver captures locally. A nil error means the driver handled the messag
 
 All drivers have local tests. ntfy, Gotify and Matrix also pass real-server tests; hosted and paired-session verification remains pending for other providers. See [driver configuration and delivery contracts](docs/drivers.md) for details and [integration evidence](docs/integration-results.json) for exact server versions.
 
-Mail reuses your configured GoForj Mailer for SMTP, SendGrid, Resend, Mailgun, Postmark, or Amazon SES (a separate Mail module). Teams uses Workflows, LINE uses the Messaging API, and Opsgenie provides legacy integration support.
+Mail reuses your configured [GoForj Mailer](https://github.com/goforj/mail) for SMTP, SendGrid, Resend, Mailgun, Postmark, or Amazon SES. Teams uses Workflows, LINE uses the Messaging API, and Opsgenie provides legacy integration support.
 
-The root module uses only the standard library. Mail, APNs, SNS and Web Push are optional modules. Mail uses goforj/mail v0.3.1. Drivers own their configured destinations; a `Message` contains only content. Errors preserve safe cancellation and provider classifications without returning provider prose. See [delivery contracts](docs/contracts.md) for bounds and ownership.
+The root module uses only the standard library. Mail, APNs, SNS and Web Push are optional modules. Drivers own their configured destinations; a `Message` contains only content. Errors preserve cancellation and provider classifications without exposing provider response text. See [delivery contracts](docs/contracts.md) for bounds and ownership.
 
 ## Installation
 
@@ -54,30 +57,25 @@ Install the verified unreleased revision through the public Go module proxy:
 go get github.com/goforj/notification@v0.0.0-20261109224653-6d077e3cda12
 ```
 
-Most HTTP providers and the log driver are included in the root module:
+All drivers except Mail, APNs, SNS and Web Push are packages in the root module. Import them from `github.com/goforj/notification/driver/<name>`; they need no separate installation.
 
-```go
-import "github.com/goforj/notification"
-import "github.com/goforj/notification/driver/log"
-import "github.com/goforj/notification/driver/webhook"
-```
-
-For Slack-compatible transport, configure the trusted URL once:
-
-```go
-driver, err := webhook.New(webhook.Config{
-    URL:    configuredWebhookURL,
-    Format: webhook.Slack,
-})
-```
-
-Install the optional Mail adapter at the same revision:
+Install only the optional modules you use:
 
 ```sh
+# Mail
 go get github.com/goforj/notification/driver/mail@v0.0.0-20261109224653-6d077e3cda12
+
+# Apple APNs
+go get github.com/goforj/notification/driver/apns@v0.0.0-20261109224653-6d077e3cda12
+
+# Amazon SNS
+go get github.com/goforj/notification/driver/sns@v0.0.0-20261109224653-6d077e3cda12
+
+# Web Push
+go get github.com/goforj/notification/driver/webpush@v0.0.0-20261109224653-6d077e3cda12
 ```
 
-It borrows an ordinary `*mail.Mailer` and configured recipients. Mail continues to own sender defaults, email composition, and transport. APNs, SNS and Web Push follow the same optional-module pattern: substitute `apns`, `sns` or `webpush` for `mail` in the command above. Their cryptographic or AWS SDK dependencies stay outside the root module. See [provider capabilities](docs/provider-capabilities.md) for supported operations and protocol limits.
+Mail borrows an application-owned `*mail.Mailer` and configured recipients. Mail owns sender defaults, email composition and transport. The other optional modules isolate their AWS SDK or cryptographic dependencies from the root module. See [Mail integration](docs/mail.md) and [provider capabilities](docs/provider-capabilities.md) for supported operations and limits.
 
 ## Runnable Examples
 
@@ -98,7 +96,7 @@ It borrows an ordinary `*mail.Mailer` and configured recipients. Mail continues 
 | [Incident](examples/incident/main.go) | `go run ./examples/incident` | Stable lifecycle keys with a local PagerDuty protocol fixture |
 | [Advanced fallback](examples/fallback/main.go) | `go run ./examples/fallback` | Optional recipient planning, fallback, and identity |
 
-The runner discovers and executes every program and verifies the expected output immediately after each print call. Child programs participate in coverage and race runs. Local tests verify webhook wire behavior and Mail composition; they make no hosted-provider delivery claim.
+These programs run locally without hosted-provider credentials. The test suite executes them and checks their output. Provider examples use local protocol fixtures, which verify request and response handling rather than live delivery.
 
 ## API Index
 
@@ -120,7 +118,11 @@ Webhook exposes the same option directly as `webhook.Config.Transport`. The libr
 
 ## Composition
 
-Use ordinary senders for application-level fanout or conservative fallback. Fanout attempts every target with at most eight concurrent calls. Fallback advances only after permanent rejection, unauthorized access or unsupported rendering; uncertainty and transient failures stop it to avoid accidental duplicates. Both return a `Sender` directly, borrow one to 64 configured senders, and never retry. For transient errors, check `ErrOutcomeUnknown` before considering a retry; server failure can follow provider acceptance. A `New` wrapper is optional around a composition; use it when wrapping a custom handler that needs common validation and safe errors.
+Use `Fanout` to send through every configured destination, or `Fallback` to try destinations in order. Both return a `Sender`, borrow their configured senders, and never retry. Fanout attempts every target with at most eight concurrent calls.
+
+Fallback advances only after permanent rejection, unauthorized access or unsupported rendering. Uncertainty and transient failures stop it to avoid duplicates. Check `ErrOutcomeUnknown` before deciding whether to retry: a server can fail after accepting a notification.
+
+Use compositions directly. Wrap a custom handler with `New` when it needs common validation and safe errors.
 
 {{snippet:composition}}
 
@@ -146,7 +148,7 @@ See [Mail integration](docs/mail.md) for provider choices, rich email, lifecycle
 
 ## Native provider configuration
 
-All providers share the same `Sender` interface. Configure destinations once and compose senders with `Fanout` or `Fallback`. The runnable catalog includes each new root driver with readable configuration and local protocol fixtures.
+All providers share the same `Sender` interface. Configure destinations once and compose senders with `Fanout` or `Fallback`. The runnable catalog demonstrates root-provider configuration against local protocol fixtures.
 
 {{snippet:providers}}
 
@@ -154,9 +156,15 @@ All providers share the same `Sender` interface. Configure destinations once and
 
 APNs owns and refreshes its provider JWT, or borrows an explicitly configured certificate transport. SNS borrows an AWS SDK v2 publisher, preserving the SDK credential model. Web Push encrypts the standard browser subscription payload and signs VAPID authentication. These optional modules do not add dependencies to the root module.
 
+Apple APNs:
+
 {{snippet:apns}}
 
+Amazon SNS:
+
 {{snippet:sns}}
+
+Web Push:
 
 {{snippet:webpush}}
 
