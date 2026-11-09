@@ -7,7 +7,8 @@
       "configuration": "Webhook and optional signing secret",
       "acceptance": "Native errcode; HMAC signature at send time",
       "verification": "Local protocol tests; hosted verification pending",
-      "protocol_source": "https://open.dingtalk.com/document/robots/custom-robot-access"
+      "protocol_source": "https://open.dingtalk.com/document/robots/custom-robot-access",
+      "acceptance_summary": "Robot response code"
     },
     {
       "id": "discord",
@@ -15,7 +16,8 @@
       "configuration": "Webhook URL and optional thread",
       "acceptance": "Native message acknowledgement; mentions disabled",
       "verification": "Local protocol tests; hosted verification pending",
-      "protocol_source": "https://docs.discord.com/developers/resources/webhook#execute-webhook"
+      "protocol_source": "https://docs.discord.com/developers/resources/webhook#execute-webhook",
+      "acceptance_summary": "Message ID"
     },
     {
       "id": "email",
@@ -23,7 +25,8 @@
       "configuration": "Borrowed Mailer and recipients",
       "acceptance": "Mail acceptance",
       "verification": "Mail composition tests; hosted verification pending",
-      "protocol_source": null
+      "protocol_source": null,
+      "acceptance_summary": "Mailer acceptance"
     },
     {
       "id": "feishu",
@@ -31,7 +34,8 @@
       "configuration": "V2 bot webhook and optional signing secret",
       "acceptance": "Native code; timestamped HMAC when configured",
       "verification": "Local protocol tests; hosted verification pending",
-      "protocol_source": "https://open.feishu.cn/document/client-docs/bot-v3/add-custom-bot"
+      "protocol_source": "https://open.feishu.cn/document/client-docs/bot-v3/add-custom-bot",
+      "acceptance_summary": "Bot response code"
     },
     {
       "id": "googlechat",
@@ -39,7 +43,8 @@
       "configuration": "Space webhook URL",
       "acceptance": "Native message resource acknowledgement",
       "verification": "Local protocol tests; hosted verification pending",
-      "protocol_source": "https://developers.google.com/workspace/chat/quickstart/webhooks"
+      "protocol_source": "https://developers.google.com/workspace/chat/quickstart/webhooks",
+      "acceptance_summary": "Message resource"
     },
     {
       "id": "gotify",
@@ -47,7 +52,8 @@
       "configuration": "Server, application token and integer priority",
       "acceptance": "Native message identity and content acknowledgement",
       "verification": "Real Gotify 3.1.1 server verified",
-      "protocol_source": "https://gotify.net/docs/pushmsg"
+      "protocol_source": "https://gotify.net/docs/pushmsg",
+      "acceptance_summary": "Message ID and content"
     },
     {
       "id": "jiraservicemanagement",
@@ -55,7 +61,8 @@
       "configuration": "Cloud ID, email and API token",
       "acceptance": "Asynchronous request acceptance; stable alias lookup for actions",
       "verification": "Local protocol tests; hosted verification pending",
-      "protocol_source": "https://developer.atlassian.com/cloud/jira/service-desk-ops/rest/v2/api-group-alerts/"
+      "protocol_source": "https://developer.atlassian.com/cloud/jira/service-desk-ops/rest/v2/api-group-alerts/",
+      "acceptance_summary": "Async request ID"
     },
     {
       "id": "line",
@@ -63,7 +70,8 @@
       "configuration": "Channel access token and recipient ID",
       "acceptance": "Messaging API push acknowledgement; LINE Notify excluded",
       "verification": "Local protocol tests; hosted verification pending",
-      "protocol_source": "https://developers.line.biz/en/reference/messaging-api/"
+      "protocol_source": "https://developers.line.biz/en/reference/messaging-api/",
+      "acceptance_summary": "Push acknowledgement"
     },
     {
       "id": "log",
@@ -71,7 +79,8 @@
       "configuration": "Borrowed slog logger",
       "acceptance": "Local capture",
       "verification": "Local capture tests",
-      "protocol_source": null
+      "protocol_source": null,
+      "acceptance_summary": "Local capture"
     },
     {
       "id": "ntfy",
@@ -79,7 +88,8 @@
       "configuration": "Topic, optional authentication and integer priority",
       "acceptance": "Native message identity and topic acknowledgement",
       "verification": "Real ntfy 2.37.2 server verified",
-      "protocol_source": "https://docs.ntfy.sh/publish/"
+      "protocol_source": "https://docs.ntfy.sh/publish/",
+      "acceptance_summary": "Message ID and topic"
     },
     {
       "id": "opsgenie",
@@ -87,7 +97,8 @@
       "configuration": "Legacy integration key and incident alias",
       "acceptance": "Asynchronous request acceptance; legacy migration support",
       "verification": "Local protocol tests; hosted verification pending",
-      "protocol_source": "https://docs.opsgenie.com/docs/alert-api"
+      "protocol_source": "https://docs.opsgenie.com/docs/alert-api",
+      "acceptance_summary": "Async request ID"
     },
     {
       "id": "pagerduty",
@@ -95,7 +106,8 @@
       "configuration": "Routing key and explicit incident key",
       "acceptance": "Events v2 acknowledgement; trigger, acknowledge, resolve",
       "verification": "Local protocol tests; hosted verification pending",
-      "protocol_source": "https://docs.pagerduty.com/developer/send-alert-event"
+      "protocol_source": "https://docs.pagerduty.com/developer/send-alert-event",
+      "acceptance_summary": "Event and incident key"
     },
     {
       "id": "slack",
@@ -103,7 +115,8 @@
       "configuration": "Incoming webhook URL",
       "acceptance": "HTTP 2xx and ok acknowledgement",
       "verification": "Local protocol tests; hosted verification pending",
-      "protocol_source": "https://docs.slack.dev/messaging/sending-messages-using-incoming-webhooks/"
+      "protocol_source": "https://docs.slack.dev/messaging/sending-messages-using-incoming-webhooks/",
+      "acceptance_summary": "ok acknowledgement"
     },
     {
       "id": "teams",
@@ -111,7 +124,8 @@
       "configuration": "Workflows webhook URL",
       "acceptance": "Adaptive Card submitted; HTTP 2xx acceptance",
       "verification": "Local protocol tests; hosted verification pending",
-      "protocol_source": "https://learn.microsoft.com/en-us/microsoftteams/platform/webhooks-and-connectors/how-to/connectors-using"
+      "protocol_source": "https://learn.microsoft.com/en-us/microsoftteams/platform/webhooks-and-connectors/how-to/connectors-using",
+      "acceptance_summary": "HTTP acceptance"
     },
     {
       "id": "telegram",
@@ -119,7 +133,8 @@
       "configuration": "Bot token, chat and optional topic",
       "acceptance": "Native message identity; JSON retry advice retained",
       "verification": "Local protocol tests; hosted verification pending",
-      "protocol_source": "https://core.telegram.org/bots/api#sendmessage"
+      "protocol_source": "https://core.telegram.org/bots/api#sendmessage",
+      "acceptance_summary": "Message ID"
     },
     {
       "id": "twilio",
@@ -127,7 +142,8 @@
       "configuration": "Account, token, E.164 recipient and sender or service",
       "acceptance": "Native Message SID and accepted status",
       "verification": "Local protocol tests; hosted verification pending",
-      "protocol_source": "https://www.twilio.com/docs/messaging/api/message-resource"
+      "protocol_source": "https://www.twilio.com/docs/messaging/api/message-resource",
+      "acceptance_summary": "Message SID and status"
     },
     {
       "id": "waha",
@@ -135,7 +151,8 @@
       "configuration": "Server, API key, existing session and chat",
       "acceptance": "HTTP acceptance across engine response schemas",
       "verification": "Local protocol tests; paired-session verification pending",
-      "protocol_source": "https://waha.devlike.pro/docs/how-to/send-messages/"
+      "protocol_source": "https://waha.devlike.pro/docs/how-to/send-messages/",
+      "acceptance_summary": "HTTP acceptance"
     },
     {
       "id": "webhook",
@@ -143,7 +160,8 @@
       "configuration": "Trusted endpoint",
       "acceptance": "HTTP 2xx acceptance",
       "verification": "Local protocol tests; hosted verification pending",
-      "protocol_source": null
+      "protocol_source": null,
+      "acceptance_summary": "HTTP acceptance"
     },
     {
       "id": "wecom",
@@ -151,7 +169,8 @@
       "configuration": "Group robot webhook URL",
       "acceptance": "Native errcode acknowledgement",
       "verification": "Local protocol tests; hosted verification pending",
-      "protocol_source": "https://developer.work.weixin.qq.com/document/path/91770"
+      "protocol_source": "https://developer.work.weixin.qq.com/document/path/91770",
+      "acceptance_summary": "Robot response code"
     },
     {
       "id": "whapi",
@@ -159,7 +178,8 @@
       "configuration": "Channel token and recipient",
       "acceptance": "Native sent acknowledgement",
       "verification": "Local protocol tests; hosted verification pending",
-      "protocol_source": "https://whapi.readme.io/reference/sendmessagetext"
+      "protocol_source": "https://whapi.readme.io/reference/sendmessagetext",
+      "acceptance_summary": "Send acknowledgement"
     }
   ]
 }

@@ -15,10 +15,11 @@ import (
 
 // Presentation keeps labels and artwork separate from provider verification evidence.
 type Presentation struct {
-	Label  string `json:"label"`
-	Icon   string `json:"icon"`
-	Fill   string `json:"fill"`
-	Accent string `json:"accent"`
+	Label       string `json:"label"`
+	Description string `json:"description,omitempty"`
+	Icon        string `json:"icon"`
+	Fill        string `json:"fill"`
+	Accent      string `json:"accent"`
 }
 
 // textWidth conservatively estimates the shared 11px badge font without platform font dependencies.

@@ -16,14 +16,17 @@
 
 ## Features
 
-| Feature | What you get |
-| --- | --- |
-| <img src="docs/assets/badges/intent.svg" width="22" height="22" alt="" align="middle"> Simple messages | Send a title and body through one configured driver. |
-| <img src="docs/assets/badges/policy.svg" width="22" height="22" alt="" align="middle"> Recipient policy | Add scoped recipient resolution and fallback when an application needs them. |
-| <img src="docs/assets/badges/channels.svg" width="22" height="22" alt="" align="middle"> Typed channels | Optional semantic templates pair typed renderers and transports. |
-| <img src="docs/assets/badges/identity.svg" width="22" height="22" alt="" align="middle"> Explicit identity | Optional process-local deduplication preserves accepted channels during partial retries. |
-| <img src="docs/assets/badges/diagnostics.svg" width="22" height="22" alt="" align="middle"> Safe diagnostics | Errors and built-in logs omit endpoints and message content. |
-| <img src="docs/assets/badges/testing.svg" width="22" height="22" alt="" align="middle"> Isolated testing | Capture messages through the same small Sender interface used by applications. |
+<table>
+<thead><tr><th align="left" width="220">Feature</th><th align="left">What you get</th></tr></thead>
+<tbody>
+<tr><td width="220" nowrap><img src="docs/assets/badges/intent.svg" width="22" height="22" alt="" align="absmiddle"> <strong>Simple messages</strong></td><td>Send a title and body through a configured driver.</td></tr>
+<tr><td width="220" nowrap><img src="docs/assets/badges/policy.svg" width="22" height="22" alt="" align="absmiddle"> <strong>Recipient policy</strong></td><td>Resolve scoped recipients and apply channel policy.</td></tr>
+<tr><td width="220" nowrap><img src="docs/assets/badges/channels.svg" width="22" height="22" alt="" align="absmiddle"> <strong>Typed channels</strong></td><td>Pair typed renderers and transports.</td></tr>
+<tr><td width="220" nowrap><img src="docs/assets/badges/identity.svg" width="22" height="22" alt="" align="absmiddle"> <strong>Explicit identity</strong></td><td>Optional process-local deduplication preserves accepted channels.</td></tr>
+<tr><td width="220" nowrap><img src="docs/assets/badges/diagnostics.svg" width="22" height="22" alt="" align="absmiddle"> <strong>Safe diagnostics</strong></td><td>Keep endpoints and message content out of errors and logs.</td></tr>
+<tr><td width="220" nowrap><img src="docs/assets/badges/testing.svg" width="22" height="22" alt="" align="absmiddle"> <strong>Isolated testing</strong></td><td>Capture messages through the Sender interface.</td></tr>
+</tbody>
+</table>
 
 ## Quick Start
 
@@ -56,32 +59,32 @@ The log driver captures locally. A nil error means the driver handled the messag
 ## Drivers
 
 <table>
-<thead><tr><th align="right" width="212">Driver</th><th>Name</th><th>Configuration</th><th>Successful handling</th><th>Verification</th></tr></thead>
+<thead><tr><th align="right" width="212">Driver</th><th align="left">Name</th><th align="left">Acceptance</th><th align="left">Verification</th></tr></thead>
 <tbody>
-<tr><td align="right" width="212"><a href="driver/dingtalk"><img src="docs/assets/badges/driver-dingding.svg" width="90" height="22" alt="DingTalk"></a></td><td><a href="driver/dingtalk">DingTalk</a></td><td>Webhook and optional signing secret</td><td>Native errcode; HMAC signature at send time</td><td>Local protocol tests; hosted verification pending</td></tr>
-<tr><td align="right" width="212"><a href="driver/discord"><img src="docs/assets/badges/driver-discord.svg" width="86" height="22" alt="Discord"></a></td><td><a href="driver/discord">Discord</a></td><td>Webhook URL and optional thread</td><td>Native message acknowledgement; mentions disabled</td><td>Local protocol tests; hosted verification pending</td></tr>
-<tr><td align="right" width="212"><a href="driver/mail"><img src="docs/assets/badges/driver-email.svg" width="67" height="22" alt="Mail"></a></td><td><a href="driver/mail">Mail</a></td><td>Borrowed Mailer and recipients</td><td>Mail acceptance</td><td>Mail composition tests; hosted verification pending</td></tr>
-<tr><td align="right" width="212"><a href="driver/feishu"><img src="docs/assets/badges/driver-feishu.svg" width="80" height="22" alt="Feishu"></a></td><td><a href="driver/feishu">Feishu</a></td><td>V2 bot webhook and optional signing secret</td><td>Native code; timestamped HMAC when configured</td><td>Local protocol tests; hosted verification pending</td></tr>
-<tr><td align="right" width="212"><a href="driver/googlechat"><img src="docs/assets/badges/driver-googlechat.svg" width="108" height="22" alt="Google Chat"></a></td><td><a href="driver/googlechat">Google Chat</a></td><td>Space webhook URL</td><td>Native message resource acknowledgement</td><td>Local protocol tests; hosted verification pending</td></tr>
-<tr><td align="right" width="212"><a href="driver/gotify"><img src="docs/assets/badges/driver-gotify.svg" width="80" height="22" alt="Gotify"></a></td><td><a href="driver/gotify">Gotify</a></td><td>Server, application token and integer priority</td><td>Native message identity and content acknowledgement</td><td>Real Gotify 3.1.1 server verified</td></tr>
-<tr><td align="right" width="212"><a href="driver/jsm"><img src="docs/assets/badges/driver-jiraservicemanagement.svg" width="180" height="22" alt="Jira Service Management"></a></td><td><a href="driver/jsm">Jira Service Management</a></td><td>Cloud ID, email and API token</td><td>Asynchronous request acceptance; stable alias lookup for actions</td><td>Local protocol tests; hosted verification pending</td></tr>
-<tr><td align="right" width="212"><a href="driver/line"><img src="docs/assets/badges/driver-line.svg" width="70" height="22" alt="LINE"></a></td><td><a href="driver/line">LINE</a></td><td>Channel access token and recipient ID</td><td>Messaging API push acknowledgement; LINE Notify excluded</td><td>Local protocol tests; hosted verification pending</td></tr>
-<tr><td align="right" width="212"><a href="driver/log"><img src="docs/assets/badges/driver-log.svg" width="65" height="22" alt="Log"></a></td><td><a href="driver/log">Log</a></td><td>Borrowed slog logger</td><td>Local capture</td><td>Local capture tests</td></tr>
-<tr><td align="right" width="212"><a href="driver/ntfy"><img src="docs/assets/badges/driver-ntfy.svg" width="70" height="22" alt="ntfy"></a></td><td><a href="driver/ntfy">ntfy</a></td><td>Topic, optional authentication and integer priority</td><td>Native message identity and topic acknowledgement</td><td>Real ntfy 2.37.2 server verified</td></tr>
-<tr><td align="right" width="212"><a href="driver/opsgenie"><img src="docs/assets/badges/driver-opsgenie.svg" width="92" height="22" alt="Opsgenie"></a></td><td><a href="driver/opsgenie">Opsgenie</a></td><td>Legacy integration key and incident alias</td><td>Asynchronous request acceptance; legacy migration support</td><td>Local protocol tests; hosted verification pending</td></tr>
-<tr><td align="right" width="212"><a href="driver/pagerduty"><img src="docs/assets/badges/driver-pagerduty.svg" width="102" height="22" alt="PagerDuty"></a></td><td><a href="driver/pagerduty">PagerDuty</a></td><td>Routing key and explicit incident key</td><td>Events v2 acknowledgement; trigger, acknowledge, resolve</td><td>Local protocol tests; hosted verification pending</td></tr>
-<tr><td align="right" width="212"><a href="driver/slack"><img src="docs/assets/badges/driver-slack.svg" width="74" height="22" alt="Slack"></a></td><td><a href="driver/slack">Slack</a></td><td>Incoming webhook URL</td><td>HTTP 2xx and ok acknowledgement</td><td>Local protocol tests; hosted verification pending</td></tr>
-<tr><td align="right" width="212"><a href="driver/teams"><img src="docs/assets/badges/driver-teams.svg" width="80" height="22" alt="Teams"></a></td><td><a href="driver/teams">Teams</a></td><td>Workflows webhook URL</td><td>Adaptive Card submitted; HTTP 2xx acceptance</td><td>Local protocol tests; hosted verification pending</td></tr>
-<tr><td align="right" width="212"><a href="driver/telegram"><img src="docs/assets/badges/driver-telegram.svg" width="95" height="22" alt="Telegram"></a></td><td><a href="driver/telegram">Telegram</a></td><td>Bot token, chat and optional topic</td><td>Native message identity; JSON retry advice retained</td><td>Local protocol tests; hosted verification pending</td></tr>
-<tr><td align="right" width="212"><a href="driver/twilio"><img src="docs/assets/badges/driver-twilio.svg" width="77" height="22" alt="Twilio"></a></td><td><a href="driver/twilio">Twilio</a></td><td>Account, token, E.164 recipient and sender or service</td><td>Native Message SID and accepted status</td><td>Local protocol tests; hosted verification pending</td></tr>
-<tr><td align="right" width="212"><a href="driver/waha"><img src="docs/assets/badges/driver-waha.svg" width="76" height="22" alt="WAHA"></a></td><td><a href="driver/waha">WAHA</a></td><td>Server, API key, existing session and chat</td><td>HTTP acceptance across engine response schemas</td><td>Local protocol tests; paired-session verification pending</td></tr>
-<tr><td align="right" width="212"><a href="driver/webhook"><img src="docs/assets/badges/driver-webhook.svg" width="91" height="22" alt="Webhook"></a></td><td><a href="driver/webhook">Webhook</a></td><td>Trusted endpoint</td><td>HTTP 2xx acceptance</td><td>Local protocol tests; hosted verification pending</td></tr>
-<tr><td align="right" width="212"><a href="driver/wecom"><img src="docs/assets/badges/driver-wecom.svg" width="83" height="22" alt="WeCom"></a></td><td><a href="driver/wecom">WeCom</a></td><td>Group robot webhook URL</td><td>Native errcode acknowledgement</td><td>Local protocol tests; hosted verification pending</td></tr>
-<tr><td align="right" width="212"><a href="driver/whapi"><img src="docs/assets/badges/driver-whapi.svg" width="76" height="22" alt="Whapi"></a></td><td><a href="driver/whapi">Whapi</a></td><td>Channel token and recipient</td><td>Native sent acknowledgement</td><td>Local protocol tests; hosted verification pending</td></tr>
+<tr><td align="right" width="212"><a href="driver/dingtalk"><img src="docs/assets/badges/driver-dingding.svg" width="90" height="22" alt="DingTalk"></a></td><td><a href="driver/dingtalk">DingTalk</a></td><td>Robot response code</td><td>Protocol tests</td></tr>
+<tr><td align="right" width="212"><a href="driver/discord"><img src="docs/assets/badges/driver-discord.svg" width="86" height="22" alt="Discord"></a></td><td><a href="driver/discord">Discord</a></td><td>Message ID</td><td>Protocol tests</td></tr>
+<tr><td align="right" width="212"><a href="driver/mail"><img src="docs/assets/badges/driver-email.svg" width="67" height="22" alt="Mail"></a></td><td><a href="driver/mail">Mail</a></td><td>Mailer acceptance</td><td>Composition tests</td></tr>
+<tr><td align="right" width="212"><a href="driver/feishu"><img src="docs/assets/badges/driver-feishu.svg" width="80" height="22" alt="Feishu"></a></td><td><a href="driver/feishu">Feishu</a></td><td>Bot response code</td><td>Protocol tests</td></tr>
+<tr><td align="right" width="212"><a href="driver/googlechat"><img src="docs/assets/badges/driver-googlechat.svg" width="108" height="22" alt="Google Chat"></a></td><td><a href="driver/googlechat">Google Chat</a></td><td>Message resource</td><td>Protocol tests</td></tr>
+<tr><td align="right" width="212"><a href="driver/gotify"><img src="docs/assets/badges/driver-gotify.svg" width="80" height="22" alt="Gotify"></a></td><td><a href="driver/gotify">Gotify</a></td><td>Message ID and content</td><td>Gotify 3.1.1</td></tr>
+<tr><td align="right" width="212"><a href="driver/jsm"><img src="docs/assets/badges/driver-jiraservicemanagement.svg" width="180" height="22" alt="Jira Service Management"></a></td><td><a href="driver/jsm">Jira Service Management</a></td><td>Async request ID</td><td>Protocol tests</td></tr>
+<tr><td align="right" width="212"><a href="driver/line"><img src="docs/assets/badges/driver-line.svg" width="70" height="22" alt="LINE"></a></td><td><a href="driver/line">LINE</a></td><td>Push acknowledgement</td><td>Protocol tests</td></tr>
+<tr><td align="right" width="212"><a href="driver/log"><img src="docs/assets/badges/driver-log.svg" width="65" height="22" alt="Log"></a></td><td><a href="driver/log">Log</a></td><td>Local capture</td><td>Local capture</td></tr>
+<tr><td align="right" width="212"><a href="driver/ntfy"><img src="docs/assets/badges/driver-ntfy.svg" width="70" height="22" alt="ntfy"></a></td><td><a href="driver/ntfy">ntfy</a></td><td>Message ID and topic</td><td>ntfy 2.37.2</td></tr>
+<tr><td align="right" width="212"><a href="driver/opsgenie"><img src="docs/assets/badges/driver-opsgenie.svg" width="92" height="22" alt="Opsgenie"></a></td><td><a href="driver/opsgenie">Opsgenie</a></td><td>Async request ID</td><td>Protocol tests</td></tr>
+<tr><td align="right" width="212"><a href="driver/pagerduty"><img src="docs/assets/badges/driver-pagerduty.svg" width="102" height="22" alt="PagerDuty"></a></td><td><a href="driver/pagerduty">PagerDuty</a></td><td>Event and incident key</td><td>Protocol tests</td></tr>
+<tr><td align="right" width="212"><a href="driver/slack"><img src="docs/assets/badges/driver-slack.svg" width="74" height="22" alt="Slack"></a></td><td><a href="driver/slack">Slack</a></td><td>ok acknowledgement</td><td>Protocol tests</td></tr>
+<tr><td align="right" width="212"><a href="driver/teams"><img src="docs/assets/badges/driver-teams.svg" width="80" height="22" alt="Teams"></a></td><td><a href="driver/teams">Teams</a></td><td>HTTP acceptance</td><td>Protocol tests</td></tr>
+<tr><td align="right" width="212"><a href="driver/telegram"><img src="docs/assets/badges/driver-telegram.svg" width="95" height="22" alt="Telegram"></a></td><td><a href="driver/telegram">Telegram</a></td><td>Message ID</td><td>Protocol tests</td></tr>
+<tr><td align="right" width="212"><a href="driver/twilio"><img src="docs/assets/badges/driver-twilio.svg" width="77" height="22" alt="Twilio"></a></td><td><a href="driver/twilio">Twilio</a></td><td>Message SID and status</td><td>Protocol tests</td></tr>
+<tr><td align="right" width="212"><a href="driver/waha"><img src="docs/assets/badges/driver-waha.svg" width="76" height="22" alt="WAHA"></a></td><td><a href="driver/waha">WAHA</a></td><td>HTTP acceptance</td><td>Protocol tests</td></tr>
+<tr><td align="right" width="212"><a href="driver/webhook"><img src="docs/assets/badges/driver-webhook.svg" width="91" height="22" alt="Webhook"></a></td><td><a href="driver/webhook">Webhook</a></td><td>HTTP acceptance</td><td>Protocol tests</td></tr>
+<tr><td align="right" width="212"><a href="driver/wecom"><img src="docs/assets/badges/driver-wecom.svg" width="83" height="22" alt="WeCom"></a></td><td><a href="driver/wecom">WeCom</a></td><td>Robot response code</td><td>Protocol tests</td></tr>
+<tr><td align="right" width="212"><a href="driver/whapi"><img src="docs/assets/badges/driver-whapi.svg" width="76" height="22" alt="Whapi"></a></td><td><a href="driver/whapi">Whapi</a></td><td>Send acknowledgement</td><td>Protocol tests</td></tr>
 </tbody>
 </table>
 
-Hosted verification is pending unless explicitly stated above. Local protocol fixtures exercise native requests, rejection codes and acknowledgements. Real-server tests run immutable ntfy and Gotify images; see [integration evidence](docs/integration-results.json). HTTP or native acceptance never proves recipient delivery.
+All drivers have local tests. ntfy and Gotify also pass real-server tests; hosted and paired-session verification remains pending for other providers. See [driver configuration and delivery contracts](docs/drivers.md) for details and [integration evidence](docs/integration-results.json) for exact server versions.
 
 Mail supports SMTP through its configured Mailer. Teams uses Workflows, LINE uses the Messaging API, and Opsgenie provides legacy integration support.
 

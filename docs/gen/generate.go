@@ -32,11 +32,13 @@ var applicationAPI = []API{
 
 // Driver records provider-owned handling semantics and executed verification scope.
 type Driver struct {
-	ID            string `json:"id"`
-	Package       string `json:"package"`
-	Configuration string `json:"configuration"`
-	Acceptance    string `json:"acceptance"`
-	Verification  string `json:"verification"`
+	ID                string `json:"id"`
+	AcceptanceSummary string `json:"acceptance_summary"`
+	ProtocolSource    string `json:"protocol_source"`
+	Package           string `json:"package"`
+	Configuration     string `json:"configuration"`
+	Acceptance        string `json:"acceptance"`
+	Verification      string `json:"verification"`
 }
 
 // readJSON decodes authoritative local metadata with its source path in failures.
@@ -140,7 +142,7 @@ func outputsFor(root string, apis []API) (map[string][]byte, error) {
 	for _, driver := range catalog.Drivers {
 		columnWidth = max(columnWidth, labelledWidth(presentations[driver.ID].Label)+32)
 	}
-	fmt.Fprintf(&drivers, "<table>\n<thead><tr><th align=\"right\" width=\"%d\">Driver</th><th>Name</th><th>Configuration</th><th>Successful handling</th><th>Verification</th></tr></thead>\n<tbody>\n", columnWidth)
+	fmt.Fprintf(&drivers, "<table>\n<thead><tr><th align=\"right\" width=\"%d\">Driver</th><th align=\"left\">Name</th><th align=\"left\">Acceptance</th><th align=\"left\">Verification</th></tr></thead>\n<tbody>\n", columnWidth)
 	for _, driver := range catalog.Drivers {
 		info, err := os.Stat(filepath.Join(root, driver.Package))
 		if err != nil || !info.IsDir() {
@@ -156,10 +158,20 @@ func outputsFor(root string, apis []API) (map[string][]byte, error) {
 			return nil, err
 		}
 		outputs[asset] = badge
-		fmt.Fprintf(&drivers, "<tr><td align=\"right\" width=\"%d\"><a href=\"%s\"><img src=\"%s\" width=\"%d\" height=\"22\" alt=\"%s\"></a></td><td><a href=\"%s\">%s</a></td><td>%s</td><td>%s</td><td>%s</td></tr>\n", columnWidth, driver.Package, asset, labelledWidth(presentation.Label), html.EscapeString(presentation.Label), driver.Package, html.EscapeString(presentation.Label), html.EscapeString(driver.Configuration), html.EscapeString(driver.Acceptance), html.EscapeString(driver.Verification))
+		fmt.Fprintf(&drivers, "<tr><td align=\"right\" width=\"%d\"><a href=\"%s\"><img src=\"%s\" width=\"%d\" height=\"22\" alt=\"%s\"></a></td><td><a href=\"%s\">%s</a></td><td>%s</td><td>%s</td></tr>\n", columnWidth, driver.Package, asset, labelledWidth(presentation.Label), html.EscapeString(presentation.Label), driver.Package, html.EscapeString(presentation.Label), html.EscapeString(acceptanceSummary(driver)), html.EscapeString(verificationSummary(driver)))
 	}
 	drivers.WriteString("</tbody>\n</table>")
 	templates["README.md"] = strings.ReplaceAll(templates["README.md"], "{{drivers}}", drivers.String())
+	outputs["docs/drivers.md"] = []byte(driverGuide(catalog.Drivers, presentations))
+	var features map[string]Presentation
+	if err := readJSON(root, "docs/assets/feature-icons/presentation.json", &features); err != nil {
+		return nil, err
+	}
+	featureTable, err := featuresTable(features)
+	if err != nil {
+		return nil, err
+	}
+	templates["README.md"] = strings.ReplaceAll(templates["README.md"], "{{features}}", featureTable)
 	var index strings.Builder
 	index.WriteString("| API | Example |\n| --- | --- |")
 	for _, api := range apis {
@@ -179,17 +191,13 @@ func outputsFor(root string, apis []API) (map[string][]byte, error) {
 	}
 	templates["README.md"] = strings.ReplaceAll(templates["README.md"], "{{api-index}}", index.String())
 	for path, text := range templates {
-		if strings.Contains(text, "{{snippet:") || strings.Contains(text, "{{api-index}}") || strings.Contains(text, "{{drivers}}") {
+		if strings.Contains(text, "{{snippet:") || strings.Contains(text, "{{api-index}}") || strings.Contains(text, "{{drivers}}") || strings.Contains(text, "{{features}}") {
 			return nil, fmt.Errorf("unresolved README marker")
 		}
 		outputs[path] = []byte(text)
 	}
 	for _, item := range []struct{ Name, Label, Value, Color string }{{"status", "status", "unreleased", "#6e7681"}, {"go", "Go", "1.24+", "#007d9c"}, {"license", "license", "MIT", "#007ec6"}, {"coverage", "coverage", "100%", "#2e8540"}, {"tests", "tests", fmt.Sprint(unit.UnitTestsPassed), "#5368bd"}} {
 		outputs["docs/assets/badges/"+item.Name+".svg"] = StatusBadge(item.Label, item.Value, item.Color)
-	}
-	var features map[string]Presentation
-	if err := readJSON(root, "docs/assets/feature-icons/presentation.json", &features); err != nil {
-		return nil, err
 	}
 	for name, presentation := range features {
 		badge, err := ArtworkBadge(root, "feature-icons", presentation, false)

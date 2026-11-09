@@ -2,31 +2,37 @@
   "intent": {
     "label": "Simple messages",
     "icon": "intent.svg",
-    "accent": "#2563eb"
+    "accent": "#2563eb",
+    "description": "Send a title and body through a configured driver."
   },
   "policy": {
     "label": "Recipient policy",
     "icon": "policy.svg",
-    "accent": "#7c3aed"
+    "accent": "#7c3aed",
+    "description": "Resolve scoped recipients and apply channel policy."
   },
   "channels": {
     "label": "Typed channels",
     "icon": "channels.svg",
-    "accent": "#0891b2"
+    "accent": "#0891b2",
+    "description": "Pair typed renderers and transports."
   },
   "identity": {
     "label": "Explicit identity",
     "icon": "identity.svg",
-    "accent": "#b45309"
+    "accent": "#b45309",
+    "description": "Optional process-local deduplication preserves accepted channels."
   },
   "diagnostics": {
     "label": "Safe diagnostics",
     "icon": "diagnostics.svg",
-    "accent": "#16803c"
+    "accent": "#16803c",
+    "description": "Keep endpoints and message content out of errors and logs."
   },
   "testing": {
     "label": "Isolated testing",
     "icon": "testing.svg",
-    "accent": "#be185d"
+    "accent": "#be185d",
+    "description": "Capture messages through the Sender interface."
   }
 }
