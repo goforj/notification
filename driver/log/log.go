@@ -29,6 +29,9 @@ func (d *Driver) Deliver(ctx context.Context, delivery notification.Delivery[not
 // Send captures a validated message without logging its content. A nil error
 // means local capture succeeded and makes no claim about provider acceptance.
 func (d *Driver) Send(ctx context.Context, message notification.Message) error {
+	if ctx == nil {
+		ctx = context.Background()
+	}
 	if err := ctx.Err(); err != nil {
 		return err
 	}

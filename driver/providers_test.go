@@ -195,6 +195,9 @@ func TestNativeProviders(t *testing.T) {
 			}
 			defer driver.Close()
 			notificationtest.Sender(t, func() notification.Sender { return driver })
+			if err := driver.Send(nil, notification.Message{Title: "Ticket", Body: "T-42 changed"}); err != nil {
+				t.Fatal("nil context should use background", err)
+			}
 			t.Run("borrowed transport", func(t *testing.T) {
 				base := &http.Transport{}
 				defer base.CloseIdleConnections()

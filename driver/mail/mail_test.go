@@ -63,6 +63,9 @@ func TestSender(t *testing.T) {
 	mailer := mail.New(fake, mail.WithDefaultFrom("sender@example.com", "Sender"))
 	driver := New(mailer, "recipient@example.com")
 	notificationtest.Sender(t, func() notification.Sender { return driver })
+	if err := driver.Send(nil, notification.Message{Title: "Ticket", Body: "T-42 changed"}); err != nil {
+		t.Fatal("nil context should use background", err)
+	}
 	message := notification.Message{Title: "Ticket", Body: "T-42 changed"}
 	for _, addresses := range [][]string{nil, {"invalid"}, make([]string, 101)} {
 		driver := New(mailer, addresses...)

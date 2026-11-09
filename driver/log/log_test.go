@@ -31,6 +31,9 @@ func TestSender(t *testing.T) {
 	var out bytes.Buffer
 	driver := New(slog.New(slog.NewJSONHandler(&out, nil)))
 	notificationtest.Sender(t, func() notification.Sender { return driver })
+	if err := driver.Send(nil, notification.Message{Title: "Ticket", Body: "T-42 changed"}); err != nil {
+		t.Fatal("nil context should use background", err)
+	}
 	if strings.Contains(out.String(), "T-42") || strings.Contains(out.String(), "Ticket") {
 		t.Fatal("captured content leaked")
 	}

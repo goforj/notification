@@ -134,6 +134,9 @@ func (d *Driver) Deliver(ctx context.Context, delivery notification.Delivery[not
 
 // Send delivers plain text to Config.URL without accepting destinations in messages.
 func (d *Driver) Send(ctx context.Context, message notification.Message) error {
+	if ctx == nil {
+		ctx = context.Background()
+	}
 	if err := ctx.Err(); err != nil {
 		return err
 	}

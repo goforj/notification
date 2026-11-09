@@ -45,6 +45,9 @@ func (d *Driver) Close() error { return d.client.Close() }
 
 // Send confirms a native message ID and the echoed content before returning success.
 func (d *Driver) Send(ctx context.Context, message notification.Message) error {
+	if ctx == nil {
+		ctx = context.Background()
+	}
 	if err := ctx.Err(); err != nil {
 		return err
 	}

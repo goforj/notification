@@ -259,6 +259,9 @@ func TestSender(t *testing.T) {
 	}
 	defer driver.Close()
 	notificationtest.Sender(t, func() notification.Sender { return driver })
+	if err := driver.Send(nil, notification.Message{Title: "Ticket", Body: "T-42 changed"}); err != nil {
+		t.Fatal("nil context should use background", err)
+	}
 	if _, err := New(Config{URL: "https://user:secret@example.com"}); !errors.Is(err, notification.ErrInvalidRequest) {
 		t.Fatal(err)
 	}

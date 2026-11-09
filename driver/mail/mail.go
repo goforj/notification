@@ -79,6 +79,9 @@ func (d *Driver) deliver(ctx context.Context, message mail.Message) (notificatio
 // Send delivers plain text to the recipients configured by New. Mail retains
 // sender-default and transport ownership; nil means legacy provider acceptance.
 func (d *Driver) Send(ctx context.Context, message notification.Message) error {
+	if ctx == nil {
+		ctx = context.Background()
+	}
 	if err := ctx.Err(); err != nil {
 		return err
 	}
