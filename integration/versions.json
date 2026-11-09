@@ -6,5 +6,9 @@
   "gotify": {
     "version": "3.1.1",
     "image": "gotify/server@sha256:44fc5bbd1c0618878e33073d38c2c13126b48f245c3fe12236b1da48eb203b86"
+  },
+  "matrix": {
+    "version": "1.164.2",
+    "image": "ghcr.io/element-hq/synapse:v1.164.2@sha256:f0df87cff259872637b4b5e5174b9977e5e3046dd421505407803b5e45c5f842"
   }
 }

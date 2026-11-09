@@ -44,7 +44,15 @@ func CheckModules(root string) error {
 	if strings.Join(actual, "\n") != strings.Join(expected, "\n") {
 		return fmt.Errorf("module manifest mismatch: expected %v, found %v", expected, actual)
 	}
-	for name, replacement := range map[string]string{"driver/mail": "../..", "examples/mail": "../..", "integration": ".."} {
+	for _, name := range actual {
+		if name != "integration" && !strings.HasPrefix(name, "driver/") && !strings.HasPrefix(name, "examples/") {
+			continue
+		}
+		relative, err := filepath.Rel(filepath.Join(root, name), root)
+		if err != nil {
+			return err
+		}
+		replacement := filepath.ToSlash(relative)
 		data, err := os.ReadFile(filepath.Join(root, name, "go.mod"))
 		if err != nil {
 			return err

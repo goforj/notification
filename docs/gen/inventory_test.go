@@ -107,8 +107,8 @@ func TestInventorySourceDrift(t *testing.T) {
 func TestModuleInventory(t *testing.T) {
 	root := t.TempDir()
 	put(t, root, "go.mod", "module github.com/goforj/notification\n")
-	put(t, root, "scripts/module-manifest.txt", ".\ndriver/mail\nexamples/mail\nintegration\ndocs\n")
-	for name, replacement := range map[string]string{"driver/mail": "../..", "examples/mail": "../..", "integration": ".."} {
+	put(t, root, "scripts/module-manifest.txt", ".\ndriver/mail\ndriver/apns\ndriver/sns\ndriver/webpush\nexamples/mail\nexamples/apns\nexamples/sns\nexamples/webpush\nintegration\ndocs\n")
+	for name, replacement := range map[string]string{"driver/mail": "../..", "driver/apns": "../..", "driver/sns": "../..", "driver/webpush": "../..", "examples/mail": "../..", "examples/apns": "../..", "examples/sns": "../..", "examples/webpush": "../..", "integration": ".."} {
 		put(t, root, name+"/go.mod", "module fixture\nreplace github.com/goforj/notification => "+replacement+"\n")
 	}
 	put(t, root, "docs/go.mod", "module github.com/goforj/notification/docs\n")
@@ -125,7 +125,8 @@ func TestModuleInventory(t *testing.T) {
 		t.Fatal("uninventoried module accepted")
 	}
 	root = fixture(t)
-	put(t, root, "scripts/module-manifest.txt", ".\n")
+	put(t, root, "scripts/module-manifest.txt", ".\nintegration\n")
+	put(t, root, "integration/go.mod", "module fixture\n")
 	if err := CheckModules(root); err == nil {
 		t.Fatal("missing intentional root replacement accepted")
 	}

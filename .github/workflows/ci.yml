@@ -27,7 +27,7 @@ jobs:
           test -z "$(gofmt -l .)"
           make modules-check
           make tidy
-          git diff --exit-code -- go.mod driver/mail/go.mod driver/mail/go.sum examples/mail/go.mod examples/mail/go.sum integration/go.mod integration/go.sum docs/go.mod
+          git diff --exit-code -- go.mod go.sum '**/go.mod' '**/go.sum'
       - name: Test all libraries and executable examples
         run: |
           make test
