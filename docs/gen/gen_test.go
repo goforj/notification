@@ -183,7 +183,7 @@ func TestDriverEvidenceAndSearchableNames(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(string(outputs["README.md"]), "| [ntfy](driver/ntfy) |") || !bytes.Contains(outputs["docs/assets/badges/driver-ntfy.svg"], []byte("<text")) {
+	if !strings.Contains(string(outputs["README.md"]), `<td><a href="driver/ntfy">ntfy</a></td>`) || !bytes.Contains(outputs["docs/assets/badges/driver-ntfy.svg"], []byte("<text")) {
 		t.Fatal("name is not searchable beside a labelled badge")
 	}
 	putJSON(t, root, "docs/assets/driver-icons/presentation.json", map[string]Presentation{})

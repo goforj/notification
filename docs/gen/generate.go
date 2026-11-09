@@ -136,7 +136,11 @@ func outputsFor(root string, apis []API) (map[string][]byte, error) {
 		return nil, err
 	}
 	var drivers strings.Builder
-	drivers.WriteString("| Driver | Name | Configuration | Successful handling | Verification |\n| ---: | --- | --- | --- | --- |")
+	columnWidth := 0
+	for _, driver := range catalog.Drivers {
+		columnWidth = max(columnWidth, labelledWidth(presentations[driver.ID].Label)+32)
+	}
+	fmt.Fprintf(&drivers, "<table>\n<thead><tr><th align=\"right\" width=\"%d\">Driver</th><th>Name</th><th>Configuration</th><th>Successful handling</th><th>Verification</th></tr></thead>\n<tbody>\n", columnWidth)
 	for _, driver := range catalog.Drivers {
 		info, err := os.Stat(filepath.Join(root, driver.Package))
 		if err != nil || !info.IsDir() {
@@ -152,8 +156,9 @@ func outputsFor(root string, apis []API) (map[string][]byte, error) {
 			return nil, err
 		}
 		outputs[asset] = badge
-		fmt.Fprintf(&drivers, "\n| [<img src=\"%s\" width=\"%d\" height=\"22\" alt=\"%s\">](%s) | [%s](%s) | %s | %s | %s |", asset, labelledWidth(presentation.Label), html.EscapeString(presentation.Label), driver.Package, presentation.Label, driver.Package, driver.Configuration, driver.Acceptance, driver.Verification)
+		fmt.Fprintf(&drivers, "<tr><td align=\"right\" width=\"%d\"><a href=\"%s\"><img src=\"%s\" width=\"%d\" height=\"22\" alt=\"%s\"></a></td><td><a href=\"%s\">%s</a></td><td>%s</td><td>%s</td><td>%s</td></tr>\n", columnWidth, driver.Package, asset, labelledWidth(presentation.Label), html.EscapeString(presentation.Label), driver.Package, html.EscapeString(presentation.Label), html.EscapeString(driver.Configuration), html.EscapeString(driver.Acceptance), html.EscapeString(driver.Verification))
 	}
+	drivers.WriteString("</tbody>\n</table>")
 	templates["README.md"] = strings.ReplaceAll(templates["README.md"], "{{drivers}}", drivers.String())
 	var index strings.Builder
 	index.WriteString("| API | Example |\n| --- | --- |")
