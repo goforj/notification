@@ -21,15 +21,16 @@ type Sender struct {
 	name        string
 	prepare     func(context.Context, notification.Message) (Request, error)
 	acknowledge func([]byte) error
+	statuses    []int
 }
 
 // NewSender borrows a preparation function and transport after provider configuration validation.
-func NewSender(name string, config notification.HTTPConfig, prepare func(context.Context, notification.Message) (Request, error), acknowledge func([]byte) error) (*Sender, error) {
+func NewSender(name string, config notification.HTTPConfig, prepare func(context.Context, notification.Message) (Request, error), acknowledge func([]byte) error, statuses ...int) (*Sender, error) {
 	client, err := New(name, config)
 	if err != nil {
 		return nil, err
 	}
-	return &Sender{client: client, name: name, prepare: prepare, acknowledge: acknowledge}, nil
+	return &Sender{client: client, name: name, prepare: prepare, acknowledge: acknowledge, statuses: append([]int(nil), statuses...)}, nil
 }
 
 // Send validates before constructing a request and preserves provider evidence without raw prose.
@@ -47,7 +48,7 @@ func (s *Sender) Send(ctx context.Context, message notification.Message) error {
 	if err != nil {
 		return notification.NewDeliveryError(s.name, notification.Outcome{Status: notification.Failed}, err)
 	}
-	return s.client.Request(ctx, request.Method, request.URL, request.Header, request.Body, s.acknowledge)
+	return s.Request(ctx, request)
 }
 
 // Close releases only the default owned transport, preserving injected transport ownership.
@@ -61,4 +62,9 @@ func PostJSON(endpoint string, headers http.Header, value any) Request {
 	}
 	headers.Set("Content-Type", "application/json")
 	return Request{Method: http.MethodPost, URL: endpoint, Header: headers, Body: JSON(value)}
+}
+
+// Request executes an already validated native operation through the same bounded client and acknowledgement policy.
+func (s *Sender) Request(ctx context.Context, request Request) error {
+	return s.client.Request(ctx, request.Method, request.URL, request.Header, request.Body, s.acknowledge, s.statuses...)
 }

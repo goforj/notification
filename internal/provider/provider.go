@@ -41,7 +41,7 @@ func (c *Client) Close() error {
 
 // Request sends once and applies provider-owned acknowledgement validation.
 // A nil validator means HTTP status alone is the documented acceptance contract.
-func (c *Client) Request(ctx context.Context, method, endpoint string, headers http.Header, body []byte, acknowledge func([]byte) error) error {
+func (c *Client) Request(ctx context.Context, method, endpoint string, headers http.Header, body []byte, acknowledge func([]byte) error, acceptedStatuses ...int) error {
 	response, outcome, err := httptransport.Request(c.client, ctx, method, endpoint, headers, body)
 	if err != nil {
 		if errors.Is(err, notification.ErrThrottled) && response.Complete && acknowledge != nil {
@@ -52,6 +52,18 @@ func (c *Client) Request(ctx context.Context, method, endpoint string, headers h
 			}
 		}
 		return notification.NewDeliveryError(c.name, outcome, err)
+	}
+	if len(acceptedStatuses) > 0 {
+		accepted := false
+		for _, status := range acceptedStatuses {
+			if response.StatusCode == status {
+				accepted = true
+				break
+			}
+		}
+		if !accepted {
+			return notification.NewDeliveryError(c.name, notification.Outcome{Status: notification.Unknown}, notification.ErrOutcomeUnknown)
+		}
 	}
 	if acknowledge != nil {
 		if !response.Complete {

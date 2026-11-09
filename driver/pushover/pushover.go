@@ -4,12 +4,13 @@ package pushover
 import (
 	"context"
 	"encoding/json"
-	"github.com/goforj/notification"
-	"github.com/goforj/notification/internal/provider"
 	"net/http"
 	"net/url"
 	"strconv"
 	"unicode/utf8"
+
+	"github.com/goforj/notification"
+	"github.com/goforj/notification/internal/provider"
 )
 
 // Config fixes a trusted pushover destination and caller-owned connection policy.

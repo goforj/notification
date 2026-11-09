@@ -3,9 +3,10 @@ package mattermost
 
 import (
 	"context"
+	"strings"
+
 	"github.com/goforj/notification"
 	"github.com/goforj/notification/internal/provider"
-	"strings"
 )
 
 // Config fixes a trusted mattermost destination and caller-owned connection policy.

@@ -6,11 +6,12 @@ import (
 	"crypto/rand"
 	"encoding/hex"
 	"encoding/json"
-	"github.com/goforj/notification"
-	"github.com/goforj/notification/internal/provider"
 	"net/http"
 	"net/url"
 	"strings"
+
+	"github.com/goforj/notification"
+	"github.com/goforj/notification/internal/provider"
 )
 
 // Config fixes a trusted matrix destination and caller-owned connection policy.
@@ -28,7 +29,7 @@ type Driver struct{ sender *provider.Sender }
 // New validates configuration without contacting the provider.
 func New(config Config) (*Driver, error) {
 	base, err := provider.BaseURL(config.URL, "")
-	if err != nil || !provider.Token(config.Token) || !provider.Token(config.RoomID) || !strings.HasPrefix(config.RoomID, "!") || !strings.Contains(config.RoomID, ":") {
+	if err != nil || !provider.Token(config.Token) || !provider.Token(config.RoomID) || !strings.HasPrefix(config.RoomID, "!") || len(config.RoomID) < 2 || len(config.RoomID) > 255 {
 		return nil, notification.ErrInvalidRequest
 	}
 	sender, err := provider.NewSender("matrix", config.HTTP, func(ctx context.Context, message notification.Message) (provider.Request, error) {

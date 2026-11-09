@@ -4,9 +4,10 @@ package pushbullet
 import (
 	"context"
 	"encoding/json"
+	"net/http"
+
 	"github.com/goforj/notification"
 	"github.com/goforj/notification/internal/provider"
-	"net/http"
 )
 
 // Config fixes a trusted pushbullet destination and caller-owned connection policy.

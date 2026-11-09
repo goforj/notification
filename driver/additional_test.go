@@ -1,16 +1,36 @@
 package driver_test
 
 import (
+	"context"
 	"errors"
 	"github.com/goforj/notification"
+	"github.com/goforj/notification/driver/apprise"
 	"github.com/goforj/notification/driver/bark"
+	"github.com/goforj/notification/driver/betterstack"
+	"github.com/goforj/notification/driver/clicksend"
+	"github.com/goforj/notification/driver/expo"
+	"github.com/goforj/notification/driver/fcm"
+	"github.com/goforj/notification/driver/firehydrant"
+	"github.com/goforj/notification/driver/goalert"
+	"github.com/goforj/notification/driver/homeassistant"
 	"github.com/goforj/notification/driver/ifttt"
+	"github.com/goforj/notification/driver/ilert"
+	"github.com/goforj/notification/driver/incidentio"
 	"github.com/goforj/notification/driver/join"
 	"github.com/goforj/notification/driver/matrix"
 	"github.com/goforj/notification/driver/mattermost"
+	"github.com/goforj/notification/driver/nextcloudtalk"
+	"github.com/goforj/notification/driver/onesignal"
+	"github.com/goforj/notification/driver/pagertree"
+	"github.com/goforj/notification/driver/plivo"
 	"github.com/goforj/notification/driver/pushbullet"
 	"github.com/goforj/notification/driver/pushover"
 	"github.com/goforj/notification/driver/rocketchat"
+	"github.com/goforj/notification/driver/signal"
+	"github.com/goforj/notification/driver/signl4"
+	"github.com/goforj/notification/driver/telnyx"
+	"github.com/goforj/notification/driver/vonage"
+	"github.com/goforj/notification/driver/whatsapp"
 	"github.com/goforj/notification/driver/zulip"
 	"github.com/goforj/notification/notificationtest"
 	"io"
@@ -57,16 +77,80 @@ func TestAdditionalProviders(t *testing.T) {
 		{"join", func(base string, h notification.HTTPConfig) (nativeSender, error) {
 			return join.New(join.Config{BaseURL: base, APIKey: "fixture", DeviceID: "device", HTTP: h})
 		}, `{"success":true}`, []string{`{}`, `{"success":false}`, `{"success":"yes"}`}},
+		{"homeassistant", func(base string, h notification.HTTPConfig) (nativeSender, error) {
+			return homeassistant.New(homeassistant.Config{URL: base, Token: "fixture", Service: "mobile_app_phone", HTTP: h})
+		}, `[]`, []string{`null`, `{}`, `invalid`}},
+		{"nextcloudtalk", func(base string, h notification.HTTPConfig) (nativeSender, error) {
+			return nextcloudtalk.New(nextcloudtalk.Config{URL: base, Username: "fixture", Password: "secret", RoomToken: "room42", HTTP: h})
+		}, `{"ocs":{"meta":{"statuscode":100},"data":{"id":42}}}`, []string{`{}`, `{"ocs":{"meta":{"statuscode":400}}}`, `{"ocs":{"meta":{"statuscode":100},"data":{}}}`, `{"ocs":{"meta":{"statuscode":100},"data":{"id":0}}}`}},
+		{"signal", func(base string, h notification.HTTPConfig) (nativeSender, error) {
+			return signal.New(signal.Config{URL: base, Number: "+12125550100", Recipient: "+12125550101", Token: "fixture", HTTP: h})
+		}, `{"timestamp":"1700000000000"}`, []string{`{}`, `{"timestamp":0}`, `{"timestamp":-1}`, `{"timestamp":"invalid"}`}},
+		{"apprise", func(base string, h notification.HTTPConfig) (nativeSender, error) {
+			return apprise.New(apprise.Config{URL: base, Key: "fixture", Tag: "alerts", Username: "fixture", Password: "secret", HTTP: h})
+		}, `{"status":"SUCCESS"}`, []string{}},
+		{"plivo", func(base string, h notification.HTTPConfig) (nativeSender, error) {
+			return plivo.New(plivo.Config{BaseURL: base, AuthID: "fixture", AuthToken: "secret", From: "+12125550100", To: "+12125550101", HTTP: h})
+		}, `{"api_id":"request-42","message_uuid":["message-42"]}`, []string{`{}`, `{"api_id":"42","message_uuid":[]}`, `{"api_id":"42","message_uuid":[""]}`}},
+		{"vonage", func(base string, h notification.HTTPConfig) (nativeSender, error) {
+			return vonage.New(vonage.Config{BaseURL: base, APIKey: "fixture1", APISecret: "secret", From: "Helpdesk", To: "+12125550101", HTTP: h})
+		}, `{"messages":[{"status":"0","message-id":"message-42"}]}`, []string{`{}`, `{"messages":[{}]}`, `{"messages":[{"status":"0"}]}`, `{"messages":[{"status":"1"}]}`, `{"messages":[{"status":"4"}]}`, `{"messages":[{"status":"5"}]}`, `{"messages":[{"status":"2"}]}`}},
+		{"telnyx", func(base string, h notification.HTTPConfig) (nativeSender, error) {
+			return telnyx.New(telnyx.Config{BaseURL: base, Token: "fixture", From: "+12125550100", To: "+12125550101", MessagingProfileID: "profile", HTTP: h})
+		}, `{"data":{"id":"message-42","to":[{"phone_number":"+12125550101","status":"queued"}]}}`, []string{`{}`, `{"data":{"id":"42","to":[]}}`, `{"data":{"id":"42","to":[{"phone_number":"wrong","status":"queued"}]}}`, `{"data":{"id":"42","to":[{"phone_number":"+12125550101","status":"failed"}]}}`, `{"data":{"id":"42","to":[{"phone_number":"+12125550101","status":"unknown"}]}}`}},
+		{"clicksend", func(base string, h notification.HTTPConfig) (nativeSender, error) {
+			return clicksend.New(clicksend.Config{BaseURL: base, Username: "fixture", APIKey: "secret", From: "Helpdesk", To: "+12125550101", HTTP: h})
+		}, `{"response_code":"SUCCESS","data":{"messages":[{"status":"SUCCESS","message_id":"message-42"}]}}`, []string{`{}`, `{"response_code":"FAILED"}`, `{"response_code":"SUCCESS","data":{"messages":[]}}`, `{"response_code":"SUCCESS","data":{"messages":[{"status":"FAILED"}]}}`, `{"response_code":"SUCCESS","data":{"messages":[{"status":"SUCCESS"}]}}`}},
+		{"goalert", func(base string, h notification.HTTPConfig) (nativeSender, error) {
+			return goalert.New(goalert.Config{URL: base, Token: "fixture", Key: "monitor/42", HTTP: h})
+		}, `{}`, []string{}},
+		{"signl4", func(base string, h notification.HTTPConfig) (nativeSender, error) {
+			return signl4.New(signl4.Config{URL: base, Key: "monitor/42", HTTP: h})
+		}, `{}`, []string{}},
+		{"pagertree", func(base string, h notification.HTTPConfig) (nativeSender, error) {
+			return pagertree.New(pagertree.Config{URL: base, Key: "monitor/42", HTTP: h})
+		}, `{}`, []string{}},
+		{"ilert", func(base string, h notification.HTTPConfig) (nativeSender, error) {
+			return ilert.New(ilert.Config{URL: base, IntegrationKey: "fixture", Key: "monitor/42", HTTP: h})
+		}, `{}`, []string{}},
+		{"incidentio", func(base string, h notification.HTTPConfig) (nativeSender, error) {
+			return incidentio.New(incidentio.Config{BaseURL: base, Token: "fixture", SourceID: "source", Key: "monitor/42", HTTP: h})
+		}, `{"status":"success","deduplication_key":"monitor/42"}`, []string{`{}`, `{"status":"failure","deduplication_key":"monitor/42"}`, `{"status":"success","deduplication_key":""}`}},
+		{"firehydrant", func(base string, h notification.HTTPConfig) (nativeSender, error) {
+			return firehydrant.New(firehydrant.Config{URL: base, Key: "monitor/42", HTTP: h})
+		}, `{}`, []string{}},
+		{"betterstack", func(base string, h notification.HTTPConfig) (nativeSender, error) {
+			return betterstack.New(betterstack.Config{BaseURL: base, Token: "fixture", RequesterEmail: "user@example.com", PolicyID: "policy", TeamName: "Helpdesk", Email: true, HTTP: h})
+		}, `{"data":{"id":"42","type":"incident"}}`, []string{`{}`, `{"data":{"id":"42","type":"unknown"}}`}},
+		{"fcm", func(base string, h notification.HTTPConfig) (nativeSender, error) {
+			return fcm.New(fcm.Config{BaseURL: base, ProjectID: "project", DeviceToken: "device", TokenSource: func(context.Context) (string, error) { return "fixture", nil }, HTTP: h})
+		}, `{"name":"projects/project/messages/message-42"}`, []string{`{}`, `{"name":"projects/other/messages/42"}`, `{"name":"projects/project/messages/"}`}},
+		{"onesignal", func(base string, h notification.HTTPConfig) (nativeSender, error) {
+			return onesignal.New(onesignal.Config{BaseURL: base, AppID: "application", Token: "fixture", SubscriptionID: "device", HTTP: h})
+		}, `{"id":"message-42"}`, []string{`{}`, `{"id":""}`, `{"id":"42","errors":["invalid recipient"]}`}},
+		{"expo", func(base string, h notification.HTTPConfig) (nativeSender, error) {
+			return expo.New(expo.Config{BaseURL: base, PushToken: "ExpoPushToken[fixture]", AccessToken: "fixture", HTTP: h})
+		}, `{"data":{"status":"ok","id":"ticket-42"}}`, []string{`{}`, `{"data":{"status":"ok"}}`, `{"data":{"status":"error","details":{"error":"InvalidCredentials"}}}`, `{"data":{"status":"error","details":{"error":"MessageRateExceeded"}}}`, `{"data":{"status":"error","details":{"error":"MessageTooBig"}}}`, `{"data":{"status":"error","details":{"error":"DeviceNotRegistered"}}}`}},
+		{"whatsapp", func(base string, h notification.HTTPConfig) (nativeSender, error) {
+			return whatsapp.New(whatsapp.Config{BaseURL: base, Token: "fixture", PhoneNumberID: "123456789", To: "+12125550101", APIVersion: "v24.0", HTTP: h})
+		}, `{"contacts":[{"input":"12125550101","wa_id":"12125550101"}],"messages":[{"id":"wamid.fixture"}]}`, []string{`{}`, `{"contacts":[{"input":"other","wa_id":"42"}],"messages":[{"id":"wamid.fixture"}]}`, `{"contacts":[{"input":"12125550101","wa_id":"42"}],"messages":[{"id":"wrong"}]}`}},
 	}
 	for _, entry := range cases {
 		t.Run(entry.name, func(t *testing.T) {
 			var mu sync.Mutex
 			acknowledgement, status := entry.ack, 200
+			if entry.name == "ilert" || entry.name == "incidentio" {
+				status = 202
+			}
+			if entry.name == "betterstack" {
+				status = 201
+			}
 			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 				body, err := io.ReadAll(r.Body)
 				if err != nil {
 					t.Error(err)
 				}
+				inspectAdditionalProtocol(t, entry.name, r, body)
 				switch entry.name {
 				case "matrix":
 					if r.Method != "PUT" || !strings.Contains(r.URL.EscapedPath(), "/send/m.room.message/") || r.Header.Get("Authorization") != "Bearer fixture" {
@@ -76,7 +160,7 @@ func TestAdditionalProviders(t *testing.T) {
 					if r.Method != "GET" || r.URL.Query().Get("apikey") != "fixture" || r.URL.Query().Get("text") == "" {
 						t.Error("Join request contract")
 					}
-				case "pushover", "zulip":
+				case "pushover", "zulip", "vonage":
 					if r.Method != "POST" || r.Header.Get("Content-Type") != "application/x-www-form-urlencoded" || len(body) == 0 {
 						t.Error("form request contract")
 					}
@@ -116,6 +200,9 @@ func TestAdditionalProviders(t *testing.T) {
 				t.Fatal("invalid HTTP policy accepted")
 			}
 			for _, bad := range append(entry.bad, "not json", strings.Repeat("x", 65537)) {
+				if entry.name == "apprise" || entry.name == "goalert" || entry.name == "signl4" || entry.name == "pagertree" || entry.name == "ilert" || entry.name == "firehydrant" {
+					break
+				}
 				mu.Lock()
 				acknowledgement = bad
 				mu.Unlock()
@@ -150,6 +237,25 @@ func TestAdditionalConfiguration(t *testing.T) {
 		{zulip.Config{URL: "https://example.com", Email: "bot@example.com", APIKey: "fixture", Channel: "alerts", Topic: "Tickets", HTTP: notification.HTTPConfig{}}, func(value any) (nativeSender, error) { return zulip.New(value.(zulip.Config)) }},
 		{ifttt.Config{BaseURL: "https://example.com", Key: "fixture", Event: "ticket_updated", HTTP: notification.HTTPConfig{}}, func(value any) (nativeSender, error) { return ifttt.New(value.(ifttt.Config)) }},
 		{join.Config{BaseURL: "https://example.com", APIKey: "fixture", DeviceID: "device", HTTP: notification.HTTPConfig{}}, func(value any) (nativeSender, error) { return join.New(value.(join.Config)) }},
+		{homeassistant.Config{URL: "https://example.com", Token: "fixture", Service: "mobile_app_phone", HTTP: notification.HTTPConfig{}}, func(value any) (nativeSender, error) { return homeassistant.New(value.(homeassistant.Config)) }},
+		{nextcloudtalk.Config{URL: "https://example.com", Username: "fixture", Password: "secret", RoomToken: "room42", HTTP: notification.HTTPConfig{}}, func(value any) (nativeSender, error) { return nextcloudtalk.New(value.(nextcloudtalk.Config)) }},
+		{signal.Config{URL: "https://example.com", Number: "+12125550100", Recipient: "+12125550101", Token: "fixture", HTTP: notification.HTTPConfig{}}, func(value any) (nativeSender, error) { return signal.New(value.(signal.Config)) }},
+		{apprise.Config{URL: "https://example.com", Key: "fixture", Tag: "alerts", Username: "fixture", Password: "secret", HTTP: notification.HTTPConfig{}}, func(value any) (nativeSender, error) { return apprise.New(value.(apprise.Config)) }},
+		{plivo.Config{BaseURL: "https://example.com", AuthID: "fixture", AuthToken: "secret", From: "+12125550100", To: "+12125550101", HTTP: notification.HTTPConfig{}}, func(value any) (nativeSender, error) { return plivo.New(value.(plivo.Config)) }},
+		{vonage.Config{BaseURL: "https://example.com", APIKey: "fixture1", APISecret: "secret", From: "Helpdesk", To: "+12125550101", HTTP: notification.HTTPConfig{}}, func(value any) (nativeSender, error) { return vonage.New(value.(vonage.Config)) }},
+		{telnyx.Config{BaseURL: "https://example.com", Token: "fixture", From: "+12125550100", To: "+12125550101", MessagingProfileID: "profile", HTTP: notification.HTTPConfig{}}, func(value any) (nativeSender, error) { return telnyx.New(value.(telnyx.Config)) }},
+		{clicksend.Config{BaseURL: "https://example.com", Username: "fixture", APIKey: "secret", From: "Helpdesk", To: "+12125550101", HTTP: notification.HTTPConfig{}}, func(value any) (nativeSender, error) { return clicksend.New(value.(clicksend.Config)) }},
+		{goalert.Config{URL: "https://example.com", Token: "fixture", Key: "monitor/42", HTTP: notification.HTTPConfig{}}, func(value any) (nativeSender, error) { return goalert.New(value.(goalert.Config)) }},
+		{signl4.Config{URL: "https://example.com", Key: "monitor/42", HTTP: notification.HTTPConfig{}}, func(value any) (nativeSender, error) { return signl4.New(value.(signl4.Config)) }},
+		{pagertree.Config{URL: "https://example.com", Key: "monitor/42", HTTP: notification.HTTPConfig{}}, func(value any) (nativeSender, error) { return pagertree.New(value.(pagertree.Config)) }},
+		{ilert.Config{URL: "https://example.com", IntegrationKey: "fixture", Key: "monitor/42", HTTP: notification.HTTPConfig{}}, func(value any) (nativeSender, error) { return ilert.New(value.(ilert.Config)) }},
+		{incidentio.Config{BaseURL: "https://example.com", Token: "fixture", SourceID: "source", Key: "monitor/42", HTTP: notification.HTTPConfig{}}, func(value any) (nativeSender, error) { return incidentio.New(value.(incidentio.Config)) }},
+		{firehydrant.Config{URL: "https://example.com", Key: "monitor/42", HTTP: notification.HTTPConfig{}}, func(value any) (nativeSender, error) { return firehydrant.New(value.(firehydrant.Config)) }},
+		{betterstack.Config{BaseURL: "https://example.com", Token: "fixture", RequesterEmail: "user@example.com", PolicyID: "policy", TeamName: "Helpdesk", Email: true, HTTP: notification.HTTPConfig{}}, func(value any) (nativeSender, error) { return betterstack.New(value.(betterstack.Config)) }},
+		{fcm.Config{BaseURL: "https://example.com", ProjectID: "project", DeviceToken: "device", TokenSource: func(context.Context) (string, error) { return "fixture", nil }, HTTP: notification.HTTPConfig{}}, func(value any) (nativeSender, error) { return fcm.New(value.(fcm.Config)) }},
+		{onesignal.Config{BaseURL: "https://example.com", AppID: "application", Token: "fixture", SubscriptionID: "device", HTTP: notification.HTTPConfig{}}, func(value any) (nativeSender, error) { return onesignal.New(value.(onesignal.Config)) }},
+		{expo.Config{BaseURL: "https://example.com", PushToken: "ExpoPushToken[fixture]", AccessToken: "fixture", HTTP: notification.HTTPConfig{}}, func(value any) (nativeSender, error) { return expo.New(value.(expo.Config)) }},
+		{whatsapp.Config{BaseURL: "https://example.com", Token: "fixture", PhoneNumberID: "123456789", To: "+12125550101", APIVersion: "v24.0", HTTP: notification.HTTPConfig{}}, func(value any) (nativeSender, error) { return whatsapp.New(value.(whatsapp.Config)) }},
 	}
 	for _, entry := range cases {
 		value := reflect.ValueOf(entry.config)
@@ -207,4 +313,5 @@ func TestAdditionalConfiguration(t *testing.T) {
 		}
 		_ = driver.Close()
 	}
+
 }

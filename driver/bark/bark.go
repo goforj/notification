@@ -4,6 +4,7 @@ package bark
 import (
 	"context"
 	"encoding/json"
+
 	"github.com/goforj/notification"
 	"github.com/goforj/notification/internal/provider"
 )

@@ -4,9 +4,10 @@ package join
 import (
 	"context"
 	"encoding/json"
+	"net/http"
+
 	"github.com/goforj/notification"
 	"github.com/goforj/notification/internal/provider"
-	"net/http"
 )
 
 // Config fixes a trusted join destination and caller-owned connection policy.
@@ -28,6 +29,9 @@ func New(config Config) (*Driver, error) {
 	}
 	sender, err := provider.NewSender("join", config.HTTP, func(ctx context.Context, message notification.Message) (provider.Request, error) {
 		endpoint := provider.Query(base+"/_ah/api/messaging/v1/sendPush", map[string]string{"apikey": config.APIKey, "deviceId": config.DeviceID, "title": message.Title, "text": message.Body})
+		if len(endpoint) > 4096 {
+			return provider.Request{}, notification.ErrRender
+		}
 		return provider.Request{Method: http.MethodGet, URL: endpoint, Header: http.Header{}}, nil
 	}, func(data []byte) error {
 		var ack struct {

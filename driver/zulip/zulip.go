@@ -5,11 +5,12 @@ import (
 	"context"
 	"encoding/base64"
 	"encoding/json"
-	"github.com/goforj/notification"
-	"github.com/goforj/notification/internal/provider"
 	"net/http"
 	"net/mail"
 	"net/url"
+
+	"github.com/goforj/notification"
+	"github.com/goforj/notification/internal/provider"
 )
 
 // Config fixes a trusted zulip destination and caller-owned connection policy.

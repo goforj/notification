@@ -3,10 +3,11 @@ package ifttt
 
 import (
 	"context"
-	"github.com/goforj/notification"
-	"github.com/goforj/notification/internal/provider"
 	"net/url"
 	"strings"
+
+	"github.com/goforj/notification"
+	"github.com/goforj/notification/internal/provider"
 )
 
 // Config fixes a trusted ifttt destination and caller-owned connection policy.

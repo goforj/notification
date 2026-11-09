@@ -4,9 +4,10 @@ package rocketchat
 import (
 	"context"
 	"encoding/json"
+	"strings"
+
 	"github.com/goforj/notification"
 	"github.com/goforj/notification/internal/provider"
-	"strings"
 )
 
 // Config fixes a trusted rocketchat destination and caller-owned connection policy.
