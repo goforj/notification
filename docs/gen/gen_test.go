@@ -162,7 +162,7 @@ func TestFingerprintAndRoot(t *testing.T) {
 	}
 }
 
-// TestDriverEvidenceAndSearchableNames preserves native evidence and visible text beside full badges.
+// TestDriverEvidenceAndSearchableNames preserves native evidence and searchable names beside aligned icons.
 func TestDriverEvidenceAndSearchableNames(t *testing.T) {
 	root := fixture(t)
 	put(t, root, "driver/ntfy/ntfy.go", "package ntfy\n")
@@ -183,8 +183,11 @@ func TestDriverEvidenceAndSearchableNames(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(string(outputs["README.md"]), `<td><a href="driver/ntfy">ntfy</a></td>`) || !bytes.Contains(outputs["docs/assets/badges/driver-ntfy.svg"], []byte("<text")) {
-		t.Fatal("name is not searchable beside a labelled badge")
+	if !strings.Contains(string(outputs["README.md"]), `<strong>ntfy</strong>`) || !strings.Contains(string(outputs["README.md"]), `align="absmiddle"`) || bytes.Contains(outputs["docs/assets/badges/driver-ntfy.svg"], []byte("<text")) {
+		t.Fatal("driver name is not searchable beside an aligned icon badge")
+	}
+	if strings.Contains(string(outputs["README.md"]), ">Name</th>") {
+		t.Fatal("duplicate name column retained")
 	}
 	putJSON(t, root, "docs/assets/driver-icons/presentation.json", map[string]Presentation{})
 	if _, err := outputsFor(root, demoAPI()); err == nil {

@@ -138,11 +138,7 @@ func outputsFor(root string, apis []API) (map[string][]byte, error) {
 		return nil, err
 	}
 	var drivers strings.Builder
-	columnWidth := 0
-	for _, driver := range catalog.Drivers {
-		columnWidth = max(columnWidth, labelledWidth(presentations[driver.ID].Label)+32)
-	}
-	fmt.Fprintf(&drivers, "<table>\n<thead><tr><th align=\"right\" width=\"%d\">Driver</th><th align=\"left\">Name</th><th align=\"left\">Acceptance</th><th align=\"left\">Verification</th></tr></thead>\n<tbody>\n", columnWidth)
+	drivers.WriteString("<table>\n<thead><tr><th align=\"left\" width=\"260\">Driver</th><th align=\"left\">Acceptance</th><th align=\"left\">Verification</th></tr></thead>\n<tbody>\n")
 	for _, driver := range catalog.Drivers {
 		info, err := os.Stat(filepath.Join(root, driver.Package))
 		if err != nil || !info.IsDir() {
@@ -153,12 +149,12 @@ func outputsFor(root string, apis []API) (map[string][]byte, error) {
 			return nil, fmt.Errorf("missing driver presentation: %s", driver.ID)
 		}
 		asset := "docs/assets/badges/driver-" + driver.ID + ".svg"
-		badge, err := ArtworkBadge(root, "driver-icons", presentation, true)
+		badge, err := ArtworkBadge(root, "driver-icons", presentation, false)
 		if err != nil {
 			return nil, err
 		}
 		outputs[asset] = badge
-		fmt.Fprintf(&drivers, "<tr><td align=\"right\" width=\"%d\"><a href=\"%s\"><img src=\"%s\" width=\"%d\" height=\"22\" alt=\"%s\"></a></td><td><a href=\"%s\">%s</a></td><td>%s</td><td>%s</td></tr>\n", columnWidth, driver.Package, asset, labelledWidth(presentation.Label), html.EscapeString(presentation.Label), driver.Package, html.EscapeString(presentation.Label), html.EscapeString(acceptanceSummary(driver)), html.EscapeString(verificationSummary(driver)))
+		fmt.Fprintf(&drivers, "<tr><td width=\"260\" nowrap><a href=\"%s\"><img src=\"%s\" width=\"22\" height=\"22\" alt=\"\" align=\"absmiddle\"> <strong>%s</strong></a></td><td>%s</td><td>%s</td></tr>\n", driver.Package, asset, html.EscapeString(presentation.Label), html.EscapeString(acceptanceSummary(driver)), html.EscapeString(verificationSummary(driver)))
 	}
 	drivers.WriteString("</tbody>\n</table>")
 	templates["README.md"] = strings.ReplaceAll(templates["README.md"], "{{drivers}}", drivers.String())
