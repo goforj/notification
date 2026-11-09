@@ -38,12 +38,16 @@ var (
 	ErrOutcomeUnknown = errors.New("notification: outcome unknown")
 )
 
-// safeError prevents untrusted collaborator prose from entering public errors.
+// safeClasses enumerates the only leaf causes permitted in public error chains.
+var safeClasses = []error{
+	context.Canceled, context.DeadlineExceeded, ErrInvalidMessage, ErrInvalidRequest,
+	ErrInvalidPlan, ErrUnknownRoute, ErrConflict, ErrInProgress, ErrNoDelivery,
+	ErrSuppressed, ErrDeferred, ErrRender, ErrThrottled, ErrUnauthorized,
+	ErrPermanent, ErrRetryable, ErrOutcomeUnknown,
+}
+
+// safeError prevents untrusted prose from entering errors while retaining bounded diagnostics.
 func safeError(err error, fallback error) error {
-	for _, safe := range []error{context.Canceled, context.DeadlineExceeded, ErrInvalidMessage, ErrInvalidRequest, ErrRender, ErrThrottled, ErrUnauthorized, ErrPermanent, ErrRetryable, ErrOutcomeUnknown} {
-		if errors.Is(err, safe) {
-			return safe
-		}
-	}
-	return fallback
+	remaining := 512
+	return sanitize(err, fallback, 0, &remaining)
 }

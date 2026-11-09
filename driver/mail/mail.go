@@ -98,6 +98,9 @@ func (d *Driver) Send(ctx context.Context, message notification.Message) error {
 		return notification.ErrInvalidMessage
 	}
 	envelope.From = nil
-	_, err := d.deliver(ctx, envelope)
-	return err
+	outcome, err := d.deliver(ctx, envelope)
+	if err != nil {
+		return notification.NewDeliveryError("mail", outcome, err)
+	}
+	return nil
 }
