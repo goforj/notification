@@ -211,3 +211,21 @@ func TestPagerTreeAuthentication(t *testing.T) {
 		t.Fatal("bad token accepted", err)
 	}
 }
+
+// TestBetterStackActionResource requires the native incident resource type as well as the echoed ID.
+func TestBetterStackActionResource(t *testing.T) {
+	for _, body := range []string{`{"data":{"id":"42"}}`, `{"data":{"id":"42","type":"monitor"}}`} {
+		server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) { _, _ = io.WriteString(w, body) }))
+		defer server.Close()
+		driver, err := betterstack.New(betterstack.Config{Token: "fixture", BaseURL: server.URL, HTTP: notification.HTTPConfig{AllowPrivate: true}})
+		if err != nil {
+			t.Fatal(err)
+		}
+		defer driver.Close()
+		for _, err := range []error{driver.Acknowledge(nil, "42"), driver.Resolve(nil, "42")} {
+			if !errors.Is(err, notification.ErrOutcomeUnknown) {
+				t.Fatal("wrong resource acknowledgement accepted", err)
+			}
+		}
+	}
+}

@@ -129,10 +129,11 @@ func (d *Driver) action(ctx context.Context, id, action string) error {
 	return d.client.Request(ctx, request.Method, request.URL, request.Header, request.Body, func(data []byte) error {
 		var response struct {
 			Data struct {
-				ID string `json:"id"`
+				ID   string `json:"id"`
+				Type string `json:"type"`
 			} `json:"data"`
 		}
-		if json.Unmarshal(data, &response) != nil || response.Data.ID != id {
+		if json.Unmarshal(data, &response) != nil || response.Data.ID != id || response.Data.Type != "incident" {
 			return notification.ErrOutcomeUnknown
 		}
 		return nil
