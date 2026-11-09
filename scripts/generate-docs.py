@@ -68,7 +68,11 @@ def driver_badge(presentation):
     """Embed provider artwork locally at a consistent readable size and baseline."""
     path = ROOT / 'docs/assets/driver-icons' / presentation['icon']
     label = html.escape(presentation['label'])
-    width = text_width(presentation['label']) + 40
+    width = text_width(presentation['label']) + 38
+    accent = presentation.get('accent', '#576574')
+    channels = [int(accent[index:index+2], 16) for index in (1, 3, 5)]
+    background = '#' + ''.join(f'{round(channel * 0.08 + 255 * 0.92):02x}' for channel in channels)
+    border = '#' + ''.join(f'{round(channel * 0.28 + 255 * 0.72):02x}' for channel in channels)
     if path.suffix == '.svg':
         ET.register_namespace('', 'http://www.w3.org/2000/svg')
         icon = ET.fromstring(path.read_text())
@@ -76,14 +80,14 @@ def driver_badge(presentation):
             for child in list(parent):
                 if child.tag.endswith('foreignObject'):
                     parent.remove(child)
-        icon.attrib.update(x='6', y='3', width='16', height='16')
+        icon.attrib.update(x='7', y='3', width='16', height='16')
         if 'fill' in presentation:
             icon.set('fill', presentation['fill'])
         artwork = ET.tostring(icon, encoding='unicode')
     else:
         encoded = base64.b64encode(path.read_bytes()).decode('ascii')
-        artwork = f'<image x="6" y="3" width="16" height="16" href="data:image/png;base64,{encoded}"/>'
-    return f'''<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="22" role="img" aria-label="{label}"><title>{label}</title><rect width="{width}" height="22" rx="3" fill="#33436b"/><rect x="4" y="1" width="20" height="20" rx="3" fill="#fff"/>{artwork}<text x="30" y="15" fill="#fff" font-family="Verdana,DejaVu Sans,sans-serif" font-size="11">{label}</text></svg>\n'''
+        artwork = f'<image x="7" y="3" width="16" height="16" href="data:image/png;base64,{encoded}"/>'
+    return f'''<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="22" role="img" aria-label="{label}"><title>{label}</title><rect x=".5" y=".5" width="{width - 1}" height="21" rx="4" fill="{background}" stroke="{border}"/>{artwork}<text x="30" y="15" fill="#24292f" font-family="Verdana,DejaVu Sans,sans-serif" font-size="11">{label}</text></svg>\n'''
 
 
 def outputs():

@@ -2,90 +2,110 @@
   "dingding": {
     "label": "DingTalk",
     "icon": "dingding.svg",
-    "fill": "#0089FF"
+    "fill": "#0089FF",
+    "accent": "#0089FF"
   },
   "discord": {
     "label": "Discord",
     "icon": "discord.svg",
-    "fill": "#5865F2"
+    "fill": "#5865F2",
+    "accent": "#5865F2"
   },
   "email": {
     "label": "Mail",
-    "icon": "email.svg"
+    "icon": "email.svg",
+    "accent": "#576574"
   },
   "feishu": {
     "label": "Feishu",
-    "icon": "feishu.svg"
+    "icon": "feishu.svg",
+    "accent": "#00A6A6"
   },
   "googlechat": {
     "label": "Google Chat",
     "icon": "googlechat.svg",
-    "fill": "#34A853"
+    "fill": "#34A853",
+    "accent": "#188038"
   },
   "gotify": {
     "label": "Gotify",
-    "icon": "gotify.svg"
+    "icon": "gotify.svg",
+    "accent": "#007A9E"
   },
   "jiraservicemanagement": {
     "label": "Jira Service Management",
     "icon": "jiraservicemanagement.svg",
-    "fill": "#0052CC"
+    "fill": "#0052CC",
+    "accent": "#0052CC"
   },
   "line": {
     "label": "LINE",
     "icon": "line.svg",
-    "fill": "#00C300"
+    "fill": "#00C300",
+    "accent": "#008F27"
   },
   "log": {
     "label": "Log",
-    "icon": "log.svg"
+    "icon": "log.svg",
+    "accent": "#576574"
   },
   "ntfy": {
     "label": "ntfy",
     "icon": "ntfy.svg",
-    "fill": "#317F6F"
+    "fill": "#317F6F",
+    "accent": "#317F6F"
   },
   "opsgenie": {
     "label": "Opsgenie",
     "icon": "opsgenie.svg",
-    "fill": "#172B4D"
+    "fill": "#172B4D",
+    "accent": "#172B4D"
   },
   "pagerduty": {
     "label": "PagerDuty",
     "icon": "pagerduty.svg",
-    "fill": "#06AC38"
+    "fill": "#06AC38",
+    "accent": "#00892E"
   },
   "slack": {
     "label": "Slack",
-    "icon": "slack.svg"
+    "icon": "slack.svg",
+    "accent": "#611F69"
   },
   "teams": {
     "label": "Teams",
-    "icon": "teams.svg"
+    "icon": "teams.svg",
+    "accent": "#6264A7"
   },
   "telegram": {
     "label": "Telegram",
     "icon": "telegram.svg",
-    "fill": "#26A5E4"
+    "fill": "#26A5E4",
+    "accent": "#007FAE"
   },
   "twilio": {
     "label": "Twilio",
-    "icon": "twilio.svg"
+    "icon": "twilio.svg",
+    "accent": "#CC1736"
   },
   "waha": {
     "label": "WAHA",
-    "icon": "waha.png"
+    "icon": "waha.png",
+    "accent": "#398515"
   },
   "webhook": {
     "label": "Webhook",
-    "icon": "webhook.svg"
+    "icon": "webhook.svg",
+    "accent": "#576574"
   },
   "wecom": {
     "label": "WeCom",
-    "icon": "wecom.png"
+    "icon": "wecom.png",
+    "accent": "#2877DD"
   },
   "whapi": {
     "label": "Whapi",
-    "icon": "whapi.png"
+    "icon": "whapi.png",
+    "accent": "#8043CB"
   }
 }
