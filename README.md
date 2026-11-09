@@ -64,18 +64,26 @@ The log driver captures locally. A nil error means the driver handled the messag
 <table>
 <thead><tr><th align="left" width="260">Driver</th><th align="left">Acceptance</th><th align="left">Verification</th></tr></thead>
 <tbody>
+<tr><td width="260" nowrap><img src="docs/assets/badges/driver-bark.svg" width="22" height="22" alt="" align="absmiddle"> <a href="driver/bark"><strong>Bark</strong></a></td><td>Native response code</td><td>Protocol tests</td></tr>
 <tr><td width="260" nowrap><img src="docs/assets/badges/driver-dingding.svg" width="22" height="22" alt="" align="absmiddle"> <a href="driver/dingtalk"><strong>DingTalk</strong></a></td><td>Robot response code</td><td>Protocol tests</td></tr>
 <tr><td width="260" nowrap><img src="docs/assets/badges/driver-discord.svg" width="22" height="22" alt="" align="absmiddle"> <a href="driver/discord"><strong>Discord</strong></a></td><td>Message ID</td><td>Protocol tests</td></tr>
-<tr><td width="260" nowrap><img src="docs/assets/badges/driver-email.svg" width="22" height="22" alt="" align="absmiddle"> <a href="driver/mail"><strong>Mail</strong></a></td><td>Mailer acceptance</td><td>Composition tests</td></tr>
 <tr><td width="260" nowrap><img src="docs/assets/badges/driver-feishu.svg" width="22" height="22" alt="" align="absmiddle"> <a href="driver/feishu"><strong>Feishu</strong></a></td><td>Bot response code</td><td>Protocol tests</td></tr>
 <tr><td width="260" nowrap><img src="docs/assets/badges/driver-googlechat.svg" width="22" height="22" alt="" align="absmiddle"> <a href="driver/googlechat"><strong>Google Chat</strong></a></td><td>Message resource</td><td>Protocol tests</td></tr>
 <tr><td width="260" nowrap><img src="docs/assets/badges/driver-gotify.svg" width="22" height="22" alt="" align="absmiddle"> <a href="driver/gotify"><strong>Gotify</strong></a></td><td>Message ID and content</td><td>Gotify 3.1.1</td></tr>
+<tr><td width="260" nowrap><img src="docs/assets/badges/driver-ifttt.svg" width="22" height="22" alt="" align="absmiddle"> <a href="driver/ifttt"><strong>IFTTT</strong></a></td><td>Event-trigger acknowledgement</td><td>Protocol tests</td></tr>
 <tr><td width="260" nowrap><img src="docs/assets/badges/driver-jiraservicemanagement.svg" width="22" height="22" alt="" align="absmiddle"> <a href="driver/jsm"><strong>Jira Service Management</strong></a></td><td>Async request ID</td><td>Protocol tests</td></tr>
+<tr><td width="260" nowrap><img src="docs/assets/badges/driver-join.svg" width="22" height="22" alt="" align="absmiddle"> <a href="driver/join"><strong>Join</strong></a></td><td>Native success flag</td><td>Protocol tests</td></tr>
 <tr><td width="260" nowrap><img src="docs/assets/badges/driver-line.svg" width="22" height="22" alt="" align="absmiddle"> <a href="driver/line"><strong>LINE</strong></a></td><td>Push acknowledgement</td><td>Protocol tests</td></tr>
 <tr><td width="260" nowrap><img src="docs/assets/badges/driver-log.svg" width="22" height="22" alt="" align="absmiddle"> <a href="driver/log"><strong>Log</strong></a></td><td>Local capture</td><td>Local capture</td></tr>
+<tr><td width="260" nowrap><img src="docs/assets/badges/driver-email.svg" width="22" height="22" alt="" align="absmiddle"> <a href="driver/mail"><strong>Mail</strong></a></td><td>Mailer acceptance</td><td>Composition tests</td></tr>
+<tr><td width="260" nowrap><img src="docs/assets/badges/driver-matrix.svg" width="22" height="22" alt="" align="absmiddle"> <a href="driver/matrix"><strong>Matrix</strong></a></td><td>Event ID; fresh transaction per Send</td><td>Protocol tests</td></tr>
+<tr><td width="260" nowrap><img src="docs/assets/badges/driver-mattermost.svg" width="22" height="22" alt="" align="absmiddle"> <a href="driver/mattermost"><strong>Mattermost</strong></a></td><td>Native ok acknowledgement</td><td>Protocol tests</td></tr>
 <tr><td width="260" nowrap><img src="docs/assets/badges/driver-ntfy.svg" width="22" height="22" alt="" align="absmiddle"> <a href="driver/ntfy"><strong>ntfy</strong></a></td><td>Message ID and topic</td><td>ntfy 2.37.2</td></tr>
 <tr><td width="260" nowrap><img src="docs/assets/badges/driver-opsgenie.svg" width="22" height="22" alt="" align="absmiddle"> <a href="driver/opsgenie"><strong>Opsgenie</strong></a></td><td>Async request ID</td><td>Protocol tests</td></tr>
 <tr><td width="260" nowrap><img src="docs/assets/badges/driver-pagerduty.svg" width="22" height="22" alt="" align="absmiddle"> <a href="driver/pagerduty"><strong>PagerDuty</strong></a></td><td>Event and incident key</td><td>Protocol tests</td></tr>
+<tr><td width="260" nowrap><img src="docs/assets/badges/driver-pushbullet.svg" width="22" height="22" alt="" align="absmiddle"> <a href="driver/pushbullet"><strong>Pushbullet</strong></a></td><td>Native push ID</td><td>Protocol tests</td></tr>
+<tr><td width="260" nowrap><img src="docs/assets/badges/driver-pushover.svg" width="22" height="22" alt="" align="absmiddle"> <a href="driver/pushover"><strong>Pushover</strong></a></td><td>Native status and request ID</td><td>Protocol tests</td></tr>
+<tr><td width="260" nowrap><img src="docs/assets/badges/driver-rocketchat.svg" width="22" height="22" alt="" align="absmiddle"> <a href="driver/rocketchat"><strong>Rocket.Chat</strong></a></td><td>Native success flag</td><td>Protocol tests</td></tr>
 <tr><td width="260" nowrap><img src="docs/assets/badges/driver-slack.svg" width="22" height="22" alt="" align="absmiddle"> <a href="driver/slack"><strong>Slack</strong></a></td><td>ok acknowledgement</td><td>Protocol tests</td></tr>
 <tr><td width="260" nowrap><img src="docs/assets/badges/driver-teams.svg" width="22" height="22" alt="" align="absmiddle"> <a href="driver/teams"><strong>Teams</strong></a></td><td>HTTP acceptance</td><td>Protocol tests</td></tr>
 <tr><td width="260" nowrap><img src="docs/assets/badges/driver-telegram.svg" width="22" height="22" alt="" align="absmiddle"> <a href="driver/telegram"><strong>Telegram</strong></a></td><td>Message ID</td><td>Protocol tests</td></tr>
@@ -84,12 +92,13 @@ The log driver captures locally. A nil error means the driver handled the messag
 <tr><td width="260" nowrap><img src="docs/assets/badges/driver-webhook.svg" width="22" height="22" alt="" align="absmiddle"> <a href="driver/webhook"><strong>Webhook</strong></a></td><td>HTTP acceptance</td><td>Protocol tests</td></tr>
 <tr><td width="260" nowrap><img src="docs/assets/badges/driver-wecom.svg" width="22" height="22" alt="" align="absmiddle"> <a href="driver/wecom"><strong>WeCom</strong></a></td><td>Robot response code</td><td>Protocol tests</td></tr>
 <tr><td width="260" nowrap><img src="docs/assets/badges/driver-whapi.svg" width="22" height="22" alt="" align="absmiddle"> <a href="driver/whapi"><strong>Whapi</strong></a></td><td>Send acknowledgement</td><td>Protocol tests</td></tr>
+<tr><td width="260" nowrap><img src="docs/assets/badges/driver-zulip.svg" width="22" height="22" alt="" align="absmiddle"> <a href="driver/zulip"><strong>Zulip</strong></a></td><td>Success result and message ID</td><td>Protocol tests</td></tr>
 </tbody>
 </table>
 
 All drivers have local tests. ntfy and Gotify also pass real-server tests; hosted and paired-session verification remains pending for other providers. See [driver configuration and delivery contracts](docs/drivers.md) for details and [integration evidence](docs/integration-results.json) for exact server versions.
 
-Mail supports SMTP through its configured Mailer. Teams uses Workflows, LINE uses the Messaging API, and Opsgenie provides legacy integration support.
+Mail reuses your configured GoForj Mailer for SMTP, SendGrid, Resend, Mailgun, Postmark, or Amazon SES (a separate Mail module). Teams uses Workflows, LINE uses the Messaging API, and Opsgenie provides legacy integration support.
 
 The root module uses only the standard library. Mail is an optional module using goforj/mail v0.3.1. Drivers own their configured destinations; a `Message` contains only content. Errors preserve safe cancellation and provider classifications without returning provider prose. See [delivery contracts](docs/contracts.md) for bounds and ownership.
 
@@ -136,7 +145,7 @@ It borrows an ordinary `*mail.Mailer` and configured recipients. Mail continues 
 | --- | --- | --- |
 | [Quick start](examples/quickstart/main.go) | `go run ./examples/quickstart` | A title and body through the log driver |
 | [Webhook](examples/webhook/main.go) | `go run ./examples/webhook` | A message sent to a configured local HTTP provider |
-| [Mail](examples/mail/main.go) | `cd examples/mail && go run .` | Mail defaults and a configured recipient with a fake transport |
+| [Mail](examples/mail/main.go) | `cd examples/mail && go run .` | A real Mail Resend driver and Slack composed through Fanout against local fixtures |
 | [Fake](examples/fake/main.go) | `go run ./examples/fake` | Application testing through Sender |
 | [Composition](examples/composition/main.go) | `go run ./examples/composition` | Fanout, conservative fallback and safe retry advice |
 | [Custom HTTP transport](examples/transport/main.go) | `go run ./examples/transport` | Caller-owned transport and TLS trust roots |
@@ -335,24 +344,42 @@ fmt.Println("acknowledge and resolve use the same stable key")
 
 ## Mail delivery
 
-Configure the recipient on the Mail adapter. This example uses Mail's fake, so it sends no real email.
+Reuse the application-owned GoForj Mailer and configure notification recipients once. Mail owns provider credentials, sender defaults, MIME and transport. This example runs real Resend and Slack drivers against local HTTP fixtures, then composes them through Fanout. It sends no hosted email or chat message.
 
 ```go
-transport := mailfake.New()
+transport, err := mailresend.New(mailresend.Config{
+	APIKey:     "local-fixture-key",
+	Endpoint:   provider.URL + "/email",
+	HTTPClient: provider.Client(),
+})
+if err != nil {
+	panic(err)
+}
 mailer := mail.New(transport, mail.WithDefaultFrom("sender@example.com", "Helpdesk"))
-driver := notificationmail.New(mailer, "recipient@example.com")
-notifier := notification.New(driver)
-
-err := notifier.Send(context.Background(), notification.Message{
+email := notificationmail.New(mailer, "recipient@example.com")
+chat, err := slack.New(slack.Config{
+	URL: provider.URL + "/slack",
+	HTTP: notification.HTTPConfig{
+		AllowPrivate: true,
+	},
+})
+if err != nil {
+	panic(err)
+}
+defer chat.Close()
+sender := notification.Fanout(email, chat)
+err = sender.Send(context.Background(), notification.Message{
 	Title: "Ticket updated",
 	Body:  "Ticket T-42 has a new owner.",
 })
 if err != nil {
 	panic(err)
 }
-fmt.Println("captured mail:", transport.SentCount())
-// captured mail: 1
+fmt.Println("accepted email and chat:", emails.Load(), chats.Load())
+// accepted email and chat: 1 1
 ```
+
+See [Mail integration](docs/mail.md) for provider choices, rich email, lifecycle and verification details.
 
 ## Application testing
 

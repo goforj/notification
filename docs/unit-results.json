@@ -4,6 +4,10 @@
       "covered_statements": 442,
       "total_statements": 442
     },
+    "github.com/goforj/notification/driver/bark": {
+      "covered_statements": 16,
+      "total_statements": 16
+    },
     "github.com/goforj/notification/driver/dingtalk": {
       "covered_statements": 20,
       "total_statements": 20
@@ -24,6 +28,14 @@
       "covered_statements": 21,
       "total_statements": 21
     },
+    "github.com/goforj/notification/driver/ifttt": {
+      "covered_statements": 13,
+      "total_statements": 13
+    },
+    "github.com/goforj/notification/driver/join": {
+      "covered_statements": 17,
+      "total_statements": 17
+    },
     "github.com/goforj/notification/driver/jsm": {
       "covered_statements": 66,
       "total_statements": 66
@@ -40,6 +52,14 @@
       "covered_statements": 39,
       "total_statements": 39
     },
+    "github.com/goforj/notification/driver/matrix": {
+      "covered_statements": 18,
+      "total_statements": 18
+    },
+    "github.com/goforj/notification/driver/mattermost": {
+      "covered_statements": 13,
+      "total_statements": 13
+    },
     "github.com/goforj/notification/driver/ntfy": {
       "covered_statements": 32,
       "total_statements": 32
@@ -51,6 +71,18 @@
     "github.com/goforj/notification/driver/pagerduty": {
       "covered_statements": 43,
       "total_statements": 43
+    },
+    "github.com/goforj/notification/driver/pushbullet": {
+      "covered_statements": 20,
+      "total_statements": 20
+    },
+    "github.com/goforj/notification/driver/pushover": {
+      "covered_statements": 23,
+      "total_statements": 23
+    },
+    "github.com/goforj/notification/driver/rocketchat": {
+      "covered_statements": 16,
+      "total_statements": 16
     },
     "github.com/goforj/notification/driver/slack": {
       "covered_statements": 10,
@@ -84,13 +116,17 @@
       "covered_statements": 18,
       "total_statements": 18
     },
+    "github.com/goforj/notification/driver/zulip": {
+      "covered_statements": 21,
+      "total_statements": 21
+    },
     "github.com/goforj/notification/internal/httptransport": {
       "covered_statements": 93,
       "total_statements": 93
     },
     "github.com/goforj/notification/internal/provider": {
-      "covered_statements": 87,
-      "total_statements": 87
+      "covered_statements": 107,
+      "total_statements": 107
     },
     "github.com/goforj/notification/notificationfake": {
       "covered_statements": 40,
@@ -102,12 +138,12 @@
     }
   },
   "toolchain": "go version go1.27.3 darwin/arm64",
-  "source_fingerprint": "a32f56089d3ff8ac64bd8f8716df112dbe5ed992ce5034a9c36434c66cbca513",
-  "unit_tests_passed": 263,
-  "covered_statements": 1251,
-  "total_statements": 1251,
-  "command_statements": 134,
-  "covered_command_statements": 114,
+  "source_fingerprint": "622b43eb4c7b5f0452dab0c19cc496efe56d3c769646373f10712ebf3eccf767",
+  "unit_tests_passed": 280,
+  "covered_statements": 1428,
+  "total_statements": 1428,
+  "command_statements": 150,
+  "covered_command_statements": 128,
   "coverage_percent": 100,
   "modules": [
     ".",

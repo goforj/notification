@@ -42,7 +42,7 @@ The log driver captures locally. A nil error means the driver handled the messag
 
 All drivers have local tests. ntfy and Gotify also pass real-server tests; hosted and paired-session verification remains pending for other providers. See [driver configuration and delivery contracts](docs/drivers.md) for details and [integration evidence](docs/integration-results.json) for exact server versions.
 
-Mail supports SMTP through its configured Mailer. Teams uses Workflows, LINE uses the Messaging API, and Opsgenie provides legacy integration support.
+Mail reuses your configured GoForj Mailer for SMTP, SendGrid, Resend, Mailgun, Postmark, or Amazon SES (a separate Mail module). Teams uses Workflows, LINE uses the Messaging API, and Opsgenie provides legacy integration support.
 
 The root module uses only the standard library. Mail is an optional module using goforj/mail v0.3.1. Drivers own their configured destinations; a `Message` contains only content. Errors preserve safe cancellation and provider classifications without returning provider prose. See [delivery contracts](docs/contracts.md) for bounds and ownership.
 
@@ -89,7 +89,7 @@ It borrows an ordinary `*mail.Mailer` and configured recipients. Mail continues 
 | --- | --- | --- |
 | [Quick start](examples/quickstart/main.go) | `go run ./examples/quickstart` | A title and body through the log driver |
 | [Webhook](examples/webhook/main.go) | `go run ./examples/webhook` | A message sent to a configured local HTTP provider |
-| [Mail](examples/mail/main.go) | `cd examples/mail && go run .` | Mail defaults and a configured recipient with a fake transport |
+| [Mail](examples/mail/main.go) | `cd examples/mail && go run .` | A real Mail Resend driver and Slack composed through Fanout against local fixtures |
 | [Fake](examples/fake/main.go) | `go run ./examples/fake` | Application testing through Sender |
 | [Composition](examples/composition/main.go) | `go run ./examples/composition` | Fanout, conservative fallback and safe retry advice |
 | [Custom HTTP transport](examples/transport/main.go) | `go run ./examples/transport` | Caller-owned transport and TLS trust roots |
@@ -137,9 +137,11 @@ PagerDuty, JSM and legacy Opsgenie additionally implement `IncidentSender`. Cons
 
 ## Mail delivery
 
-Configure the recipient on the Mail adapter. This example uses Mail's fake, so it sends no real email.
+Reuse the application-owned GoForj Mailer and configure notification recipients once. Mail owns provider credentials, sender defaults, MIME and transport. This example runs real Resend and Slack drivers against local HTTP fixtures, then composes them through Fanout. It sends no hosted email or chat message.
 
 {{snippet:mail}}
+
+See [Mail integration](docs/mail.md) for provider choices, rich email, lifecycle and verification details.
 
 ## Application testing
 

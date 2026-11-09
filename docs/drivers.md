@@ -2,6 +2,15 @@
 
 Generated from the driver catalog by `go -C docs run ./readme`. See [portable delivery contracts](contracts.md) and [executed integration evidence](integration-results.json). Provider acceptance never proves recipient delivery.
 
+## Bark
+
+[Package source](../driver/bark)
+
+- Configuration: Server, device key and optional group.
+- Accepted when: Native response code.
+- Verification: Local protocol tests; hosted verification pending.
+- [Provider protocol reference](https://github.com/Finb/bark-server).
+
 ## DingTalk
 
 [Package source](../driver/dingtalk)
@@ -19,14 +28,6 @@ Generated from the driver catalog by `go -C docs run ./readme`. See [portable de
 - Accepted when: Native message acknowledgement; mentions disabled.
 - Verification: Local protocol tests; hosted verification pending.
 - [Provider protocol reference](https://docs.discord.com/developers/resources/webhook#execute-webhook).
-
-## Mail
-
-[Package source](../driver/mail)
-
-- Configuration: Borrowed Mailer and recipients.
-- Accepted when: Mail acceptance.
-- Verification: Mail composition tests; hosted verification pending.
 
 ## Feishu
 
@@ -55,6 +56,15 @@ Generated from the driver catalog by `go -C docs run ./readme`. See [portable de
 - Verification: Real Gotify 3.1.1 server verified.
 - [Provider protocol reference](https://gotify.net/docs/pushmsg).
 
+## IFTTT
+
+[Package source](../driver/ifttt)
+
+- Configuration: Webhooks key and event; title/body map to value1/value2.
+- Accepted when: Event-trigger acknowledgement.
+- Verification: Local protocol tests; hosted verification pending.
+- [Provider protocol reference](https://ifttt.com/maker_webhooks).
+
 ## Jira Service Management
 
 [Package source](../driver/jsm)
@@ -63,6 +73,15 @@ Generated from the driver catalog by `go -C docs run ./readme`. See [portable de
 - Accepted when: Asynchronous request acceptance; stable alias lookup for actions.
 - Verification: Local protocol tests; hosted verification pending.
 - [Provider protocol reference](https://developer.atlassian.com/cloud/jira/service-desk-ops/rest/v2/api-group-alerts/).
+
+## Join
+
+[Package source](../driver/join)
+
+- Configuration: API key and device ID.
+- Accepted when: Native success flag.
+- Verification: Local protocol tests; hosted verification pending.
+- [Provider protocol reference](https://joaoapps.com/join/api/).
 
 ## LINE
 
@@ -80,6 +99,32 @@ Generated from the driver catalog by `go -C docs run ./readme`. See [portable de
 - Configuration: Borrowed slog logger.
 - Accepted when: Local capture.
 - Verification: Local capture tests.
+
+## Mail
+
+[Package source](../driver/mail)
+
+- Configuration: Borrowed Mailer and recipients.
+- Accepted when: Mail acceptance.
+- Verification: Mail composition tests; hosted verification pending.
+
+## Matrix
+
+[Package source](../driver/matrix)
+
+- Configuration: Homeserver, access token and existing unencrypted room ID.
+- Accepted when: Event ID; fresh transaction per Send.
+- Verification: Local protocol tests; hosted verification pending.
+- [Provider protocol reference](https://spec.matrix.org/v1.16/client-server-api/).
+
+## Mattermost
+
+[Package source](../driver/mattermost)
+
+- Configuration: Incoming webhook URL; mentions neutralized.
+- Accepted when: Native ok acknowledgement.
+- Verification: Local protocol tests; hosted verification pending.
+- [Provider protocol reference](https://docs.mattermost.com/developers/integrate/webhooks/incoming).
 
 ## ntfy
 
@@ -107,6 +152,33 @@ Generated from the driver catalog by `go -C docs run ./readme`. See [portable de
 - Accepted when: Events v2 acknowledgement; trigger, acknowledge, resolve.
 - Verification: Local protocol tests; hosted verification pending.
 - [Provider protocol reference](https://docs.pagerduty.com/developer/send-alert-event).
+
+## Pushbullet
+
+[Package source](../driver/pushbullet)
+
+- Configuration: Access token and optional device, email or channel.
+- Accepted when: Native push ID.
+- Verification: Local protocol tests; hosted verification pending.
+- [Provider protocol reference](https://docs.pushbullet.com/).
+
+## Pushover
+
+[Package source](../driver/pushover)
+
+- Configuration: Application token, user/group, optional device; priorities -2 through 1.
+- Accepted when: Native status and request ID.
+- Verification: Local protocol tests; hosted verification pending.
+- [Provider protocol reference](https://pushover.net/api).
+
+## Rocket.Chat
+
+[Package source](../driver/rocketchat)
+
+- Configuration: Incoming integration URL; mentions neutralized.
+- Accepted when: Native success flag.
+- Verification: Local protocol tests; hosted verification pending.
+- [Provider protocol reference](https://docs.rocket.chat/docs/integrations).
 
 ## Slack
 
@@ -178,3 +250,12 @@ Generated from the driver catalog by `go -C docs run ./readme`. See [portable de
 - Accepted when: Native sent acknowledgement.
 - Verification: Local protocol tests; hosted verification pending.
 - [Provider protocol reference](https://whapi.readme.io/reference/sendmessagetext).
+
+## Zulip
+
+[Package source](../driver/zulip)
+
+- Configuration: Server, bot email/key, channel and topic.
+- Accepted when: Success result and message ID.
+- Verification: Local protocol tests; hosted verification pending.
+- [Provider protocol reference](https://zulip.com/api/send-message).
