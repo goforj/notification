@@ -340,3 +340,43 @@ func TestSuccessfulFallbackIsTerminal(t *testing.T) {
 		})
 	}
 }
+
+// TestConflictingFailureEvidence prevents ambiguous custom transports from enabling duplicates.
+func TestConflictingFailureEvidence(t *testing.T) {
+	for _, cause := range []error{
+		ErrOutcomeUnknown,
+		errors.Join(ErrOutcomeUnknown, ErrRetryable),
+		errors.Join(ErrOutcomeUnknown, context.Canceled),
+		errors.New("private unclassified transport failure"),
+	} {
+		for _, advance := range []bool{false, true} {
+			r := request()
+			primary, backup := 0, 0
+			n := setup(t, FirstSuccess, Plan{Deliveries: []PlannedDelivery{
+				delivery(r.Recipients[0], "a"),
+				delivery(r.Recipients[0], "b"),
+			}}, map[string]DriverFunc[TextPayload]{
+				"a": func(context.Context, Delivery[TextPayload]) (Outcome, error) {
+					primary++
+					return Outcome{Status: Failed}, cause
+				},
+				"b": func(context.Context, Delivery[TextPayload]) (Outcome, error) {
+					backup++
+					return Outcome{Status: Accepted}, nil
+				},
+			}, WithJournal(NewMemoryJournal()))
+			route := n.routes[r.Route]
+			route.ContinueOnRetryable = advance
+			n.routes[r.Route] = route
+			for attempt := 0; attempt < 2; attempt++ {
+				result, err := n.Send(context.Background(), r)
+				if !errors.Is(err, ErrOutcomeUnknown) || result.Succeeded || result.Deliveries[0].Outcome.Status != Unknown || result.Deliveries[1].Outcome.Status != Skipped {
+					t.Fatalf("conflicting evidence allowed delivery: %+v, %v", result, err)
+				}
+			}
+			if primary != 1 || backup != 0 {
+				t.Fatalf("ambiguous work repeated: primary=%d backup=%d", primary, backup)
+			}
+		}
+	}
+}

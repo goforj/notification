@@ -201,7 +201,12 @@ func normalize(outcome Outcome, err error) (Outcome, error) {
 		outcome.Status = Unknown
 		err = ErrOutcomeUnknown
 	}
-	return outcome, safeError(err, ErrOutcomeUnknown)
+	safe := safeError(err, ErrOutcomeUnknown)
+	// Explicit uncertainty overrides rejection so fallback and journal retries cannot duplicate work.
+	if errors.Is(safe, ErrOutcomeUnknown) {
+		outcome.Status = Unknown
+	}
+	return outcome, safe
 }
 
 // validatePlan rejects scope changes, unclassified recipients and duplicate deliveries.
