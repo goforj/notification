@@ -59,7 +59,7 @@ func New(config Config) (*Driver, error) {
 	return &Driver{client, config}, nil
 }
 
-// Close releases owned idle connections.
+// Close releases only owned idle connections; injected transports remain caller-owned.
 func (d *Driver) Close() error { return d.client.Close() }
 
 // Send triggers the explicitly configured stable alias.

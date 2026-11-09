@@ -1,6 +1,7 @@
 // Package webhook delivers bounded generic JSON or Slack-compatible plain text
 // to trusted planner-resolved endpoints. It disables proxies and redirects and
-// validates every resolved IP at connection time to resist DNS rebinding.
+// validates every resolved IP at connection time to resist DNS rebinding when
+// using its default transport. Explicit injected transports own network policy.
 package webhook
 
 import (
@@ -36,9 +37,12 @@ type Config struct {
 	BearerToken  string
 	AllowPrivate bool
 	Resolver     Resolver
+	// Transport is borrowed unchanged; nil selects the destination-checked default.
+	// An injected transport owns DNS, TLS, proxy, dialing, and retry policy.
+	Transport http.RoundTripper
 }
 
-// Driver owns a bounded HTTP transport, never injected through application requests.
+// Driver owns request bounds and borrows an optional construction-time transport.
 type Driver struct {
 	client    *http.Client
 	transport *http.Transport
@@ -65,7 +69,7 @@ func New(config Config) (*Driver, error) {
 		}
 	}
 	client, transport, err := httptransport.New(notification.HTTPConfig{
-		Timeout: config.Timeout, AllowPrivate: config.AllowPrivate, Resolver: config.Resolver,
+		Timeout: config.Timeout, AllowPrivate: config.AllowPrivate, Resolver: config.Resolver, Transport: config.Transport,
 	})
 	if err != nil {
 		return nil, err
@@ -83,8 +87,13 @@ func New(config Config) (*Driver, error) {
 	}, nil
 }
 
-// Close releases idle connections; callers own shutdown and in-flight cancellation.
-func (d *Driver) Close() error { d.transport.CloseIdleConnections(); return nil }
+// Close releases only owned idle connections. Injected transports remain caller-owned.
+func (d *Driver) Close() error {
+	if d.transport != nil {
+		d.transport.CloseIdleConnections()
+	}
+	return nil
+}
 
 // Deliver performs one POST. Successful HTTP status proves acceptance only.
 // No generic idempotency claim is made because arbitrary webhook servers may ignore keys.

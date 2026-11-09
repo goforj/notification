@@ -52,7 +52,7 @@ func New(config Config) (*Driver, error) {
 	return &Driver{client, config}, nil
 }
 
-// Close releases idle connections; applications own all workflow scheduling.
+// Close releases only owned idle connections; injected transports remain caller-owned.
 func (d *Driver) Close() error { return d.client.Close() }
 
 // Send triggers the configured fixed incident key with ordinary message content.

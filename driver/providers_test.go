@@ -195,6 +195,26 @@ func TestNativeProviders(t *testing.T) {
 			}
 			defer driver.Close()
 			notificationtest.Sender(t, func() notification.Sender { return driver })
+			t.Run("borrowed transport", func(t *testing.T) {
+				base := &http.Transport{}
+				defer base.CloseIdleConnections()
+				transport := &borrowedTransport{base: base}
+				borrowed, err := entry.new(server.URL, notification.HTTPConfig{Transport: transport})
+				if err != nil {
+					t.Fatal(err)
+				}
+				notificationtest.Sender(t, func() notification.Sender { return borrowed })
+				if transport.calls.Load() != 9 {
+					t.Fatal("borrowed transport missed a send or received invalid work")
+				}
+				if err := borrowed.Close(); err != nil {
+					t.Fatal(err)
+				}
+				if transport.closes.Load() != 0 {
+					t.Fatal("driver closed shared transport")
+				}
+			})
+
 			if _, err := entry.new("https://user:secret@example.com", notification.HTTPConfig{}); !errors.Is(err, notification.ErrInvalidRequest) {
 				t.Fatal("invalid URL accepted")
 			}

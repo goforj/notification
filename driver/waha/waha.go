@@ -43,7 +43,7 @@ func New(config Config) (*Driver, error) {
 	return &Driver{hook}, nil
 }
 
-// Close releases idle connections without logging out the configured session.
+// Close releases only owned idle connections; injected transports remain caller-owned.
 func (d *Driver) Close() error { return d.hook.Close() }
 
 // Send treats HTTP success as API acceptance across WAHA's different engine schemas.

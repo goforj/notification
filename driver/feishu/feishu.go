@@ -52,7 +52,7 @@ func New(config Config) (*Driver, error) {
 	return &Driver{hook}, nil
 }
 
-// Close releases owned idle HTTP connections.
+// Close releases only owned idle connections; injected transports remain caller-owned.
 func (d *Driver) Close() error { return d.hook.Close() }
 
 // Send signs each request with its current Unix timestamp when configured.

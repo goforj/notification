@@ -26,6 +26,7 @@ var applicationAPI = []API{
 	{"pagerduty.Driver.Resolve", "driver/pagerduty", "Driver.Resolve", "incident", "Incident lifecycle"},
 	{"Notifier.Send", ".", "Notifier.Send", "quickstart", "Quick Start"},
 	{"webhook.New", "driver/webhook", "New", "webhook", "Webhook delivery"},
+	{"slack.New", "driver/slack", "New", "transport", "Custom HTTP transport"},
 	{"notificationfake.New", "notificationfake", "New", "fake", "Application testing"},
 	{"Fake.Messages", "notificationfake", "Fake.Messages", "fake", "Application testing"},
 	{"notificationmail.New", "driver/mail", "New", "mail", "Mail delivery"},

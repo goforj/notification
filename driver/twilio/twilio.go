@@ -55,7 +55,7 @@ func New(config Config) (*Driver, error) {
 	return &Driver{client, config, "Basic " + base64.StdEncoding.EncodeToString([]byte(config.AccountSID+":"+config.AuthToken))}, nil
 }
 
-// Close releases owned idle HTTP connections.
+// Close releases only owned idle connections; injected transports remain caller-owned.
 func (d *Driver) Close() error { return d.client.Close() }
 
 // Send submits one SMS and never interprets queue acceptance as handset delivery.

@@ -139,6 +139,7 @@ It borrows an ordinary `*mail.Mailer` and configured recipients. Mail continues 
 | [Mail](examples/mail/main.go) | `cd examples/mail && go run .` | Mail defaults and a configured recipient with a fake transport |
 | [Fake](examples/fake/main.go) | `go run ./examples/fake` | Application testing through Sender |
 | [Composition](examples/composition/main.go) | `go run ./examples/composition` | Fanout, conservative fallback and safe retry advice |
+| [Custom HTTP transport](examples/transport/main.go) | `go run ./examples/transport` | Caller-owned transport and TLS trust roots |
 | [Decorator](examples/decorator/main.go) | `go run ./examples/decorator` | Application metrics through SenderFunc |
 | [Incident](examples/incident/main.go) | `go run ./examples/incident` | Stable lifecycle keys with a local PagerDuty protocol fixture |
 | [Advanced fallback](examples/fallback/main.go) | `go run ./examples/fallback` | Optional recipient planning, fallback, and identity |
@@ -159,6 +160,7 @@ The runner discovers and executes every program and verifies the expected output
 | [pagerduty.Driver.Resolve](#incident-lifecycle) | Incident lifecycle |
 | [Notifier.Send](#quick-start) | Quick Start |
 | [webhook.New](#webhook-delivery) | Webhook delivery |
+| [slack.New](#custom-http-transport) | Custom HTTP transport |
 | [notificationfake.New](#application-testing) | Application testing |
 | [Fake.Messages](#application-testing) | Application testing |
 | [notificationmail.New](#mail-delivery) | Mail delivery |
@@ -193,6 +195,44 @@ if err != nil {
 fmt.Println("message accepted")
 // message accepted
 ```
+
+## Custom HTTP transport
+
+Set `HTTPConfig.Transport` to any concurrency-safe `http.RoundTripper`. Drivers borrow it unchanged; the caller owns its configuration and cleanup. This example uses a local TLS server and a certificate pool named `roots`:
+
+```go
+transport := &http.Transport{
+	TLSClientConfig: &tls.Config{
+		RootCAs:    roots,
+		MinVersion: tls.VersionTLS12,
+	},
+	ForceAttemptHTTP2: true,
+}
+defer transport.CloseIdleConnections()
+
+driver, err := slack.New(slack.Config{
+	URL: provider.URL,
+	HTTP: notification.HTTPConfig{
+		Transport: transport,
+	},
+})
+if err != nil {
+	panic(err)
+}
+defer driver.Close()
+
+err = driver.Send(context.Background(), notification.Message{
+	Title: "Ticket updated",
+	Body:  "Ticket T-42 has a new owner.",
+})
+if err != nil {
+	panic(err)
+}
+fmt.Println("accepted through custom transport")
+// accepted through custom transport
+```
+
+Webhook exposes the same option directly as `webhook.Config.Transport`. The library retains its client timeout, redirect rejection, response body bounds, and safe errors. With an injected transport, dialing, DNS, TLS, proxies, and retries belong to that transport; `AllowPrivate` and `Resolver` apply only to the default transport. See [transport ownership](docs/contracts.md#http-transport-ownership) for details.
 
 ## Composition
 

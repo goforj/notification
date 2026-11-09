@@ -38,7 +38,7 @@ func New(config Config) (*Driver, error) {
 	return &Driver{hook}, nil
 }
 
-// Close releases idle connections.
+// Close releases only owned idle connections; injected transports remain caller-owned.
 func (d *Driver) Close() error { return d.hook.Close() }
 
 // Send requires Slack's documented ok acknowledgement.

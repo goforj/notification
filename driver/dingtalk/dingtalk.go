@@ -35,7 +35,7 @@ func New(config Config) (*Driver, error) {
 	return &Driver{client, config}, nil
 }
 
-// Close releases owned idle HTTP connections.
+// Close releases only owned idle connections; injected transports remain caller-owned.
 func (d *Driver) Close() error { return d.client.Close() }
 
 // Send computes the signature at send time and validates the native error code.

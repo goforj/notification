@@ -60,7 +60,7 @@ func New(config Config) (*Driver, error) {
 	return &Driver{client, endpoint + "/", config.Topic, auth, config.Priority}, nil
 }
 
-// Close releases idle connections; the caller owns in-flight context cancellation.
+// Close releases only owned idle connections; injected transports remain caller-owned.
 func (d *Driver) Close() error { return d.client.Close() }
 
 // Send requires a native message acknowledgement for the configured topic.

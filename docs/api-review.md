@@ -46,15 +46,23 @@ This is a runtime compatibility change for applications relying on global TLS di
 
 The library does not adopt arbitrary global wrappers as notification transports. That would let unrelated instrumentation bypass driver destination guarantees. Application-owned Sender decorators and advanced observers remain the current observation boundaries.
 
-No public interfaces, exported configuration fields, persisted formats, module topology, dependencies, or minimum Go versions change in this review.
+The initial review changed no public interfaces, exported configuration fields, persisted formats, module topology, dependencies, or minimum Go versions. The subsequent maintainer-requested transport injection addition is recorded below.
 
 ## Deliberate limits and future decisions
 
-- HTTPConfig exposes timeouts, destination policy, and DNS resolution, but no per-driver HTTP client, custom CA, or mTLS injection. A future explicit construction seam should preserve destination checks and TLS ownership. Adding fields to exported configuration structs can break unkeyed literals, so this requires a separate compatibility decision and a concrete consumer case.
+- Resolved by the follow-up below: explicit per-driver transport injection now supports custom trust roots, mTLS, proxies, and transport instrumentation. A supplied RoundTripper owns connection policy; the library cannot enforce its default DNS policy inside arbitrary custom dialing code.
 - Common Sender results remain error-only. Applications needing positive provider evidence and per-recipient results use typed transports and Dispatcher. A result-producing API for every sender would change the core contract.
 - Rich attachments, arbitrary provider parameters, dynamic destination overrides, automatic retries, and durable deduplication are separate requirements. Existing typed renderers and application composition should be exercised before introducing another universal abstraction.
 
 These limits prevent a claim that the API handles every possible provider feature. The common interface is intentionally small, and the extension points preserve materially different delivery semantics.
+
+## Follow-up: explicit HTTP transport injection
+
+The maintainer requested a first-class transport seam after the initial review. HTTPConfig.Transport and webhook.Config.Transport now accept standard http.RoundTripper implementations. Drivers borrow the exact supplied instance, preserve its TLS/proxy/dial settings, and never close it. The default path keeps the destination-checked owned transport.
+
+Client timeouts, redirect rejection, bounded request and response bodies, native acknowledgements, and safe errors remain library-owned. Connection policy and any custom retries or logging belong to the injected transport. AllowPrivate and Resolver apply only to the default path. The runnable [TLS transport example](../examples/transport/main.go) uses an explicit certificate pool without changing global HTTP state.
+
+This adds fields to two exported configuration structs. Keyed literals and constructor signatures are preserved; unkeyed HTTPConfig and webhook.Config literals must add the field or migrate to keyed literals. There are no new dependencies or minimum Go version changes. Tests cover all HTTP driver construction paths, shared transport lifetime, concrete transport immutability, concurrency, timeout/cancellation, redirects, response limits, and redaction.
 
 ## Reference checks
 

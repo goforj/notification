@@ -16,13 +16,17 @@ import (
 	"github.com/goforj/notification"
 )
 
-// New creates a client and its owned transport without I/O.
+// New creates a bounded client without I/O. Its second result is the owned
+// default transport, or nil when borrowing the explicitly configured transport.
 func New(config notification.HTTPConfig) (*http.Client, *http.Transport, error) {
 	if config.Timeout == 0 {
 		config.Timeout = 10 * time.Second
 	}
 	if config.Timeout < time.Millisecond || config.Timeout > 30*time.Second {
 		return nil, nil, notification.ErrInvalidRequest
+	}
+	if config.Transport != nil {
+		return newClient(config.Transport, config.Timeout), nil, nil
 	}
 	resolver := config.Resolver
 	if resolver == nil {
@@ -73,11 +77,16 @@ func New(config notification.HTTPConfig) (*http.Client, *http.Transport, error) 
 		}
 		return nil, notification.ErrRetryable
 	}
+	return newClient(transport, config.Timeout), transport, nil
+}
+
+// newClient keeps timeout and redirect behavior independent of transport ownership.
+func newClient(transport http.RoundTripper, timeout time.Duration) *http.Client {
 	return &http.Client{
 		Transport:     transport,
-		Timeout:       config.Timeout,
+		Timeout:       timeout,
 		CheckRedirect: func(*http.Request, []*http.Request) error { return http.ErrUseLastResponse },
-	}, transport, nil
+	}
 }
 
 // Response retains bounded wire evidence for provider-owned acknowledgement parsing.

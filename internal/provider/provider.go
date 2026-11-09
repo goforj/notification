@@ -15,14 +15,14 @@ import (
 	"github.com/goforj/notification/internal/httptransport"
 )
 
-// Client owns one bounded transport and a static provider identity.
+// Client owns request bounds and a provider identity. Its transport is nil when borrowed.
 type Client struct {
 	client    *http.Client
 	transport *http.Transport
 	name      string
 }
 
-// New constructs an owned provider transport without network I/O.
+// New constructs a provider client without I/O, borrowing an explicit Transport.
 func New(name string, config notification.HTTPConfig) (*Client, error) {
 	client, transport, err := httptransport.New(config)
 	if err != nil {
@@ -31,9 +31,11 @@ func New(name string, config notification.HTTPConfig) (*Client, error) {
 	return &Client{client, transport, name}, nil
 }
 
-// Close releases idle connections without canceling caller-owned contexts.
+// Close releases only owned idle connections. An injected transport remains caller-owned.
 func (c *Client) Close() error {
-	c.transport.CloseIdleConnections()
+	if c.transport != nil {
+		c.transport.CloseIdleConnections()
+	}
 	return nil
 }
 

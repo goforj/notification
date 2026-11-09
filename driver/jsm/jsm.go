@@ -67,7 +67,7 @@ func New(config Config) (*Driver, error) {
 	return &Driver{client, config, "Basic " + base64.StdEncoding.EncodeToString([]byte(config.Email+":"+config.Token))}, nil
 }
 
-// Close releases idle connections without changing remote alert state.
+// Close releases only owned idle connections; injected transports remain caller-owned.
 func (d *Driver) Close() error { return d.client.Close() }
 
 // Send triggers the configured fixed incident key.

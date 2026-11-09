@@ -281,3 +281,37 @@ func TestSenderFailure(t *testing.T) {
 		t.Fatal(err)
 	}
 }
+
+// callerTransport verifies borrowing through the webhook's flat configuration surface.
+type callerTransport struct{ calls, closed int }
+
+// RoundTrip returns a public acknowledgement while counting explicit transport use.
+func (t *callerTransport) RoundTrip(r *http.Request) (*http.Response, error) {
+	t.calls++
+	return &http.Response{StatusCode: http.StatusAccepted, Body: http.NoBody, Header: make(http.Header), Request: r}, nil
+}
+
+// CloseIdleConnections records ownership violations without needing a real connection pool.
+func (t *callerTransport) CloseIdleConnections() { t.closed++ }
+
+// TestBorrowedWebhookTransport keeps caller transport lifetime independent of driver Close.
+func TestBorrowedWebhookTransport(t *testing.T) {
+	transport := &callerTransport{}
+	driver, err := New(Config{URL: "https://127.0.0.1", Transport: transport})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if driver.client.Transport != transport || driver.transport != nil {
+		t.Fatal("transport not borrowed")
+	}
+	message := notification.Message{Body: "public fixture"}
+	if err := driver.Send(context.Background(), message); err != nil {
+		t.Fatal(err)
+	}
+	if err := driver.Close(); err != nil {
+		t.Fatal(err)
+	}
+	if err := driver.Send(context.Background(), message); err != nil || transport.calls != 2 || transport.closed != 0 {
+		t.Fatal("borrowed transport was closed or replaced", err)
+	}
+}

@@ -92,6 +92,7 @@ It borrows an ordinary `*mail.Mailer` and configured recipients. Mail continues 
 | [Mail](examples/mail/main.go) | `cd examples/mail && go run .` | Mail defaults and a configured recipient with a fake transport |
 | [Fake](examples/fake/main.go) | `go run ./examples/fake` | Application testing through Sender |
 | [Composition](examples/composition/main.go) | `go run ./examples/composition` | Fanout, conservative fallback and safe retry advice |
+| [Custom HTTP transport](examples/transport/main.go) | `go run ./examples/transport` | Caller-owned transport and TLS trust roots |
 | [Decorator](examples/decorator/main.go) | `go run ./examples/decorator` | Application metrics through SenderFunc |
 | [Incident](examples/incident/main.go) | `go run ./examples/incident` | Stable lifecycle keys with a local PagerDuty protocol fixture |
 | [Advanced fallback](examples/fallback/main.go) | `go run ./examples/fallback` | Optional recipient planning, fallback, and identity |
@@ -107,6 +108,14 @@ The runner discovers and executes every program and verifies the expected output
 The URL is driver configuration. `AllowPrivate` below permits the local test server; the default destination policy rejects private and special addresses.
 
 {{snippet:webhook}}
+
+## Custom HTTP transport
+
+Set `HTTPConfig.Transport` to any concurrency-safe `http.RoundTripper`. Drivers borrow it unchanged; the caller owns its configuration and cleanup. This example uses a local TLS server and a certificate pool named `roots`:
+
+{{snippet:transport}}
+
+Webhook exposes the same option directly as `webhook.Config.Transport`. The library retains its client timeout, redirect rejection, response body bounds, and safe errors. With an injected transport, dialing, DNS, TLS, proxies, and retries belong to that transport; `AllowPrivate` and `Resolver` apply only to the default transport. See [transport ownership](docs/contracts.md#http-transport-ownership) for details.
 
 ## Composition
 
