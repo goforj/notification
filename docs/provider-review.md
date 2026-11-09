@@ -2,6 +2,8 @@
 
 Reviewed 2026-11-08. This review covers Uptime Gopher's authoritative GoForj demo templates and five Go notification libraries. It recommends the next implementation boundary; the proposed additions below are not shipped APIs or verified provider integrations.
 
+The [2026-11-09 destination coverage review](provider-coverage-review.md) extends this extraction-focused review with fresh cross-ecosystem catalogs and a prioritized list of missing destinations. It does not add runtime support claims.
+
 ## Recommendation
 
 Keep `New(driver).Send(ctx, Message)` as the common API. Broad provider coverage fits that interface well. Add lightweight sender composition, safe typed errors, and an optional incident lifecycle capability before expanding the driver catalog. The existing planner-based Dispatcher remains useful for application recipients and preferences, but configured monitoring destinations should not need it merely to send to Slack and Telegram together.
