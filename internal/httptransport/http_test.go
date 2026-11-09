@@ -2,10 +2,13 @@ package httptransport
 
 import (
 	"context"
+	"crypto/tls"
 	"errors"
+	"net"
 	"net/http"
 	"net/http/httptest"
 	"net/netip"
+	"sync/atomic"
 	"testing"
 
 	"github.com/goforj/notification"
@@ -64,5 +67,38 @@ func TestCustomDefaultTransport(t *testing.T) {
 	defer owned.CloseIdleConnections()
 	if _, out, err := Request(allowed, context.Background(), http.MethodPost, server.URL, nil, nil); err != nil || out.Status != notification.Accepted {
 		t.Fatal("owned transport did not deliver", err)
+	}
+}
+
+// TestGlobalTLSDialHooksCannotBypassPolicy keeps HTTPS on the same validated dial path as HTTP.
+func TestGlobalTLSDialHooksCannotBypassPolicy(t *testing.T) {
+	original := http.DefaultTransport
+	defer func() { http.DefaultTransport = original }()
+	for _, hook := range []string{"context", "legacy"} {
+		t.Run(hook, func(t *testing.T) {
+			var calls atomic.Int64
+			defaults := &http.Transport{TLSClientConfig: &tls.Config{MinVersion: tls.VersionTLS12}}
+			if hook == "context" {
+				defaults.DialTLSContext = func(context.Context, string, string) (net.Conn, error) {
+					calls.Add(1)
+					return nil, errors.New("global TLS dial bypass")
+				}
+			} else {
+				defaults.DialTLS = func(string, string) (net.Conn, error) { calls.Add(1); return nil, errors.New("global TLS dial bypass") }
+			}
+			http.DefaultTransport = defaults
+			client, transport, err := New(notification.HTTPConfig{})
+			if err != nil {
+				t.Fatal(err)
+			}
+			defer transport.CloseIdleConnections()
+			if transport.TLSClientConfig == defaults.TLSClientConfig || transport.TLSClientConfig.MinVersion != tls.VersionTLS12 {
+				t.Fatal("TLS settings were not cloned")
+			}
+			_, out, err := Request(client, context.Background(), http.MethodPost, "https://127.0.0.1:1", nil, nil)
+			if !errors.Is(err, notification.ErrPermanent) || out.Status != notification.Failed || calls.Load() != 0 {
+				t.Fatal("global TLS hook bypassed destination policy")
+			}
+		})
 	}
 }

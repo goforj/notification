@@ -42,6 +42,9 @@ func New(config notification.HTTPConfig) (*http.Client, *http.Transport, error) 
 			ExpectContinueTimeout: time.Second,
 		}
 	}
+	// HTTPS must use the validated DialContext rather than an inherited TLS dial bypass.
+	transport.DialTLS = nil
+	transport.DialTLSContext = nil
 	transport.Proxy = nil
 	transport.MaxConnsPerHost = 16
 	transport.MaxResponseHeaderBytes = 32768

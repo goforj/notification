@@ -85,8 +85,8 @@
       "total_statements": 18
     },
     "github.com/goforj/notification/internal/httptransport": {
-      "covered_statements": 88,
-      "total_statements": 88
+      "covered_statements": 90,
+      "total_statements": 90
     },
     "github.com/goforj/notification/internal/provider": {
       "covered_statements": 86,
@@ -102,10 +102,10 @@
     }
   },
   "toolchain": "go version go1.27.3 darwin/arm64",
-  "source_fingerprint": "c3d0e3e40e2ff563db1be2f521d4d98eac579f4ba6429b04855981629a486541",
-  "unit_tests_passed": 234,
-  "covered_statements": 1231,
-  "total_statements": 1231,
+  "source_fingerprint": "3153784ee99929d3d96f391b4bbd4f904e9dd96488a39c363efb1d33e05d935f",
+  "unit_tests_passed": 237,
+  "covered_statements": 1233,
+  "total_statements": 1233,
   "command_statements": 119,
   "covered_command_statements": 101,
   "coverage_percent": 100,

@@ -40,6 +40,10 @@ Observer hooks are synchronous. Their GoDoc now states that they must return pro
 
 A valid custom http.DefaultTransport implementing RoundTripper previously caused HTTP driver construction to panic because the code asserted *http.Transport. A reproduction now exercises that ordinary application instrumentation pattern. Construction clones a concrete default transport as before, preserving its TLS settings, and otherwise creates an owned standard transport before enforcing the same destination, proxy, redirect, and connection policy.
 
+A second transport reproduction found that inherited DialTLS and DialTLSContext hooks could bypass destination validation for HTTPS. Both hooks are now cleared on the owned transport; HTTPS uses the same checked DialContext as HTTP. Regression tests cover both hooks, private-destination rejection, and preservation of TLS settings.
+
+This is a runtime compatibility change for applications relying on global TLS dial hooks. Preserving those hooks would bypass the mandatory destination boundary. Move certificate, client-certificate, and trust-root settings into the concrete default transport's TLSClientConfig; those settings are cloned. Custom connection routing through global TLS dial hooks is intentionally unsupported and requires a separately designed construction seam if it becomes a concrete requirement.
+
 The library does not adopt arbitrary global wrappers as notification transports. That would let unrelated instrumentation bypass driver destination guarantees. Application-owned Sender decorators and advanced observers remain the current observation boundaries.
 
 No public interfaces, exported configuration fields, persisted formats, module topology, dependencies, or minimum Go versions change in this review.
