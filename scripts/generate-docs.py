@@ -13,14 +13,10 @@ ROOT = Path(__file__).resolve().parent.parent
 APIS = [
     ('New', '.', 'New', 'quickstart', 'Quick Start'),
     ('Notifier.Send', '.', 'Notifier.Send', 'quickstart', 'Quick Start'),
-    ('NewMemoryPlanner', '.', 'NewMemoryPlanner', 'quickstart', 'Quick Start'),
-    ('NewAdapter', '.', 'NewAdapter', 'quickstart', 'Quick Start'),
-    ('WithJournal', '.', 'WithJournal', 'fallback', 'Fallback and identity'),
-    ('NewMemoryJournal', '.', 'NewMemoryJournal', 'fallback', 'Fallback and identity'),
-    ('webhook.New', 'driver/webhook', 'New', 'fallback', 'Fallback and identity'),
+    ('webhook.New', 'driver/webhook', 'New', 'webhook', 'Webhook delivery'),
     ('notificationfake.New', 'notificationfake', 'New', 'fake', 'Application testing'),
-    ('Fake.Requests', 'notificationfake', 'Fake.Requests', 'fake', 'Application testing'),
-    ('notificationmail.New', 'driver/mail', 'New', 'mail', 'Mail adapter'),
+    ('Fake.Messages', 'notificationfake', 'Fake.Messages', 'fake', 'Application testing'),
+    ('notificationmail.New', 'driver/mail', 'New', 'mail', 'Mail delivery'),
 ]
 
 
@@ -68,12 +64,16 @@ def outputs():
     if not evidence['total_statements'] or evidence['covered_statements'] != evidence['total_statements']:
         raise ValueError('full library unit coverage is required')
     snippets = {p.parent.name: snippet(p.read_text()) for p in sorted((ROOT / 'examples').glob('*/main.go'))}
-    readme = (ROOT / 'docs/readme.tmpl.md').read_text()
+    templates = {'README.md': (ROOT / 'docs/readme.tmpl.md').read_text()}
+    advanced = ROOT / 'docs/advanced.tmpl.md'
+    if advanced.exists():
+        templates['docs/advanced.md'] = advanced.read_text()
     for name, code in snippets.items():
         marker = '{{snippet:' + name + '}}'
-        if readme.count(marker) != 1:
-            raise ValueError(f'example {name} needs one README target')
-        readme = readme.replace(marker, '```go\n' + code + '\n```')
+        if sum(content.count(marker) for content in templates.values()) != 1:
+            raise ValueError(f'example {name} needs one documentation target')
+        templates = {path: content.replace(marker, '```go\n' + code + '\n```') for path, content in templates.items()}
+    readme = templates['README.md']
     rows = ['| API | Example |', '| --- | --- |']
     for label, package, symbol, example, heading in APIS:
         subprocess.run(['go', 'doc', '.', symbol], cwd=ROOT / package, check=True, capture_output=True)
@@ -85,12 +85,13 @@ def outputs():
             raise ValueError(f'missing anchor {anchor}')
         rows.append(f'| [{label}](#{anchor}) | {heading} |')
     readme = readme.replace('{{api-index}}', '\n'.join(rows))
-    if re.search(r'\{\{(?:snippet:|api-index)', readme):
+    templates['README.md'] = readme
+    if any(re.search(r'\{\{(?:snippet:|api-index)', content) for content in templates.values()):
         raise ValueError('unresolved README marker')
-    result = {'README.md': readme}
+    result = templates
     for name, label, value, color in [('status', 'status', 'unreleased', '#6e7681'), ('go', 'Go', '1.24+', '#007d9c'), ('license', 'license', 'MIT', '#007ec6'), ('coverage', 'coverage', '100%', '#2e8540'), ('tests', 'tests', str(evidence['unit_tests_passed']), '#5368bd')]:
         result[f'docs/assets/badges/{name}.svg'] = badge(label, value, color)
-    for name, label in [('intent', 'Semantic intent'), ('policy', 'Recipient policy'), ('channels', 'Typed channels'), ('identity', 'Explicit identity'), ('diagnostics', 'Safe diagnostics'), ('testing', 'Isolated testing')]:
+    for name, label in [('intent', 'Simple messages'), ('policy', 'Recipient policy'), ('channels', 'Typed channels'), ('identity', 'Explicit identity'), ('diagnostics', 'Safe diagnostics'), ('testing', 'Isolated testing')]:
         result[f'docs/assets/badges/{name}.svg'] = badge(label, '', '#33436b', True)
     return result
 

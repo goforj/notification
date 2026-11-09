@@ -36,7 +36,7 @@ jobs:
       - name: Verify generated documentation
         run: |
           make check-generated
-          git diff --exit-code -- README.md docs/assets/badges
+          git diff --exit-code -- README.md docs/advanced.md docs/assets/badges
       - name: Upload library unit coverage when Codecov is configured
         if: vars.CODECOV_ENABLED == 'true' && matrix.go == 'stable'
         uses: codecov/codecov-action@e53489f4d376d79066609109e7a95a29eb3740b1 # v7.0.0

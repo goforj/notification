@@ -6,7 +6,7 @@ second=$(mktemp)
 trap 'rm -f "$first" "$second"' EXIT
 python3 scripts/generate-docs.py --check
 python3 scripts/generate-docs.py
-find README.md docs/assets/badges -type f -exec shasum -a 256 {} \; | sort > "$first"
+find README.md docs/advanced.md docs/assets/badges -type f -exec shasum -a 256 {} \; | sort > "$first"
 python3 scripts/generate-docs.py
-find README.md docs/assets/badges -type f -exec shasum -a 256 {} \; | sort > "$second"
+find README.md docs/advanced.md docs/assets/badges -type f -exec shasum -a 256 {} \; | sort > "$second"
 cmp "$first" "$second"

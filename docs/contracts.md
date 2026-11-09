@@ -1,10 +1,20 @@
 # Delivery contracts
 
-`notification` is a standalone synchronous library. It has no framework, database, Queue, Auth, or localization dependency. Applications own recipient authorization, endpoint verification, preferences, translations, and the choice to send a notification.
+`notification.New(driver)` constructs a synchronous notifier. `Send(ctx, Message{Title: ..., Body: ...})` validates plain text and calls the configured driver once, returning an error. It has no framework, database, Queue, Auth, or localization dependency.
 
-## Intent and planning
+## Common message path
 
-Construct one `Notifier` per authoritative application and tenant scope. Scope never comes from request values or context. Requests contain opaque recipient references and typed scalar values. A trusted `Planner` resolves endpoints, locale, IANA time zone, and suppression or deferral. It must classify every requested recipient, cannot change scope, and cannot mix a disposition and immediate delivery for the same recipient.
+A `Message` contains only `Title` and `Body`. Destinations are trusted driver configuration: webhook uses `Config.URL`, Mail uses recipient addresses passed to its constructor, and log uses a borrowed logger. Both fields must be valid UTF-8; title allows 256 bytes and rejects line breaks, and body must contain non-whitespace content and fit within 16 KiB. Title is optional for log and webhook; Mail requires a subject.
+
+A nil error means the selected driver handled the message. For log this means local capture, for generic webhook it means HTTP 2xx acceptance, and for Mail it means legacy Mail success. It never proves recipient receipt. No retries, scheduling, fallback, deduplication, or background tasks are implicit in the common path. Errors retain safe classifications while discarding arbitrary collaborator prose. Cancellation during transport may leave provider acceptance uncertain; do not assume a canceled send was unsent.
+
+Application services can depend on `Sender`. `notificationfake.New()` validates and captures messages without contacting providers. `Messages()` returns a copied slice, and `Respond(err)` scripts a test failure. No fake result implies provider delivery.
+
+Applications own recipient authorization, endpoint verification, preferences, translations, and the choice to send a notification. The optional dispatcher provides the mechanisms for those policies.
+
+## Advanced intent and planning
+
+Construct one `Dispatcher` with `NewDispatcher` per authoritative application and tenant scope. Scope never comes from request values or context. Requests contain opaque recipient references and typed scalar values. A trusted `Planner` resolves endpoints, locale, IANA time zone, and suppression or deferral. It must classify every requested recipient, cannot change scope, and cannot mix a disposition and immediate delivery for the same recipient.
 
 `NewMemoryPlanner` copies fixed route plans and is useful for configured system destinations. It applies the notifier's scope to those trusted plans. User lookup and tenant authorization belong in an application `PlannerFunc`; the memory planner does not supply those checks.
 
@@ -18,7 +28,7 @@ Suppression is acceptable only with `AllowSuppressed`. Deferral always leaves th
 
 ## Identity and retries
 
-`Send` performs no retries, sleeps, scheduling, or background work. Applications own backoff and must respect bounded `RetryAfter` advice. Drivers and renderers are paired through `NewAdapter[P]`; incompatible payload types fail to compile.
+`Dispatcher.Send` performs no retries, sleeps, scheduling, or background work. Applications own backoff and must respect bounded `RetryAfter` advice. Drivers and renderers are paired through `NewAdapter[P]`; incompatible payload types fail to compile.
 
 Without a journal, each call is independent. `WithJournal(NewMemoryJournal())` enables process-local arbitration by application, tenant, and request ID. Concurrent identical requests return `ErrInProgress`. Different caller intent returns `ErrConflict`. Recipient order, tag order, and value order do not affect intent. Route and renderer revisions are execution snapshots, not caller intent.
 
@@ -30,7 +40,7 @@ Memory state cannot survive restart and is not suitable for durable Queue jobs. 
 
 ## Ownership and observations
 
-Notifier catalogs, planner plans, request slices, journal results, and fake captures are copied. Callers must not mutate inputs concurrently with a call. Injected collaborators must support concurrent use and remain caller-owned. The library does not close borrowed drivers, loggers, or mailers. Close the webhook driver's idle connections when its owner shuts down.
+Simple messages are passed by value. Dispatcher catalogs, planner plans, request slices, journal results, and fake captures are copied. Callers must not mutate inputs concurrently with a call. Injected collaborators must support concurrent use and remain caller-owned. The library does not close borrowed drivers, loggers, or mailers. Close the webhook driver's idle connections when its owner shuts down.
 
 Observer hooks must return promptly and be concurrency-safe. Dispatch recovers observer panics; it does not create a buffering goroutine. Observations expose only bounded route, channel, driver, status, and duration. Public errors discard collaborator prose and preserve safe cancellation identities. Endpoint wrappers redact ordinary formatting and JSON; `Reveal` is an intentional privileged accessor. Renderers and callers can inspect semantic values explicitly, so do not log request snapshots.
 
@@ -42,8 +52,8 @@ Generic JSON sends `{ "title": "...", "body": "..." }` and classifies 2xx as pro
 
 ## Mail behavior
 
-The optional `driver/mail` module delegates to `github.com/goforj/mail` v0.3.1. Mail owns sender defaults, recipients, header validation, providers, and transport. A nil legacy Mail error maps to accepted, never delivered, with idempotency support unproven. Legacy errors map to unknown because the error-only interface cannot reliably prove provider rejection. Cancellation identities remain inspectable.
+The optional `driver/mail` module configures recipients with `New(mailer, addresses...)` and delegates to `github.com/goforj/mail` v0.3.1. Mail owns sender defaults, recipients, header validation, providers, and transport. A nil legacy Mail error maps to accepted, never delivered, with idempotency support unproven. Legacy errors map to unknown because the error-only interface cannot reliably prove provider rejection. Cancellation identities remain inspectable.
 
 ## Implementation boundary
 
-This repository implements the synchronous foundation of the [framework proposal](designs/framework-proposal.md), under the singular module name requested by the maintainer. It does not yet implement durable SQL journals, Queue submission or claims, generated GoForj components, inbox storage, localization adapters, provider packs, or demo migration. The proposal is historical planning context; these contracts describe the implemented API.
+This repository implements the synchronous foundation of the [framework proposal](designs/framework-proposal.md), under the singular module name requested by the maintainer. It does not yet implement durable SQL journals, Queue submission or claims, generated GoForj components, inbox storage, localization adapters, provider packs, or demo migration. The common Message API and optional NewDispatcher boundary supersede the proposal's application-facing constructor. The proposal is historical planning context; these contracts describe the implemented API.

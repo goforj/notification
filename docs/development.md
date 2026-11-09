@@ -6,7 +6,7 @@ Run `make test` to execute each module, discover and run canonical example progr
 
 Run `make vet`, `make modules-check`, and `make tidy`. Intentional relative replacements keep optional modules testing unpublished root changes. Tests run with `GOWORK=off`. CI checks that tidy leaves module files unchanged.
 
-README content comes from `docs/readme.tmpl.md`, GoDoc symbols, and the marked regions in `examples/*/main.go`. Update these sources, run `make test`, then `make generate` and `make check-generated`. Generation validates API symbols and links to snippets that actually use them. Measured badges come from successful unit evidence, not handwritten counts.
+README and advanced-guide content comes from `docs/readme.tmpl.md`, `docs/advanced.tmpl.md`, GoDoc symbols, and the marked regions in `examples/*/main.go`. Update these sources, run `make test`, then `make generate` and `make check-generated`. Generation validates API symbols and links to snippets that actually use them. Measured badges come from successful unit evidence, not handwritten counts.
 
 Install the repository-pinned scanner with `go install golang.org/x/vuln/cmd/govulncheck@v1.9.0`, then run `make security` on a patched supported toolchain. CI uses the same scanner pin. Codecov project and patch targets use the unit flag; its GitHub App access and upload token must be configured separately. Set the repository variable `CODECOV_ENABLED=true` only after App access and the `CODECOV_TOKEN` secret are configured.
 

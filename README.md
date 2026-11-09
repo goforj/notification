@@ -2,7 +2,7 @@
   <img src="docs/assets/logo.png" width="300" alt="notification logo">
 </p>
 
-<p align="center">Semantic notifications for Go, with explicit recipients, channel policy, and delivery outcomes.</p>
+<p align="center">Send notifications in Go with a title, a body, and a configured driver.</p>
 
 <p align="center">
   <img src="docs/assets/badges/status.svg" alt="Unreleased">
@@ -18,101 +18,63 @@
 
 | Feature | What you get |
 | --- | --- |
-| ![Semantic intent](docs/assets/badges/intent.svg) | Bounded content keys and typed scalar values keep provider payloads out of application services. |
-| ![Recipient policy](docs/assets/badges/policy.svg) | Fanout and fallback evaluate every recipient independently. |
-| ![Typed channels](docs/assets/badges/channels.svg) | Renderer and driver payload types must match at compile time. |
-| ![Explicit identity](docs/assets/badges/identity.svg) | Scoped process-local deduplication preserves accepted channels during explicit partial retries. |
-| ![Safe diagnostics](docs/assets/badges/diagnostics.svg) | Categorical observations and errors omit endpoints and message content. |
-| ![Isolated testing](docs/assets/badges/testing.svg) | Validated capture fakes and a shared driver conformance inventory. |
+| ![Simple messages](docs/assets/badges/intent.svg) | Send a title and body through one configured driver. |
+| ![Recipient policy](docs/assets/badges/policy.svg) | Add scoped recipient resolution and fallback when an application needs them. |
+| ![Typed channels](docs/assets/badges/channels.svg) | Optional semantic templates pair typed renderers and transports. |
+| ![Explicit identity](docs/assets/badges/identity.svg) | Optional process-local deduplication preserves accepted channels during partial retries. |
+| ![Safe diagnostics](docs/assets/badges/diagnostics.svg) | Errors and built-in logs omit endpoints and message content. |
+| ![Isolated testing](docs/assets/badges/testing.svg) | Capture messages through the same small Sender interface used by applications. |
 
 ## Quick Start
 
-Requires Go 1.24+ and Python 3 for documentation generation. This is an unreleased library. From the local checkout:
+Requires Go 1.24+. This is an unreleased library. From the local checkout:
 
 ```sh
 cd ~/code/notification
 go run ./examples/quickstart
 ```
 
-The configured log driver captures the attempt. `BestEffort` succeeds while preserving unknown provider evidence.
+Configure a driver once, then send a message:
 
 ```go
-recipient := notification.RecipientRef{
-	Type: "system",
-	ID:   "on_call",
-}
-planner := notification.NewMemoryPlanner(map[string]notification.Plan{
-	"ticket.updated": {
-		Deliveries: []notification.PlannedDelivery{
-			{
-				Recipient: recipient,
-				Channel:   "log",
-				Driver:    "local",
-				Endpoint: notification.Endpoint{
-					Identity: "local",
-					Address:  notification.Address("local"),
-				},
-				Locale:   "en",
-				TimeZone: "UTC",
-			},
-		},
-	},
-})
-
-scope := notification.Scope{
-	Application: "helpdesk",
-}
-routes := []notification.Route{
-	{
-		Name:     "ticket.updated",
-		Revision: "v1",
-		Policy:   notification.BestEffort,
-	},
-}
 driver := log.New(slog.New(slog.NewTextHandler(io.Discard, nil)))
-renderer := notification.Literal("Ticket updated", "Ticket T-42 has a new owner.")
-adapter := notification.NewAdapter("log", "local", "v1", renderer, driver)
+notifier := notification.New(driver)
 
-notifier, err := notification.New(scope, planner, routes, []notification.Adapter{adapter})
+err := notifier.Send(context.Background(), notification.Message{
+	Title: "Ticket updated",
+	Body:  "Ticket T-42 has a new owner.",
+})
 if err != nil {
 	panic(err)
 }
-
-request := notification.Request{
-	ID:         "assignment-42",
-	Route:      "ticket.updated",
-	Recipients: []notification.RecipientRef{recipient},
-	Content: notification.Content{
-		Key: "ticket.assignment.changed",
-		Values: []notification.Value{
-			notification.String("ticket", "T-42"),
-		},
-	},
-}
-result, err := notifier.Send(context.Background(), request)
-if err != nil {
-	panic(err)
-}
-fmt.Println("route succeeded:", result.Succeeded)
-// route succeeded: true
-fmt.Println("provider evidence:", result.Deliveries[0].Outcome.Status)
-// provider evidence: unknown
+fmt.Println("message captured")
+// message captured
 ```
+
+The log driver captures locally. A nil error means the driver handled the message; it never proves recipient delivery. Send performs no retries or background work.
 
 ## Drivers
 
-| Driver | Transport evidence | Dependencies |
+| Driver | Configuration | Successful handling |
 | ---: | --- | --- |
-| Log | Local capture only, reported as unknown | Standard library |
-| Generic webhook | HTTP 2xx acceptance, with bounded responses and no redirect following | Standard library |
-| Slack-compatible webhook | HTTP 2xx plus an `ok` acknowledgement | Standard library |
-| Mail | Legacy Mail success means acceptance; errors remain unknown | Optional module using goforj/mail v0.3.1 |
+| Log | A borrowed `*slog.Logger` | Local capture |
+| Generic webhook | `webhook.Config.URL` | HTTP 2xx acceptance |
+| Slack-compatible webhook | `webhook.Config.URL` and `Format: webhook.Slack` | HTTP 2xx plus an `ok` acknowledgement |
+| Mail | A borrowed Mailer and recipient addresses | Legacy Mail acceptance |
 
-Local HTTP tests execute generic and Slack-compatible wire contracts. No hosted Slack account or email provider delivery is claimed. See [delivery contracts](docs/contracts.md) for retry, destination, and ownership rules.
+The root module uses only the standard library. Mail is an optional module using goforj/mail v0.3.1. Drivers own their configured destinations; a `Message` contains only content. Errors preserve safe cancellation and provider classifications without returning provider prose. See [delivery contracts](docs/contracts.md) for bounds and ownership.
 
 ## Installation
 
-The root module includes log and webhook packages:
+Until tags are published, consumers can use the local checkout:
+
+```sh
+go mod edit -require=github.com/goforj/notification@v0.0.0
+go mod edit -replace=github.com/goforj/notification=$HOME/code/notification
+go mod tidy
+```
+
+Log, generic webhook, and Slack-compatible webhook packages are included in the root module:
 
 ```go
 import "github.com/goforj/notification"
@@ -120,43 +82,36 @@ import "github.com/goforj/notification/driver/log"
 import "github.com/goforj/notification/driver/webhook"
 ```
 
-Run each included driver example from this checkout:
-
-```sh
-go run ./examples/quickstart # Log capture.
-go run ./examples/fallback  # Generic webhook against a local HTTP provider.
-```
-
-Slack-compatible transport uses the included webhook package:
+For Slack-compatible transport, configure the trusted URL once:
 
 ```go
 driver, err := webhook.New(webhook.Config{
+    URL:    configuredWebhookURL,
     Format: webhook.Slack,
 })
 ```
 
-The optional Mail adapter has its own module. Until independent module tags are published, consumers must use local replacements:
+The optional Mail adapter needs an additional local module requirement:
 
 ```sh
-go mod edit -require=github.com/goforj/notification@v0.0.0
-go mod edit -replace=github.com/goforj/notification=$HOME/code/notification
 go mod edit -require=github.com/goforj/notification/driver/mail@v0.0.0
 go mod edit -replace=github.com/goforj/notification/driver/mail=$HOME/code/notification/driver/mail
 go mod tidy
 ```
 
-A Mail adapter can borrow an ordinary `*mail.Mailer` through `driver/mail.New`. Its typed `Payload` carries subject, text, and HTML. Mail sender defaults and transport remain Mail-owned. The adapter module intentionally retains its relative root replacement so repository tests exercise unpublished root changes.
+It borrows an ordinary `*mail.Mailer` and configured recipients. Mail continues to own sender defaults, email composition, and transport.
 
 ## Runnable Examples
 
 | Program | Run from the repository root | Demonstrates |
 | --- | --- | --- |
-| [Quick start](examples/quickstart/main.go) | `go run ./examples/quickstart` | Scoped semantic intent and log capture |
-| [Fallback](examples/fallback/main.go) | `go run ./examples/fallback` | Real local HTTP fallback and duplicate convergence |
-| [Mail adapter](examples/mail/main.go) | `cd examples/mail && go run .` | Real Mail composition with a fake transport |
-| [Fake](examples/fake/main.go) | `go run ./examples/fake` | Validated intent capture without provider acceptance |
+| [Quick start](examples/quickstart/main.go) | `go run ./examples/quickstart` | A title and body through the log driver |
+| [Webhook](examples/webhook/main.go) | `go run ./examples/webhook` | A message sent to a configured local HTTP provider |
+| [Mail](examples/mail/main.go) | `cd examples/mail && go run .` | Mail defaults and a configured recipient with a fake transport |
+| [Fake](examples/fake/main.go) | `go run ./examples/fake` | Application testing through Sender |
+| [Advanced fallback](examples/fallback/main.go) | `go run ./examples/fallback` | Optional recipient planning, fallback, and identity |
 
-The example runner discovers these programs, executes them, and checks the expected output immediately below each print call. Coverage and race runs instrument the child programs too.
+The runner discovers and executes every program and verifies the expected output immediately after each print call. Child programs participate in coverage and race runs. Local tests verify webhook wire behavior and Mail composition; they make no hosted-provider delivery claim.
 
 ## API Index
 
@@ -164,32 +119,23 @@ The example runner discovers these programs, executes them, and checks the expec
 | --- | --- |
 | [New](#quick-start) | Quick Start |
 | [Notifier.Send](#quick-start) | Quick Start |
-| [NewMemoryPlanner](#quick-start) | Quick Start |
-| [NewAdapter](#quick-start) | Quick Start |
-| [WithJournal](#fallback-and-identity) | Fallback and identity |
-| [NewMemoryJournal](#fallback-and-identity) | Fallback and identity |
-| [webhook.New](#fallback-and-identity) | Fallback and identity |
+| [webhook.New](#webhook-delivery) | Webhook delivery |
 | [notificationfake.New](#application-testing) | Application testing |
-| [Fake.Requests](#application-testing) | Application testing |
-| [notificationmail.New](#mail-adapter) | Mail adapter |
+| [Fake.Messages](#application-testing) | Application testing |
+| [notificationmail.New](#mail-delivery) | Mail delivery |
 
-## Fallback and identity
+## Webhook delivery
 
-A permanent rejection advances to the next configured destination. An explicit duplicate returns the prior journaled outcomes. `AllowPrivate` below is limited to the local test server.
+The URL is driver configuration. `AllowPrivate` below permits the local test server; the default destination policy rejects private and special addresses.
 
 ```go
-calls := 0
 provider := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-	calls++
-	if r.URL.Path == "/primary" {
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
 	w.WriteHeader(http.StatusAccepted)
 }))
 defer provider.Close()
 
 driver, err := webhook.New(webhook.Config{
+	URL:          provider.URL,
 	AllowPrivate: true,
 })
 if err != nil {
@@ -197,183 +143,61 @@ if err != nil {
 }
 defer driver.Close()
 
-recipient := notification.RecipientRef{
-	Type: "system",
-	ID:   "on_call",
-}
-plan := notification.Plan{}
-for _, name := range []string{"primary", "backup"} {
-	plan.Deliveries = append(plan.Deliveries, notification.PlannedDelivery{
-		Recipient: recipient,
-		Channel:   "webhook",
-		Driver:    name,
-		Endpoint: notification.Endpoint{
-			Identity: name,
-			Address:  notification.Address(provider.URL + "/" + name),
-		},
-		Locale:   "en",
-		TimeZone: "UTC",
-	})
-}
-
-scope := notification.Scope{
-	Application: "helpdesk",
-}
-planner := notification.NewMemoryPlanner(map[string]notification.Plan{
-	"ticket.updated": plan,
+notifier := notification.New(driver)
+err = notifier.Send(context.Background(), notification.Message{
+	Title: "Ticket updated",
+	Body:  "Ticket T-42 has a new owner.",
 })
-routes := []notification.Route{
-	{
-		Name:     "ticket.updated",
-		Revision: "v1",
-		Policy:   notification.FirstSuccess,
-	},
-}
-renderer := notification.Literal("Ticket", "T-42 changed")
-adapters := []notification.Adapter{
-	notification.NewAdapter("webhook", "primary", "v1", renderer, driver),
-	notification.NewAdapter("webhook", "backup", "v1", renderer, driver),
-}
-
-notifier, err := notification.New(
-	scope,
-	planner,
-	routes,
-	adapters,
-	notification.WithJournal(notification.NewMemoryJournal()),
-)
 if err != nil {
 	panic(err)
 }
-
-request := notification.Request{
-	ID:         "update-42",
-	Route:      "ticket.updated",
-	Recipients: []notification.RecipientRef{recipient},
-	Content: notification.Content{
-		Key: "ticket.changed",
-	},
-}
-result, err := notifier.Send(context.Background(), request)
-if err != nil {
-	panic(err)
-}
-fmt.Println("primary:", result.Deliveries[0].Outcome.Status)
-// primary: failed
-fmt.Println("backup:", result.Deliveries[1].Outcome.Status)
-// backup: accepted
-if _, err := notifier.Send(context.Background(), request); err != nil {
-	panic(err)
-}
-fmt.Println("HTTP calls after duplicate:", calls)
-// HTTP calls after duplicate: 2
+fmt.Println("message accepted")
+// message accepted
 ```
 
-## Mail adapter
+## Mail delivery
 
-The optional adapter uses Mail defaults and delegates transport. This program uses Mail's fake, so its accepted outcome tests adapter mapping without sending email.
+Configure the recipient on the Mail adapter. This example uses Mail's fake, so it sends no real email.
 
 ```go
 transport := mailfake.New()
 mailer := mail.New(transport, mail.WithDefaultFrom("sender@example.com", "Helpdesk"))
-driver := notificationmail.New(mailer)
-renderer := notification.RendererFunc[notificationmail.Payload](
-	func(context.Context, notification.RenderRequest) (notificationmail.Payload, error) {
-		return notificationmail.Payload{
-			Subject: "Ticket updated",
-			Text:    "Ticket T-42 changed.",
-		}, nil
-	},
-)
+driver := notificationmail.New(mailer, "recipient@example.com")
+notifier := notification.New(driver)
 
-recipient := notification.RecipientRef{
-	Type: "user",
-	ID:   "user-42",
-}
-planner := notification.NewMemoryPlanner(map[string]notification.Plan{
-	"ticket.updated": {
-		Deliveries: []notification.PlannedDelivery{
-			{
-				Recipient: recipient,
-				Channel:   "email",
-				Driver:    "mail",
-				Endpoint: notification.Endpoint{
-					Identity: "verified-email-42",
-					Address:  notification.Address("recipient@example.com"),
-				},
-				Locale:   "en",
-				TimeZone: "UTC",
-			},
-		},
-	},
+err := notifier.Send(context.Background(), notification.Message{
+	Title: "Ticket updated",
+	Body:  "Ticket T-42 has a new owner.",
 })
-
-scope := notification.Scope{
-	Application: "helpdesk",
-}
-routes := []notification.Route{
-	{
-		Name:     "ticket.updated",
-		Revision: "v1",
-		Policy:   notification.AllRequired,
-	},
-}
-adapter := notification.NewAdapter("email", "mail", "v1", renderer, driver)
-
-notifier, err := notification.New(scope, planner, routes, []notification.Adapter{adapter})
 if err != nil {
 	panic(err)
 }
-
-request := notification.Request{
-	ID:         "mail-42",
-	Route:      "ticket.updated",
-	Recipients: []notification.RecipientRef{recipient},
-	Content: notification.Content{
-		Key: "ticket.changed",
-	},
-}
-result, err := notifier.Send(context.Background(), request)
-if err != nil {
-	panic(err)
-}
-fmt.Println("adapter evidence:", result.Deliveries[0].Outcome.Status)
-// adapter evidence: accepted
+fmt.Println("captured mail:", transport.SentCount())
+// captured mail: 1
 ```
 
 ## Application testing
 
-Depend on `notification.Sender` in application code. The capture fake validates requests and retains immutable snapshots without inventing delivery results.
+Application services depend on `notification.Sender`. The fake validates and captures messages without contacting providers. Use `fake.Respond(err)` to test a failure.
 
 ```go
 fake := notificationfake.New()
 var sender notification.Sender = fake
 
-request := notification.Request{
-	ID:    "assignment-42",
-	Route: "ticket.updated",
-	Recipients: []notification.RecipientRef{
-		{
-			Type: "user",
-			ID:   "user-42",
-		},
-	},
-	Content: notification.Content{
-		Key: "ticket.changed",
-		Values: []notification.Value{
-			notification.String("ticket", "T-42"),
-		},
-	},
-}
-result, err := sender.Send(context.Background(), request)
+err := sender.Send(context.Background(), notification.Message{
+	Title: "Ticket updated",
+	Body:  "Ticket T-42 has a new owner.",
+})
 if err != nil {
 	panic(err)
 }
-fmt.Println("captured requests:", len(fake.Requests()))
-// captured requests: 1
-fmt.Println("provider outcomes:", len(result.Deliveries))
-// provider outcomes: 0
+fmt.Println("captured messages:", len(fake.Messages()))
+// captured messages: 1
 ```
+
+## Advanced dispatch
+
+Applications that need recipient lookup, preferences, localized templates, fallback, or deduplication can use `NewDispatcher`. These capabilities are optional and keep their explicit delivery results. See [advanced dispatch](docs/advanced.md) for the complete runnable example and migration from the earlier API.
 
 ## Development
 
@@ -385,6 +209,6 @@ make check-generated
 make security
 ```
 
-`make test` runs the root and optional Mail module, executes examples, and enforces exact 100% library unit statement coverage. Local HTTP provider tests run with the unit suite; no Docker or external provider credentials are required. See [development and release](docs/development.md) for module inventory and independent tag planning.
+Python 3 is required for documentation generation. `make test` validates every module, executes the example programs, and enforces exact 100% library unit statement coverage. See [development and release](docs/development.md) for independent module tags and [delivery contracts](docs/contracts.md) for guarantees and limits.
 
-The [delivery contracts](docs/contracts.md) describe guarantees and limits. The [original framework proposal](docs/designs/framework-proposal.md) records the larger roadmap. Durable Queue integration, SQL persistence, inboxes, and GoForj generation are future work.
+The [original framework proposal](docs/designs/framework-proposal.md) records the larger roadmap. Durable Queue integration, SQL persistence, inboxes, and GoForj generation remain future work.
