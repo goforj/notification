@@ -1,0 +1,99 @@
+{
+  "reviewed_on": "2026-11-08",
+  "libraries": [
+    {
+      "repository": "nikoksr/notify",
+      "head_commit": "daf20d9f4b5e2401421ff70677173a5f1357bf61",
+      "head_commit_date": "2026-11-02T02:37:07Z",
+      "inspected_go_files": [
+        "notify.go",
+        "send.go",
+        "service/telegram/telegram.go",
+        "use.go"
+      ],
+      "head_go_version": "1.26.8",
+      "latest_github_release": {
+        "tag": "v1.6.0",
+        "published_at": "2026-08-31T15:56:47Z",
+        "url": "https://github.com/nikoksr/notify/releases/tag/v1.6.0",
+        "go_version": "1.25.10"
+      },
+      "source_url": "https://github.com/nikoksr/notify/tree/daf20d9f4b5e2401421ff70677173a5f1357bf61",
+      "verification": "Static source/API review only; no third-party driver test suite or hosted delivery was executed."
+    },
+    {
+      "repository": "containrrr/shoutrrr",
+      "head_commit": "ccf81390b700948f85ce1c79f6de9ee75c68d9e5",
+      "head_commit_date": "2026-05-09T17:58:53Z",
+      "inspected_go_files": [
+        "pkg/router/router.go",
+        "pkg/types/service.go",
+        "shoutrrr.go"
+      ],
+      "head_go_version": "1.25.0",
+      "latest_github_release": {
+        "tag": "v0.8.0",
+        "published_at": "2023-08-20T15:58:38Z",
+        "url": "https://github.com/containrrr/shoutrrr/releases/tag/v0.8.0",
+        "go_version": "1.18"
+      },
+      "source_url": "https://github.com/containrrr/shoutrrr/tree/ccf81390b700948f85ce1c79f6de9ee75c68d9e5",
+      "verification": "Static source/API review only; no third-party driver test suite or hosted delivery was executed."
+    },
+    {
+      "repository": "nicholas-fedor/shoutrrr",
+      "head_commit": "1767fdca668d2ed421a39e96a93b67c191527ba4",
+      "head_commit_date": "2026-11-08T17:16:14Z",
+      "inspected_go_files": [
+        "pkg/router/router.go",
+        "pkg/router/schema_registry.go",
+        "pkg/types/service.go",
+        "pkg/types/service_timeout.go",
+        "shoutrrr.go"
+      ],
+      "head_go_version": "1.27",
+      "latest_github_release": {
+        "tag": "v0.23.0",
+        "published_at": "2026-11-03T23:36:22Z",
+        "url": "https://github.com/nicholas-fedor/shoutrrr/releases/tag/v0.23.0",
+        "go_version": "1.27"
+      },
+      "source_url": "https://github.com/nicholas-fedor/shoutrrr/tree/1767fdca668d2ed421a39e96a93b67c191527ba4",
+      "verification": "Static source/API review only; no third-party driver test suite or hosted delivery was executed."
+    },
+    {
+      "repository": "d1n-go/notify",
+      "head_commit": "a021d79175ddef2463ddecbf71e660272e6d00e5",
+      "head_commit_date": "2026-10-16T09:06:17Z",
+      "inspected_go_files": [
+        "combinators.go",
+        "interface.go",
+        "message.go",
+        "throttle.go"
+      ],
+      "head_go_version": "1.24",
+      "latest_github_release": {
+        "status": 404
+      },
+      "source_url": "https://github.com/d1n-go/notify/tree/a021d79175ddef2463ddecbf71e660272e6d00e5",
+      "verification": "Static source/API review only; no third-party driver test suite or hosted delivery was executed."
+    },
+    {
+      "repository": "gopackx/go-notification",
+      "head_commit": "578d95cd37729d81a6351278026680db7cc5e02e",
+      "head_commit_date": "2026-10-18T14:32:44Z",
+      "inspected_go_files": [
+        "config.go",
+        "notifiable.go",
+        "notifier.go",
+        "types.go"
+      ],
+      "head_go_version": "1.22",
+      "latest_github_release": {
+        "status": 404
+      },
+      "source_url": "https://github.com/gopackx/go-notification/tree/578d95cd37729d81a6351278026680db7cc5e02e",
+      "verification": "Static source/API review only; no third-party driver test suite or hosted delivery was executed."
+    }
+  ]
+}

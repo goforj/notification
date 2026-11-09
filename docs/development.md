@@ -21,3 +21,15 @@ Install the repository-pinned scanner with `go install golang.org/x/vuln/cmd/gov
 5. Validate both modules and the Mail example in a temporary external consumer with `GOWORK=off` and no local replacements.
 
 A root tag does not publish the Mail module. No version, release badge, published checksum, hosted provider integration, or Codecov upload is implied by passing local tests.
+
+## Provider expansion research
+
+The [provider and API review](provider-review.md) records the Uptime Gopher inventory, current ecosystem comparison, and proposed extraction sequence. The [complete provider snapshot](providers/uptime-gopher.md) includes all backend IDs without claiming native support for generic webhook aliases.
+
+Refresh the inventory from an explicitly selected framework checkout:
+
+```sh
+python3 scripts/inventory-demo-providers.py ../goforj
+```
+
+The snapshot records source commit and file hashes. It is a review artifact; normal library CI does not require a sibling framework checkout. Runtime provider support still comes from executed driver contracts and integration evidence.

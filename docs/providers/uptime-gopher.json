@@ -1,0 +1,997 @@
+{
+  "schema_version": 1,
+  "source_repository": "goforj/goforj",
+  "source_commit": "5ab7887413aa5398fa5de583a47c34b171c5a94d",
+  "source_files": [
+    {
+      "path": "templates/demo/frontend/src/lib/notification-providers.ts",
+      "sha256": "2bfffd443b9aab7a7dd54fec30a75a1cac2e6ba922ebed594a08b2abfd3bfcc2"
+    },
+    {
+      "path": "templates/demo/internal/notification/channel_repo.go.tmpl",
+      "sha256": "b4c4dab277f39100f8b3b052287e2e39c2b00e390fed46e73ba5e625ce8e919f"
+    },
+    {
+      "path": "templates/demo/internal/notification/dingding_provider.go.tmpl",
+      "sha256": "7373cfdcee4d7ed21df3ddb9ced5fcdc06835fdb995ec39342e12d7526655059"
+    },
+    {
+      "path": "templates/demo/internal/notification/discord_provider.go.tmpl",
+      "sha256": "ab1370869977d01e675b68a001d409efee35fd445dd184ee511d883d252ba344"
+    },
+    {
+      "path": "templates/demo/internal/notification/email_provider.go.tmpl",
+      "sha256": "707fb91a360353aad6a5cb2a4721b34f60b21001ad5863f3e12d59b6ea1ae88b"
+    },
+    {
+      "path": "templates/demo/internal/notification/feishu_provider.go.tmpl",
+      "sha256": "f50e06e25e83991c34e3a26f28764410ab91b320653047a19130781d15e51c48"
+    },
+    {
+      "path": "templates/demo/internal/notification/generic_webhook_compat_provider.go.tmpl",
+      "sha256": "2c0316c562b6635a66ff23eea3456e5eed3890762745da8b3a6a2e19c4ce9ff1"
+    },
+    {
+      "path": "templates/demo/internal/notification/google_chat_provider.go.tmpl",
+      "sha256": "d09c3c8cb3c944d830417f17d4b12ae81ac0735e9e324f537879c2ed9bfa77ba"
+    },
+    {
+      "path": "templates/demo/internal/notification/gotify_provider.go.tmpl",
+      "sha256": "184929434c49038ffb3a81c7af2d9b697e4a7750fbf5f81392e597e8856a0b00"
+    },
+    {
+      "path": "templates/demo/internal/notification/jira_service_management_provider.go.tmpl",
+      "sha256": "4e81d13b9bea0fecac69bd734f835c47a6c2cefb6a53d72b9264dff5b455525a"
+    },
+    {
+      "path": "templates/demo/internal/notification/line_provider.go.tmpl",
+      "sha256": "66a0dccd2a6efc09e1c6a66cff1808ce00a551f0b31508a2eafb1c8496236156"
+    },
+    {
+      "path": "templates/demo/internal/notification/manager.go.tmpl",
+      "sha256": "527daeac3345db475edabdd71d36e1af99495c70aa30bc04fb438add0465ebcf"
+    },
+    {
+      "path": "templates/demo/internal/notification/ntfy_provider.go.tmpl",
+      "sha256": "2b2677a2e1ecc0058c584ebefb02d6b7c8c0c3417d18d97053c21300fba414bf"
+    },
+    {
+      "path": "templates/demo/internal/notification/opsgenie_provider.go.tmpl",
+      "sha256": "0c72b91b13763a1919dcef56ab1eed8678434d1f7e60540f7e55c15b673087f2"
+    },
+    {
+      "path": "templates/demo/internal/notification/pagerduty_provider.go.tmpl",
+      "sha256": "de62ff2899f99dca19bdd3689c8db30de5e06c3b278033a61628d82f9e859dec"
+    },
+    {
+      "path": "templates/demo/internal/notification/provider_catalog.go.tmpl",
+      "sha256": "34a2807cc10539e777dc9fe6f80355ee3a34c42bdd42d30ba0d05a38e0d9fc3e"
+    },
+    {
+      "path": "templates/demo/internal/notification/providers.go.tmpl",
+      "sha256": "c3a4732502869c09360ebf4da8957a4926de367c24077628aa234fb421c94085"
+    },
+    {
+      "path": "templates/demo/internal/notification/slack_provider.go.tmpl",
+      "sha256": "cb4f0fc4a893dad24f6a6684160d55cefe2418c3e99f449a6161d8d24becf003"
+    },
+    {
+      "path": "templates/demo/internal/notification/teams_provider.go.tmpl",
+      "sha256": "74bd14e9cc5b34e6c082694ac935ddedf875d4a3cf8035bbd09c5df7aa1b3b27"
+    },
+    {
+      "path": "templates/demo/internal/notification/telegram_provider.go.tmpl",
+      "sha256": "8eee46cfdcb9e8164376c70706da7f683eef9005b0393561ca86d643476f0f46"
+    },
+    {
+      "path": "templates/demo/internal/notification/twilio_provider.go.tmpl",
+      "sha256": "b149336ee650199ce2e8b0d879eba115c6086c425293e35ae958f6658a7cd93c"
+    },
+    {
+      "path": "templates/demo/internal/notification/waha_provider.go.tmpl",
+      "sha256": "f9f4fcf8afe46be05f3d276932925676246d983e8b95cae07fda6216666b292a"
+    },
+    {
+      "path": "templates/demo/internal/notification/webhook_provider.go.tmpl",
+      "sha256": "6f114ad0becd1fbf89fba5f62d54369489c6e7dd0a0d4acffdea658daa4a0f23"
+    },
+    {
+      "path": "templates/demo/internal/notification/wecom_provider.go.tmpl",
+      "sha256": "f2172382b58891654832e738c1713721acfb9a389e40eedff16e6ea3a0c0c4e3"
+    },
+    {
+      "path": "templates/demo/internal/notification/whapi_provider.go.tmpl",
+      "sha256": "0d880c6056cf4264b7f37d069557b1097cc15de615dc4b6dd4ca338185759e77"
+    }
+  ],
+  "counts": {
+    "backend_ids": 88,
+    "ui_ids": 26,
+    "dedicated_ids": 21,
+    "dedicated_adapters": 20,
+    "generic_alias_ids": 67
+  },
+  "scope": "Complete demo ID inventory, not a native protocol or hosted-delivery certification.",
+  "providers": [
+    {
+      "id": "alerta",
+      "demo_implementation": "generic_webhook_compat",
+      "demo_constructor": "NewGenericWebhookCompatProvider",
+      "demo_adapter": "templates/demo/internal/notification/generic_webhook_compat_provider.go.tmpl",
+      "demo_ui_exposed": false,
+      "canonical_id": "alerta",
+      "library_status": "planned",
+      "library_surface": null
+    },
+    {
+      "id": "alertnow",
+      "demo_implementation": "generic_webhook_compat",
+      "demo_constructor": "NewGenericWebhookCompatProvider",
+      "demo_adapter": "templates/demo/internal/notification/generic_webhook_compat_provider.go.tmpl",
+      "demo_ui_exposed": false,
+      "canonical_id": "alertnow",
+      "library_status": "planned",
+      "library_surface": null
+    },
+    {
+      "id": "aliyunsms",
+      "demo_implementation": "generic_webhook_compat",
+      "demo_constructor": "NewGenericWebhookCompatProvider",
+      "demo_adapter": "templates/demo/internal/notification/generic_webhook_compat_provider.go.tmpl",
+      "demo_ui_exposed": false,
+      "canonical_id": "aliyunsms",
+      "library_status": "planned",
+      "library_surface": null
+    },
+    {
+      "id": "apprise",
+      "demo_implementation": "generic_webhook_compat",
+      "demo_constructor": "NewGenericWebhookCompatProvider",
+      "demo_adapter": "templates/demo/internal/notification/generic_webhook_compat_provider.go.tmpl",
+      "demo_ui_exposed": false,
+      "canonical_id": "apprise",
+      "library_status": "planned",
+      "library_surface": null
+    },
+    {
+      "id": "bale",
+      "demo_implementation": "generic_webhook_compat",
+      "demo_constructor": "NewGenericWebhookCompatProvider",
+      "demo_adapter": "templates/demo/internal/notification/generic_webhook_compat_provider.go.tmpl",
+      "demo_ui_exposed": false,
+      "canonical_id": "bale",
+      "library_status": "planned",
+      "library_surface": null
+    },
+    {
+      "id": "bark",
+      "demo_implementation": "generic_webhook_compat",
+      "demo_constructor": "NewGenericWebhookCompatProvider",
+      "demo_adapter": "templates/demo/internal/notification/generic_webhook_compat_provider.go.tmpl",
+      "demo_ui_exposed": false,
+      "canonical_id": "bark",
+      "library_status": "planned",
+      "library_surface": null
+    },
+    {
+      "id": "bitrix24",
+      "demo_implementation": "generic_webhook_compat",
+      "demo_constructor": "NewGenericWebhookCompatProvider",
+      "demo_adapter": "templates/demo/internal/notification/generic_webhook_compat_provider.go.tmpl",
+      "demo_ui_exposed": false,
+      "canonical_id": "bitrix24",
+      "library_status": "planned",
+      "library_surface": null
+    },
+    {
+      "id": "brevo",
+      "demo_implementation": "generic_webhook_compat",
+      "demo_constructor": "NewGenericWebhookCompatProvider",
+      "demo_adapter": "templates/demo/internal/notification/generic_webhook_compat_provider.go.tmpl",
+      "demo_ui_exposed": false,
+      "canonical_id": "brevo",
+      "library_status": "planned",
+      "library_surface": null
+    },
+    {
+      "id": "callmebot",
+      "demo_implementation": "generic_webhook_compat",
+      "demo_constructor": "NewGenericWebhookCompatProvider",
+      "demo_adapter": "templates/demo/internal/notification/generic_webhook_compat_provider.go.tmpl",
+      "demo_ui_exposed": false,
+      "canonical_id": "callmebot",
+      "library_status": "planned",
+      "library_surface": null
+    },
+    {
+      "id": "cellsynt",
+      "demo_implementation": "generic_webhook_compat",
+      "demo_constructor": "NewGenericWebhookCompatProvider",
+      "demo_adapter": "templates/demo/internal/notification/generic_webhook_compat_provider.go.tmpl",
+      "demo_ui_exposed": false,
+      "canonical_id": "cellsynt",
+      "library_status": "planned",
+      "library_surface": null
+    },
+    {
+      "id": "clicksendsms",
+      "demo_implementation": "generic_webhook_compat",
+      "demo_constructor": "NewGenericWebhookCompatProvider",
+      "demo_adapter": "templates/demo/internal/notification/generic_webhook_compat_provider.go.tmpl",
+      "demo_ui_exposed": false,
+      "canonical_id": "clicksendsms",
+      "library_status": "planned",
+      "library_surface": null
+    },
+    {
+      "id": "dingding",
+      "demo_implementation": "dedicated",
+      "demo_constructor": "NewDingDingProvider",
+      "demo_adapter": "templates/demo/internal/notification/dingding_provider.go.tmpl",
+      "demo_ui_exposed": true,
+      "canonical_id": "dingding",
+      "library_status": "planned",
+      "library_surface": null
+    },
+    {
+      "id": "discord",
+      "demo_implementation": "dedicated",
+      "demo_constructor": "NewDiscordProvider",
+      "demo_adapter": "templates/demo/internal/notification/discord_provider.go.tmpl",
+      "demo_ui_exposed": true,
+      "canonical_id": "discord",
+      "library_status": "planned",
+      "library_surface": null
+    },
+    {
+      "id": "elks",
+      "demo_implementation": "generic_webhook_compat",
+      "demo_constructor": "NewGenericWebhookCompatProvider",
+      "demo_adapter": "templates/demo/internal/notification/generic_webhook_compat_provider.go.tmpl",
+      "demo_ui_exposed": false,
+      "canonical_id": "elks",
+      "library_status": "planned",
+      "library_surface": null
+    },
+    {
+      "id": "email",
+      "demo_implementation": "dedicated",
+      "demo_constructor": "NewEmailProvider",
+      "demo_adapter": "templates/demo/internal/notification/email_provider.go.tmpl",
+      "demo_ui_exposed": true,
+      "canonical_id": "email",
+      "library_status": "available",
+      "library_surface": "driver/mail with configured Mailer"
+    },
+    {
+      "id": "evolution",
+      "demo_implementation": "generic_webhook_compat",
+      "demo_constructor": "NewGenericWebhookCompatProvider",
+      "demo_adapter": "templates/demo/internal/notification/generic_webhook_compat_provider.go.tmpl",
+      "demo_ui_exposed": false,
+      "canonical_id": "evolution",
+      "library_status": "planned",
+      "library_surface": null
+    },
+    {
+      "id": "feishu",
+      "demo_implementation": "dedicated",
+      "demo_constructor": "NewFeishuProvider",
+      "demo_adapter": "templates/demo/internal/notification/feishu_provider.go.tmpl",
+      "demo_ui_exposed": true,
+      "canonical_id": "feishu",
+      "library_status": "planned",
+      "library_surface": null
+    },
+    {
+      "id": "flashduty",
+      "demo_implementation": "generic_webhook_compat",
+      "demo_constructor": "NewGenericWebhookCompatProvider",
+      "demo_adapter": "templates/demo/internal/notification/generic_webhook_compat_provider.go.tmpl",
+      "demo_ui_exposed": false,
+      "canonical_id": "flashduty",
+      "library_status": "planned",
+      "library_surface": null
+    },
+    {
+      "id": "freemobile",
+      "demo_implementation": "generic_webhook_compat",
+      "demo_constructor": "NewGenericWebhookCompatProvider",
+      "demo_adapter": "templates/demo/internal/notification/generic_webhook_compat_provider.go.tmpl",
+      "demo_ui_exposed": false,
+      "canonical_id": "freemobile",
+      "library_status": "planned",
+      "library_surface": null
+    },
+    {
+      "id": "goalert",
+      "demo_implementation": "generic_webhook_compat",
+      "demo_constructor": "NewGenericWebhookCompatProvider",
+      "demo_adapter": "templates/demo/internal/notification/generic_webhook_compat_provider.go.tmpl",
+      "demo_ui_exposed": false,
+      "canonical_id": "goalert",
+      "library_status": "planned",
+      "library_surface": null
+    },
+    {
+      "id": "googlechat",
+      "demo_implementation": "dedicated",
+      "demo_constructor": "NewGoogleChatProvider",
+      "demo_adapter": "templates/demo/internal/notification/google_chat_provider.go.tmpl",
+      "demo_ui_exposed": true,
+      "canonical_id": "googlechat",
+      "library_status": "planned",
+      "library_surface": null
+    },
+    {
+      "id": "googlesheets",
+      "demo_implementation": "generic_webhook_compat",
+      "demo_constructor": "NewGenericWebhookCompatProvider",
+      "demo_adapter": "templates/demo/internal/notification/generic_webhook_compat_provider.go.tmpl",
+      "demo_ui_exposed": true,
+      "canonical_id": "googlesheets",
+      "library_status": "planned",
+      "library_surface": null
+    },
+    {
+      "id": "gorush",
+      "demo_implementation": "generic_webhook_compat",
+      "demo_constructor": "NewGenericWebhookCompatProvider",
+      "demo_adapter": "templates/demo/internal/notification/generic_webhook_compat_provider.go.tmpl",
+      "demo_ui_exposed": false,
+      "canonical_id": "gorush",
+      "library_status": "planned",
+      "library_surface": null
+    },
+    {
+      "id": "gotify",
+      "demo_implementation": "dedicated",
+      "demo_constructor": "NewGotifyProvider",
+      "demo_adapter": "templates/demo/internal/notification/gotify_provider.go.tmpl",
+      "demo_ui_exposed": true,
+      "canonical_id": "gotify",
+      "library_status": "planned",
+      "library_surface": null
+    },
+    {
+      "id": "grafanaoncall",
+      "demo_implementation": "generic_webhook_compat",
+      "demo_constructor": "NewGenericWebhookCompatProvider",
+      "demo_adapter": "templates/demo/internal/notification/generic_webhook_compat_provider.go.tmpl",
+      "demo_ui_exposed": true,
+      "canonical_id": "grafanaoncall",
+      "library_status": "planned",
+      "library_surface": null
+    },
+    {
+      "id": "gtxmessaging",
+      "demo_implementation": "generic_webhook_compat",
+      "demo_constructor": "NewGenericWebhookCompatProvider",
+      "demo_adapter": "templates/demo/internal/notification/generic_webhook_compat_provider.go.tmpl",
+      "demo_ui_exposed": false,
+      "canonical_id": "gtxmessaging",
+      "library_status": "planned",
+      "library_surface": null
+    },
+    {
+      "id": "halopsa",
+      "demo_implementation": "generic_webhook_compat",
+      "demo_constructor": "NewGenericWebhookCompatProvider",
+      "demo_adapter": "templates/demo/internal/notification/generic_webhook_compat_provider.go.tmpl",
+      "demo_ui_exposed": false,
+      "canonical_id": "halopsa",
+      "library_status": "planned",
+      "library_surface": null
+    },
+    {
+      "id": "heiioncall",
+      "demo_implementation": "generic_webhook_compat",
+      "demo_constructor": "NewGenericWebhookCompatProvider",
+      "demo_adapter": "templates/demo/internal/notification/generic_webhook_compat_provider.go.tmpl",
+      "demo_ui_exposed": false,
+      "canonical_id": "heiioncall",
+      "library_status": "planned",
+      "library_surface": null
+    },
+    {
+      "id": "homeassistant",
+      "demo_implementation": "generic_webhook_compat",
+      "demo_constructor": "NewGenericWebhookCompatProvider",
+      "demo_adapter": "templates/demo/internal/notification/generic_webhook_compat_provider.go.tmpl",
+      "demo_ui_exposed": false,
+      "canonical_id": "homeassistant",
+      "library_status": "planned",
+      "library_surface": null
+    },
+    {
+      "id": "jiraservicemanagement",
+      "demo_implementation": "dedicated",
+      "demo_constructor": "NewJiraServiceManagementProvider",
+      "demo_adapter": "templates/demo/internal/notification/jira_service_management_provider.go.tmpl",
+      "demo_ui_exposed": true,
+      "canonical_id": "jiraservicemanagement",
+      "library_status": "planned",
+      "library_surface": null
+    },
+    {
+      "id": "keep",
+      "demo_implementation": "generic_webhook_compat",
+      "demo_constructor": "NewGenericWebhookCompatProvider",
+      "demo_adapter": "templates/demo/internal/notification/generic_webhook_compat_provider.go.tmpl",
+      "demo_ui_exposed": false,
+      "canonical_id": "keep",
+      "library_status": "planned",
+      "library_surface": null
+    },
+    {
+      "id": "kook",
+      "demo_implementation": "generic_webhook_compat",
+      "demo_constructor": "NewGenericWebhookCompatProvider",
+      "demo_adapter": "templates/demo/internal/notification/generic_webhook_compat_provider.go.tmpl",
+      "demo_ui_exposed": false,
+      "canonical_id": "kook",
+      "library_status": "planned",
+      "library_surface": null
+    },
+    {
+      "id": "line",
+      "demo_implementation": "dedicated",
+      "demo_constructor": "NewLineProvider",
+      "demo_adapter": "templates/demo/internal/notification/line_provider.go.tmpl",
+      "demo_ui_exposed": true,
+      "canonical_id": "line",
+      "library_status": "planned",
+      "library_surface": null
+    },
+    {
+      "id": "log",
+      "demo_implementation": "dedicated",
+      "demo_constructor": "NewLogProvider",
+      "demo_adapter": "templates/demo/internal/notification/providers.go.tmpl",
+      "demo_ui_exposed": true,
+      "canonical_id": "log",
+      "library_status": "available",
+      "library_surface": "driver/log"
+    },
+    {
+      "id": "lunasea",
+      "demo_implementation": "generic_webhook_compat",
+      "demo_constructor": "NewGenericWebhookCompatProvider",
+      "demo_adapter": "templates/demo/internal/notification/generic_webhook_compat_provider.go.tmpl",
+      "demo_ui_exposed": false,
+      "canonical_id": "lunasea",
+      "library_status": "planned",
+      "library_surface": null
+    },
+    {
+      "id": "matrix",
+      "demo_implementation": "generic_webhook_compat",
+      "demo_constructor": "NewGenericWebhookCompatProvider",
+      "demo_adapter": "templates/demo/internal/notification/generic_webhook_compat_provider.go.tmpl",
+      "demo_ui_exposed": false,
+      "canonical_id": "matrix",
+      "library_status": "planned",
+      "library_surface": null
+    },
+    {
+      "id": "mattermost",
+      "demo_implementation": "generic_webhook_compat",
+      "demo_constructor": "NewGenericWebhookCompatProvider",
+      "demo_adapter": "templates/demo/internal/notification/generic_webhook_compat_provider.go.tmpl",
+      "demo_ui_exposed": false,
+      "canonical_id": "mattermost",
+      "library_status": "planned",
+      "library_surface": null
+    },
+    {
+      "id": "nextcloudtalk",
+      "demo_implementation": "generic_webhook_compat",
+      "demo_constructor": "NewGenericWebhookCompatProvider",
+      "demo_adapter": "templates/demo/internal/notification/generic_webhook_compat_provider.go.tmpl",
+      "demo_ui_exposed": false,
+      "canonical_id": "nextcloudtalk",
+      "library_status": "planned",
+      "library_surface": null
+    },
+    {
+      "id": "nostr",
+      "demo_implementation": "generic_webhook_compat",
+      "demo_constructor": "NewGenericWebhookCompatProvider",
+      "demo_adapter": "templates/demo/internal/notification/generic_webhook_compat_provider.go.tmpl",
+      "demo_ui_exposed": false,
+      "canonical_id": "nostr",
+      "library_status": "planned",
+      "library_surface": null
+    },
+    {
+      "id": "notifery",
+      "demo_implementation": "generic_webhook_compat",
+      "demo_constructor": "NewGenericWebhookCompatProvider",
+      "demo_adapter": "templates/demo/internal/notification/generic_webhook_compat_provider.go.tmpl",
+      "demo_ui_exposed": false,
+      "canonical_id": "notifery",
+      "library_status": "planned",
+      "library_surface": null
+    },
+    {
+      "id": "ntfy",
+      "demo_implementation": "dedicated",
+      "demo_constructor": "NewNtfyProvider",
+      "demo_adapter": "templates/demo/internal/notification/ntfy_provider.go.tmpl",
+      "demo_ui_exposed": true,
+      "canonical_id": "ntfy",
+      "library_status": "planned",
+      "library_surface": null
+    },
+    {
+      "id": "octopush",
+      "demo_implementation": "generic_webhook_compat",
+      "demo_constructor": "NewGenericWebhookCompatProvider",
+      "demo_adapter": "templates/demo/internal/notification/generic_webhook_compat_provider.go.tmpl",
+      "demo_ui_exposed": false,
+      "canonical_id": "octopush",
+      "library_status": "planned",
+      "library_surface": null
+    },
+    {
+      "id": "onebot",
+      "demo_implementation": "generic_webhook_compat",
+      "demo_constructor": "NewGenericWebhookCompatProvider",
+      "demo_adapter": "templates/demo/internal/notification/generic_webhook_compat_provider.go.tmpl",
+      "demo_ui_exposed": false,
+      "canonical_id": "onebot",
+      "library_status": "planned",
+      "library_surface": null
+    },
+    {
+      "id": "onechat",
+      "demo_implementation": "generic_webhook_compat",
+      "demo_constructor": "NewGenericWebhookCompatProvider",
+      "demo_adapter": "templates/demo/internal/notification/generic_webhook_compat_provider.go.tmpl",
+      "demo_ui_exposed": false,
+      "canonical_id": "onechat",
+      "library_status": "planned",
+      "library_surface": null
+    },
+    {
+      "id": "onesender",
+      "demo_implementation": "generic_webhook_compat",
+      "demo_constructor": "NewGenericWebhookCompatProvider",
+      "demo_adapter": "templates/demo/internal/notification/generic_webhook_compat_provider.go.tmpl",
+      "demo_ui_exposed": false,
+      "canonical_id": "onesender",
+      "library_status": "planned",
+      "library_surface": null
+    },
+    {
+      "id": "opsgenie",
+      "demo_implementation": "dedicated",
+      "demo_constructor": "NewOpsgenieProvider",
+      "demo_adapter": "templates/demo/internal/notification/opsgenie_provider.go.tmpl",
+      "demo_ui_exposed": true,
+      "canonical_id": "opsgenie",
+      "library_status": "planned",
+      "library_surface": null
+    },
+    {
+      "id": "pagerduty",
+      "demo_implementation": "dedicated",
+      "demo_constructor": "NewPagerDutyProvider",
+      "demo_adapter": "templates/demo/internal/notification/pagerduty_provider.go.tmpl",
+      "demo_ui_exposed": true,
+      "canonical_id": "pagerduty",
+      "library_status": "planned",
+      "library_surface": null
+    },
+    {
+      "id": "pagertree",
+      "demo_implementation": "generic_webhook_compat",
+      "demo_constructor": "NewGenericWebhookCompatProvider",
+      "demo_adapter": "templates/demo/internal/notification/generic_webhook_compat_provider.go.tmpl",
+      "demo_ui_exposed": false,
+      "canonical_id": "pagertree",
+      "library_status": "planned",
+      "library_surface": null
+    },
+    {
+      "id": "promosms",
+      "demo_implementation": "generic_webhook_compat",
+      "demo_constructor": "NewGenericWebhookCompatProvider",
+      "demo_adapter": "templates/demo/internal/notification/generic_webhook_compat_provider.go.tmpl",
+      "demo_ui_exposed": false,
+      "canonical_id": "promosms",
+      "library_status": "planned",
+      "library_surface": null
+    },
+    {
+      "id": "pumble",
+      "demo_implementation": "generic_webhook_compat",
+      "demo_constructor": "NewGenericWebhookCompatProvider",
+      "demo_adapter": "templates/demo/internal/notification/generic_webhook_compat_provider.go.tmpl",
+      "demo_ui_exposed": false,
+      "canonical_id": "pumble",
+      "library_status": "planned",
+      "library_surface": null
+    },
+    {
+      "id": "pushbullet",
+      "demo_implementation": "generic_webhook_compat",
+      "demo_constructor": "NewGenericWebhookCompatProvider",
+      "demo_adapter": "templates/demo/internal/notification/generic_webhook_compat_provider.go.tmpl",
+      "demo_ui_exposed": false,
+      "canonical_id": "pushbullet",
+      "library_status": "planned",
+      "library_surface": null
+    },
+    {
+      "id": "pushbytechulus",
+      "demo_implementation": "generic_webhook_compat",
+      "demo_constructor": "NewGenericWebhookCompatProvider",
+      "demo_adapter": "templates/demo/internal/notification/generic_webhook_compat_provider.go.tmpl",
+      "demo_ui_exposed": false,
+      "canonical_id": "pushbytechulus",
+      "library_status": "planned",
+      "library_surface": null
+    },
+    {
+      "id": "pushdeer",
+      "demo_implementation": "generic_webhook_compat",
+      "demo_constructor": "NewGenericWebhookCompatProvider",
+      "demo_adapter": "templates/demo/internal/notification/generic_webhook_compat_provider.go.tmpl",
+      "demo_ui_exposed": false,
+      "canonical_id": "pushdeer",
+      "library_status": "planned",
+      "library_surface": null
+    },
+    {
+      "id": "pushover",
+      "demo_implementation": "generic_webhook_compat",
+      "demo_constructor": "NewGenericWebhookCompatProvider",
+      "demo_adapter": "templates/demo/internal/notification/generic_webhook_compat_provider.go.tmpl",
+      "demo_ui_exposed": false,
+      "canonical_id": "pushover",
+      "library_status": "planned",
+      "library_surface": null
+    },
+    {
+      "id": "pushplus",
+      "demo_implementation": "generic_webhook_compat",
+      "demo_constructor": "NewGenericWebhookCompatProvider",
+      "demo_adapter": "templates/demo/internal/notification/generic_webhook_compat_provider.go.tmpl",
+      "demo_ui_exposed": false,
+      "canonical_id": "pushplus",
+      "library_status": "planned",
+      "library_surface": null
+    },
+    {
+      "id": "pushy",
+      "demo_implementation": "generic_webhook_compat",
+      "demo_constructor": "NewGenericWebhookCompatProvider",
+      "demo_adapter": "templates/demo/internal/notification/generic_webhook_compat_provider.go.tmpl",
+      "demo_ui_exposed": false,
+      "canonical_id": "pushy",
+      "library_status": "planned",
+      "library_surface": null
+    },
+    {
+      "id": "resend",
+      "demo_implementation": "generic_webhook_compat",
+      "demo_constructor": "NewGenericWebhookCompatProvider",
+      "demo_adapter": "templates/demo/internal/notification/generic_webhook_compat_provider.go.tmpl",
+      "demo_ui_exposed": false,
+      "canonical_id": "resend",
+      "library_status": "mail_composition_candidate",
+      "library_surface": "driver/mail with sibling mailresend (not verified here)"
+    },
+    {
+      "id": "rocket.chat",
+      "demo_implementation": "generic_webhook_compat",
+      "demo_constructor": "NewGenericWebhookCompatProvider",
+      "demo_adapter": "templates/demo/internal/notification/generic_webhook_compat_provider.go.tmpl",
+      "demo_ui_exposed": true,
+      "canonical_id": "rocket.chat",
+      "library_status": "planned",
+      "library_surface": null
+    },
+    {
+      "id": "sendgrid",
+      "demo_implementation": "generic_webhook_compat",
+      "demo_constructor": "NewGenericWebhookCompatProvider",
+      "demo_adapter": "templates/demo/internal/notification/generic_webhook_compat_provider.go.tmpl",
+      "demo_ui_exposed": true,
+      "canonical_id": "sendgrid",
+      "library_status": "mail_composition_candidate",
+      "library_surface": "driver/mail with sibling mailsendgrid (not verified here)"
+    },
+    {
+      "id": "serverchan",
+      "demo_implementation": "generic_webhook_compat",
+      "demo_constructor": "NewGenericWebhookCompatProvider",
+      "demo_adapter": "templates/demo/internal/notification/generic_webhook_compat_provider.go.tmpl",
+      "demo_ui_exposed": false,
+      "canonical_id": "serverchan",
+      "library_status": "planned",
+      "library_surface": null
+    },
+    {
+      "id": "serwersms",
+      "demo_implementation": "generic_webhook_compat",
+      "demo_constructor": "NewGenericWebhookCompatProvider",
+      "demo_adapter": "templates/demo/internal/notification/generic_webhook_compat_provider.go.tmpl",
+      "demo_ui_exposed": false,
+      "canonical_id": "serwersms",
+      "library_status": "planned",
+      "library_surface": null
+    },
+    {
+      "id": "sevenio",
+      "demo_implementation": "generic_webhook_compat",
+      "demo_constructor": "NewGenericWebhookCompatProvider",
+      "demo_adapter": "templates/demo/internal/notification/generic_webhook_compat_provider.go.tmpl",
+      "demo_ui_exposed": false,
+      "canonical_id": "sevenio",
+      "library_status": "planned",
+      "library_surface": null
+    },
+    {
+      "id": "signal",
+      "demo_implementation": "generic_webhook_compat",
+      "demo_constructor": "NewGenericWebhookCompatProvider",
+      "demo_adapter": "templates/demo/internal/notification/generic_webhook_compat_provider.go.tmpl",
+      "demo_ui_exposed": false,
+      "canonical_id": "signal",
+      "library_status": "planned",
+      "library_surface": null
+    },
+    {
+      "id": "signl4",
+      "demo_implementation": "generic_webhook_compat",
+      "demo_constructor": "NewGenericWebhookCompatProvider",
+      "demo_adapter": "templates/demo/internal/notification/generic_webhook_compat_provider.go.tmpl",
+      "demo_ui_exposed": false,
+      "canonical_id": "signl4",
+      "library_status": "planned",
+      "library_surface": null
+    },
+    {
+      "id": "slack",
+      "demo_implementation": "dedicated",
+      "demo_constructor": "NewSlackProvider",
+      "demo_adapter": "templates/demo/internal/notification/slack_provider.go.tmpl",
+      "demo_ui_exposed": true,
+      "canonical_id": "slack",
+      "library_status": "available",
+      "library_surface": "driver/webhook (Slack-compatible)"
+    },
+    {
+      "id": "smsc",
+      "demo_implementation": "generic_webhook_compat",
+      "demo_constructor": "NewGenericWebhookCompatProvider",
+      "demo_adapter": "templates/demo/internal/notification/generic_webhook_compat_provider.go.tmpl",
+      "demo_ui_exposed": false,
+      "canonical_id": "smsc",
+      "library_status": "planned",
+      "library_surface": null
+    },
+    {
+      "id": "smseagle",
+      "demo_implementation": "generic_webhook_compat",
+      "demo_constructor": "NewGenericWebhookCompatProvider",
+      "demo_adapter": "templates/demo/internal/notification/generic_webhook_compat_provider.go.tmpl",
+      "demo_ui_exposed": false,
+      "canonical_id": "smseagle",
+      "library_status": "planned",
+      "library_surface": null
+    },
+    {
+      "id": "smsir",
+      "demo_implementation": "generic_webhook_compat",
+      "demo_constructor": "NewGenericWebhookCompatProvider",
+      "demo_adapter": "templates/demo/internal/notification/generic_webhook_compat_provider.go.tmpl",
+      "demo_ui_exposed": false,
+      "canonical_id": "smsir",
+      "library_status": "planned",
+      "library_surface": null
+    },
+    {
+      "id": "smsmanager",
+      "demo_implementation": "generic_webhook_compat",
+      "demo_constructor": "NewGenericWebhookCompatProvider",
+      "demo_adapter": "templates/demo/internal/notification/generic_webhook_compat_provider.go.tmpl",
+      "demo_ui_exposed": false,
+      "canonical_id": "smsmanager",
+      "library_status": "planned",
+      "library_surface": null
+    },
+    {
+      "id": "smspartner",
+      "demo_implementation": "generic_webhook_compat",
+      "demo_constructor": "NewGenericWebhookCompatProvider",
+      "demo_adapter": "templates/demo/internal/notification/generic_webhook_compat_provider.go.tmpl",
+      "demo_ui_exposed": false,
+      "canonical_id": "smspartner",
+      "library_status": "planned",
+      "library_surface": null
+    },
+    {
+      "id": "smsplanet",
+      "demo_implementation": "generic_webhook_compat",
+      "demo_constructor": "NewGenericWebhookCompatProvider",
+      "demo_adapter": "templates/demo/internal/notification/generic_webhook_compat_provider.go.tmpl",
+      "demo_ui_exposed": false,
+      "canonical_id": "smsplanet",
+      "library_status": "planned",
+      "library_surface": null
+    },
+    {
+      "id": "smtp",
+      "demo_implementation": "dedicated",
+      "demo_constructor": "NewEmailProvider",
+      "demo_adapter": "templates/demo/internal/notification/email_provider.go.tmpl",
+      "demo_ui_exposed": true,
+      "canonical_id": "email",
+      "library_status": "available",
+      "library_surface": "driver/mail with SMTP Mailer"
+    },
+    {
+      "id": "splunk",
+      "demo_implementation": "generic_webhook_compat",
+      "demo_constructor": "NewGenericWebhookCompatProvider",
+      "demo_adapter": "templates/demo/internal/notification/generic_webhook_compat_provider.go.tmpl",
+      "demo_ui_exposed": true,
+      "canonical_id": "splunk",
+      "library_status": "planned",
+      "library_surface": null
+    },
+    {
+      "id": "spugpush",
+      "demo_implementation": "generic_webhook_compat",
+      "demo_constructor": "NewGenericWebhookCompatProvider",
+      "demo_adapter": "templates/demo/internal/notification/generic_webhook_compat_provider.go.tmpl",
+      "demo_ui_exposed": false,
+      "canonical_id": "spugpush",
+      "library_status": "planned",
+      "library_surface": null
+    },
+    {
+      "id": "squadcast",
+      "demo_implementation": "generic_webhook_compat",
+      "demo_constructor": "NewGenericWebhookCompatProvider",
+      "demo_adapter": "templates/demo/internal/notification/generic_webhook_compat_provider.go.tmpl",
+      "demo_ui_exposed": false,
+      "canonical_id": "squadcast",
+      "library_status": "planned",
+      "library_surface": null
+    },
+    {
+      "id": "stackfield",
+      "demo_implementation": "generic_webhook_compat",
+      "demo_constructor": "NewGenericWebhookCompatProvider",
+      "demo_adapter": "templates/demo/internal/notification/generic_webhook_compat_provider.go.tmpl",
+      "demo_ui_exposed": false,
+      "canonical_id": "stackfield",
+      "library_status": "planned",
+      "library_surface": null
+    },
+    {
+      "id": "teams",
+      "demo_implementation": "dedicated",
+      "demo_constructor": "NewTeamsProvider",
+      "demo_adapter": "templates/demo/internal/notification/teams_provider.go.tmpl",
+      "demo_ui_exposed": true,
+      "canonical_id": "teams",
+      "library_status": "planned",
+      "library_surface": null
+    },
+    {
+      "id": "telegram",
+      "demo_implementation": "dedicated",
+      "demo_constructor": "NewTelegramProvider",
+      "demo_adapter": "templates/demo/internal/notification/telegram_provider.go.tmpl",
+      "demo_ui_exposed": true,
+      "canonical_id": "telegram",
+      "library_status": "planned",
+      "library_surface": null
+    },
+    {
+      "id": "threema",
+      "demo_implementation": "generic_webhook_compat",
+      "demo_constructor": "NewGenericWebhookCompatProvider",
+      "demo_adapter": "templates/demo/internal/notification/generic_webhook_compat_provider.go.tmpl",
+      "demo_ui_exposed": false,
+      "canonical_id": "threema",
+      "library_status": "planned",
+      "library_surface": null
+    },
+    {
+      "id": "twilio",
+      "demo_implementation": "dedicated",
+      "demo_constructor": "NewTwilioProvider",
+      "demo_adapter": "templates/demo/internal/notification/twilio_provider.go.tmpl",
+      "demo_ui_exposed": true,
+      "canonical_id": "twilio",
+      "library_status": "planned",
+      "library_surface": null
+    },
+    {
+      "id": "waha",
+      "demo_implementation": "dedicated",
+      "demo_constructor": "NewWAHAProvider",
+      "demo_adapter": "templates/demo/internal/notification/waha_provider.go.tmpl",
+      "demo_ui_exposed": true,
+      "canonical_id": "waha",
+      "library_status": "planned",
+      "library_surface": null
+    },
+    {
+      "id": "webhook",
+      "demo_implementation": "dedicated",
+      "demo_constructor": "NewWebhookProvider",
+      "demo_adapter": "templates/demo/internal/notification/webhook_provider.go.tmpl",
+      "demo_ui_exposed": true,
+      "canonical_id": "webhook",
+      "library_status": "available",
+      "library_surface": "driver/webhook (Generic)"
+    },
+    {
+      "id": "webpush",
+      "demo_implementation": "generic_webhook_compat",
+      "demo_constructor": "NewGenericWebhookCompatProvider",
+      "demo_adapter": "templates/demo/internal/notification/generic_webhook_compat_provider.go.tmpl",
+      "demo_ui_exposed": false,
+      "canonical_id": "webpush",
+      "library_status": "planned",
+      "library_surface": null
+    },
+    {
+      "id": "wecom",
+      "demo_implementation": "dedicated",
+      "demo_constructor": "NewWeComProvider",
+      "demo_adapter": "templates/demo/internal/notification/wecom_provider.go.tmpl",
+      "demo_ui_exposed": true,
+      "canonical_id": "wecom",
+      "library_status": "planned",
+      "library_surface": null
+    },
+    {
+      "id": "whapi",
+      "demo_implementation": "dedicated",
+      "demo_constructor": "NewWhapiProvider",
+      "demo_adapter": "templates/demo/internal/notification/whapi_provider.go.tmpl",
+      "demo_ui_exposed": true,
+      "canonical_id": "whapi",
+      "library_status": "planned",
+      "library_surface": null
+    },
+    {
+      "id": "wpush",
+      "demo_implementation": "generic_webhook_compat",
+      "demo_constructor": "NewGenericWebhookCompatProvider",
+      "demo_adapter": "templates/demo/internal/notification/generic_webhook_compat_provider.go.tmpl",
+      "demo_ui_exposed": false,
+      "canonical_id": "wpush",
+      "library_status": "planned",
+      "library_surface": null
+    },
+    {
+      "id": "yzj",
+      "demo_implementation": "generic_webhook_compat",
+      "demo_constructor": "NewGenericWebhookCompatProvider",
+      "demo_adapter": "templates/demo/internal/notification/generic_webhook_compat_provider.go.tmpl",
+      "demo_ui_exposed": false,
+      "canonical_id": "yzj",
+      "library_status": "planned",
+      "library_surface": null
+    },
+    {
+      "id": "zohocliq",
+      "demo_implementation": "generic_webhook_compat",
+      "demo_constructor": "NewGenericWebhookCompatProvider",
+      "demo_adapter": "templates/demo/internal/notification/generic_webhook_compat_provider.go.tmpl",
+      "demo_ui_exposed": false,
+      "canonical_id": "zohocliq",
+      "library_status": "planned",
+      "library_surface": null
+    }
+  ]
+}
