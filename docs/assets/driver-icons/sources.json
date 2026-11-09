@@ -1,0 +1,124 @@
+{
+  "icons": [
+    {
+      "asset": "dingding.svg",
+      "source": "https://raw.githubusercontent.com/ant-design/ant-design-icons/master/packages/icons-svg/svg/outlined/dingding.svg",
+      "license": "MIT (Ant Design Icons)",
+      "sha256": "3d27faad2720e1e7a9493b5539dbf357e3b33f2f1d7e4c2e81bfa8f2ccc4078e"
+    },
+    {
+      "asset": "discord.svg",
+      "source": "https://raw.githubusercontent.com/simple-icons/simple-icons/16.0.0/icons/discord.svg",
+      "license": "CC0-1.0 (Simple Icons)",
+      "sha256": "1d364b72c9eaf1fe37d17ca88cd8fb541308dc0f3b09e2ab3b824f380b3493d5"
+    },
+    {
+      "asset": "email.svg",
+      "source": "Original notification repository artwork",
+      "license": "MIT (repository LICENSE)",
+      "sha256": "d8ddeaab90794edcc50661c28b1f335eddf9c5ddd20dba8a5f2e900d15645098"
+    },
+    {
+      "asset": "feishu.svg",
+      "source": "https://raw.githubusercontent.com/homarr-labs/dashboard-icons/d767d7327db7f8ebd3715b552523f61889eea41c/svg/lark.svg",
+      "license": "Apache-2.0 (Dashboard Icons)",
+      "sha256": "f4ab3a5cb8998f152f21b544173a25b4f5692aa5e9ddaa57600f4cda68e30778"
+    },
+    {
+      "asset": "googlechat.svg",
+      "source": "https://raw.githubusercontent.com/simple-icons/simple-icons/16.0.0/icons/googlechat.svg",
+      "license": "CC0-1.0 (Simple Icons)",
+      "sha256": "6efc8b1cdb5860037d7d102bf6e77357cf04e45fd1a296be200141e3192111fa"
+    },
+    {
+      "asset": "gotify.svg",
+      "source": "https://raw.githubusercontent.com/homarr-labs/dashboard-icons/d767d7327db7f8ebd3715b552523f61889eea41c/svg/gotify.svg",
+      "license": "Apache-2.0 (Dashboard Icons)",
+      "sha256": "96fb5f819f183a582d64dc78258050edacf4656ad4bdbb92c7b6b325f197df93"
+    },
+    {
+      "asset": "jiraservicemanagement.svg",
+      "source": "https://raw.githubusercontent.com/simple-icons/simple-icons/16.0.0/icons/jira.svg",
+      "license": "CC0-1.0 (Simple Icons)",
+      "sha256": "68f8703698538ee7863bf69b72bf9f0d78a72d218e7eb7e0617237ae43ae5ade"
+    },
+    {
+      "asset": "line.svg",
+      "source": "https://raw.githubusercontent.com/simple-icons/simple-icons/16.0.0/icons/line.svg",
+      "license": "CC0-1.0 (Simple Icons)",
+      "sha256": "b62430462354f95914536d7205128647d5563cdb805bc9aca000300aaed816c8"
+    },
+    {
+      "asset": "log.svg",
+      "source": "Original notification repository artwork",
+      "license": "MIT (repository LICENSE)",
+      "sha256": "98023d85831c9350c7889b5829c5450a128d387e3e969c8ea89e291fd362829f"
+    },
+    {
+      "asset": "ntfy.svg",
+      "source": "https://raw.githubusercontent.com/simple-icons/simple-icons/16.0.0/icons/ntfy.svg",
+      "license": "CC0-1.0 (Simple Icons)",
+      "sha256": "10b6e507eba94b0f555668bba6d1ff3e3d212d375ad7b1390870f4eb739a575a"
+    },
+    {
+      "asset": "opsgenie.svg",
+      "source": "https://raw.githubusercontent.com/simple-icons/simple-icons/16.0.0/icons/opsgenie.svg",
+      "license": "CC0-1.0 (Simple Icons)",
+      "sha256": "38e17a3116bc904aacffd7fb42dbc3e8102c6d9aae72fb60f7f623a044544aa3"
+    },
+    {
+      "asset": "pagerduty.svg",
+      "source": "https://raw.githubusercontent.com/simple-icons/simple-icons/16.0.0/icons/pagerduty.svg",
+      "license": "CC0-1.0 (Simple Icons)",
+      "sha256": "18fc53d9fbd38d2fddbcc9d458cf7c6b9edee9a9442594170a98f61465dbc60e"
+    },
+    {
+      "asset": "slack.svg",
+      "source": "https://raw.githubusercontent.com/homarr-labs/dashboard-icons/d767d7327db7f8ebd3715b552523f61889eea41c/svg/slack.svg",
+      "license": "Apache-2.0 (Dashboard Icons)",
+      "sha256": "62e556a75b94516fd8dcfa9c8ee4eae76268b4087ee927d91a5f2d3115d54118"
+    },
+    {
+      "asset": "teams.svg",
+      "source": "https://raw.githubusercontent.com/homarr-labs/dashboard-icons/d767d7327db7f8ebd3715b552523f61889eea41c/svg/microsoft-teams.svg",
+      "license": "Apache-2.0 (Dashboard Icons)",
+      "sha256": "1ab26279cd8fc9e773d496173ab5db9d28a8610b19f197340a94131e6477292e"
+    },
+    {
+      "asset": "telegram.svg",
+      "source": "https://raw.githubusercontent.com/simple-icons/simple-icons/16.0.0/icons/telegram.svg",
+      "license": "CC0-1.0 (Simple Icons)",
+      "sha256": "147fd8f8923e7e5f463fe98c0eb9913bead6b2ae59935728cda141002ec8a7c9"
+    },
+    {
+      "asset": "twilio.svg",
+      "source": "https://raw.githubusercontent.com/homarr-labs/dashboard-icons/d767d7327db7f8ebd3715b552523f61889eea41c/svg/twilio.svg",
+      "license": "Apache-2.0 (Dashboard Icons)",
+      "sha256": "a5f8492d64f0716a72e35e35ff2c0590aa01fb77080320f5e3bad9fa1f28df01"
+    },
+    {
+      "asset": "waha.png",
+      "source": "https://github.com/devlikeapro/waha/blob/core/logo.png",
+      "license": "Upstream project brand artwork",
+      "sha256": "4cb438c0c1a09e4e0ad1bcac1aa7736a52a4e1350c022abdfb0a7c0c278c1915"
+    },
+    {
+      "asset": "webhook.svg",
+      "source": "Original notification repository artwork",
+      "license": "MIT (repository LICENSE)",
+      "sha256": "aa47039d7f85f7a190ac35f9c1823a5685df4d1ca74444a4ab0f1464c9da0b98"
+    },
+    {
+      "asset": "wecom.png",
+      "source": "https://work.weixin.qq.com",
+      "license": "Upstream brand artwork",
+      "sha256": "5b95029b419b45aef63f876b9bb8d86705fbff36da4c51dfdd9f2d63a1de7f2a"
+    },
+    {
+      "asset": "whapi.png",
+      "source": "https://support.whapi.cloud/help-desk",
+      "license": "Upstream brand artwork",
+      "sha256": "a463f7c065128bb43ba51d58104f0622f22424ccbb7f9589632a28552e3005f9"
+    }
+  ]
+}

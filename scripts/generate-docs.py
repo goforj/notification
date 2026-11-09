@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Project runnable examples, checked GoDoc APIs and measured evidence into README assets."""
 import argparse
+import base64
 import hashlib
 import html
 import json
@@ -8,6 +9,7 @@ from pathlib import Path
 import re
 import subprocess
 import textwrap
+import xml.etree.ElementTree as ET
 
 ROOT = Path(__file__).resolve().parent.parent
 APIS = [
@@ -62,6 +64,28 @@ def badge(label, value, color='#007ec6', icon=False):
     return f'''<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="20" role="img" aria-label="{title}"><title>{title}</title><clipPath id="badge"><rect width="{width}" height="20" rx="3"/></clipPath><g clip-path="url(#badge)"><path fill="#555" d="M0 0h{left}v20H0z"/><path fill="{color}" d="M{left} 0h{right}v20H{left}z"/></g><g fill="#fff" text-anchor="middle" font-family="Verdana,DejaVu Sans,sans-serif" font-size="11"><text x="{left / 2:g}" y="14">{html.escape(label)}</text><text x="{left + right / 2:g}" y="14">{html.escape(value)}</text></g></svg>\n'''
 
 
+def driver_badge(presentation):
+    """Embed provider artwork locally at a consistent readable size and baseline."""
+    path = ROOT / 'docs/assets/driver-icons' / presentation['icon']
+    label = html.escape(presentation['label'])
+    width = text_width(presentation['label']) + 40
+    if path.suffix == '.svg':
+        ET.register_namespace('', 'http://www.w3.org/2000/svg')
+        icon = ET.fromstring(path.read_text())
+        for parent in icon.iter():
+            for child in list(parent):
+                if child.tag.endswith('foreignObject'):
+                    parent.remove(child)
+        icon.attrib.update(x='6', y='3', width='16', height='16')
+        if 'fill' in presentation:
+            icon.set('fill', presentation['fill'])
+        artwork = ET.tostring(icon, encoding='unicode')
+    else:
+        encoded = base64.b64encode(path.read_bytes()).decode('ascii')
+        artwork = f'<image x="6" y="3" width="16" height="16" href="data:image/png;base64,{encoded}"/>'
+    return f'''<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="22" role="img" aria-label="{label}"><title>{label}</title><rect width="{width}" height="22" rx="3" fill="#33436b"/><rect x="4" y="1" width="20" height="20" rx="3" fill="#fff"/>{artwork}<text x="30" y="15" fill="#fff" font-family="Verdana,DejaVu Sans,sans-serif" font-size="11">{label}</text></svg>\n'''
+
+
 def outputs():
     """Validate inputs before producing the complete deterministic projection."""
     evidence = json.loads((ROOT / 'docs/unit-results.json').read_text())
@@ -85,11 +109,16 @@ def outputs():
         versions = json.loads((ROOT / 'integration/versions.json').read_text())
         if integration['source_fingerprint'] != source_fingerprint() or integration['servers'] != versions or not {'TestNtfy', 'TestGotify'} <= set(integration['passed_tests']):
             raise ValueError('native integration evidence is stale; run make test-integration')
-    driver_rows = ['| Driver | Configuration | Successful handling | Verification |', '| --- | --- | --- | --- |']
+    presentations = json.loads((ROOT / 'docs/assets/driver-icons/presentation.json').read_text())
+    driver_assets = {}
+    driver_rows = ['| Driver | Configuration | Successful handling | Verification |', '| ---: | --- | --- | --- |']
     for entry in catalog:
         if not (ROOT / entry['package']).is_dir():
             raise ValueError('missing driver package: ' + entry['package'])
-        driver_rows.append(f"| [{entry['id']}]({entry['package']}) | {entry['configuration']} | {entry['acceptance']} | {entry['verification']} |")
+        presentation = presentations[entry['id']]
+        asset = f"docs/assets/badges/driver-{entry['id']}.svg"
+        driver_assets[asset] = driver_badge(presentation)
+        driver_rows.append(f"| [![{presentation['label']}]({asset})]({entry['package']}) | {entry['configuration']} | {entry['acceptance']} | {entry['verification']} |")
     templates['README.md'] = templates['README.md'].replace('{{drivers}}', '\n'.join(driver_rows))
     readme = templates['README.md']
     rows = ['| API | Example |', '| --- | --- |']
@@ -107,6 +136,7 @@ def outputs():
     if any(re.search(r'\{\{(?:snippet:|api-index)', content) for content in templates.values()):
         raise ValueError('unresolved README marker')
     result = templates
+    result.update(driver_assets)
     for name, label, value, color in [('status', 'status', 'unreleased', '#6e7681'), ('go', 'Go', '1.24+', '#007d9c'), ('license', 'license', 'MIT', '#007ec6'), ('coverage', 'coverage', '100%', '#2e8540'), ('tests', 'tests', str(evidence['unit_tests_passed']), '#5368bd')]:
         result[f'docs/assets/badges/{name}.svg'] = badge(label, value, color)
     for name, label in [('intent', 'Simple messages'), ('policy', 'Recipient policy'), ('channels', 'Typed channels'), ('identity', 'Explicit identity'), ('diagnostics', 'Safe diagnostics'), ('testing', 'Isolated testing')]:

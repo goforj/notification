@@ -1,0 +1,91 @@
+{
+  "dingding": {
+    "label": "DingTalk",
+    "icon": "dingding.svg",
+    "fill": "#0089FF"
+  },
+  "discord": {
+    "label": "Discord",
+    "icon": "discord.svg",
+    "fill": "#5865F2"
+  },
+  "email": {
+    "label": "Mail",
+    "icon": "email.svg"
+  },
+  "feishu": {
+    "label": "Feishu",
+    "icon": "feishu.svg"
+  },
+  "googlechat": {
+    "label": "Google Chat",
+    "icon": "googlechat.svg",
+    "fill": "#34A853"
+  },
+  "gotify": {
+    "label": "Gotify",
+    "icon": "gotify.svg"
+  },
+  "jiraservicemanagement": {
+    "label": "Jira Service Management",
+    "icon": "jiraservicemanagement.svg",
+    "fill": "#0052CC"
+  },
+  "line": {
+    "label": "LINE",
+    "icon": "line.svg",
+    "fill": "#00C300"
+  },
+  "log": {
+    "label": "Log",
+    "icon": "log.svg"
+  },
+  "ntfy": {
+    "label": "ntfy",
+    "icon": "ntfy.svg",
+    "fill": "#317F6F"
+  },
+  "opsgenie": {
+    "label": "Opsgenie",
+    "icon": "opsgenie.svg",
+    "fill": "#172B4D"
+  },
+  "pagerduty": {
+    "label": "PagerDuty",
+    "icon": "pagerduty.svg",
+    "fill": "#06AC38"
+  },
+  "slack": {
+    "label": "Slack",
+    "icon": "slack.svg"
+  },
+  "teams": {
+    "label": "Teams",
+    "icon": "teams.svg"
+  },
+  "telegram": {
+    "label": "Telegram",
+    "icon": "telegram.svg",
+    "fill": "#26A5E4"
+  },
+  "twilio": {
+    "label": "Twilio",
+    "icon": "twilio.svg"
+  },
+  "waha": {
+    "label": "WAHA",
+    "icon": "waha.png"
+  },
+  "webhook": {
+    "label": "Webhook",
+    "icon": "webhook.svg"
+  },
+  "wecom": {
+    "label": "WeCom",
+    "icon": "wecom.png"
+  },
+  "whapi": {
+    "label": "Whapi",
+    "icon": "whapi.png"
+  }
+}

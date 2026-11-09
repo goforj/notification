@@ -33,6 +33,8 @@ class GenerationTests(unittest.TestCase):
             (root / 'examples/demo').mkdir(parents=True)
             (root / 'examples/demo/main.go').write_text('// snippet:start\nnotification.New()\nfmt.Println("{{a}}")\n// {{a}}\n// snippet:end')
             (root / 'docs/providers').mkdir(parents=True)
+            (root / 'docs/assets/driver-icons').mkdir(parents=True)
+            (root / 'docs/assets/driver-icons/presentation.json').write_text('{}')
             (root / 'docs/providers/drivers.json').write_text(json.dumps({'drivers': []}))
             (root / 'docs/readme.tmpl.md').write_text('## Demo\n{{snippet:demo}}\n{{api-index}}')
             with patch.object(generator, 'ROOT', root), patch.object(generator, 'APIS', [('New', '.', 'New', 'demo', 'Demo')]), patch.object(generator.subprocess, 'run'):
@@ -53,6 +55,8 @@ class GenerationTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             (root / 'docs/providers').mkdir(parents=True)
+            (root / 'docs/assets/driver-icons').mkdir(parents=True)
+            (root / 'docs/assets/driver-icons/presentation.json').write_text('{}')
             (root / 'integration').mkdir()
             (root / 'docs/readme.tmpl.md').write_text('{{drivers}}\n{{api-index}}')
             entry = {'id': 'ntfy', 'package': 'driver/ntfy', 'configuration': 'topic',
@@ -74,7 +78,9 @@ class GenerationTests(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, 'missing driver package'):
                     generator.outputs()
                 (root / 'driver/ntfy').mkdir(parents=True)
-                self.assertIn('[ntfy](driver/ntfy)', generator.outputs()['README.md'])
+                (root / 'docs/assets/driver-icons/presentation.json').write_text(json.dumps({'ntfy': {'label': 'ntfy', 'icon': 'ntfy.svg'}}))
+                (root / 'docs/assets/driver-icons/ntfy.svg').write_text('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M0 0h24v24z"/></svg>')
+                self.assertIn('[![ntfy](docs/assets/badges/driver-ntfy.svg)](driver/ntfy)', generator.outputs()['README.md'])
 
 
 if __name__ == '__main__':
