@@ -148,6 +148,9 @@ func (d *Driver) SendTemplate(ctx context.Context, template Template) error {
 	}{template.Name, struct {
 		Code string `json:"code"`
 	}{template.Language}, components}})
+	if len(request.Body) > 16384 {
+		return notification.NewDeliveryError("whatsapp", notification.Outcome{Status: notification.Failed}, notification.ErrRender)
+	}
 	return d.sender.Request(ctx, request)
 }
 

@@ -12,12 +12,12 @@ type Incident struct {
 	name        string
 	key         notification.IncidentKey
 	prepare     func(string, notification.Incident) (Request, error)
-	acknowledge func([]byte) error
+	acknowledge func(notification.Incident, []byte) error
 	statuses    []int
 }
 
 // NewIncident constructs a native lifecycle without provisioning or contacting a provider.
-func NewIncident(name string, config notification.HTTPConfig, key notification.IncidentKey, prepare func(string, notification.Incident) (Request, error), acknowledge func([]byte) error, statuses ...int) (*Incident, error) {
+func NewIncident(name string, config notification.HTTPConfig, key notification.IncidentKey, prepare func(string, notification.Incident) (Request, error), acknowledge func(notification.Incident, []byte) error, statuses ...int) (*Incident, error) {
 	if key != "" && key.Validate() != nil {
 		return nil, notification.ErrInvalidRequest
 	}
@@ -68,7 +68,11 @@ func (d *Incident) send(ctx context.Context, action string, incident notificatio
 	if err != nil {
 		return notification.NewDeliveryError(d.name, notification.Outcome{Status: notification.Failed}, err)
 	}
-	return d.client.Request(ctx, request.Method, request.URL, request.Header, request.Body, d.acknowledge, d.statuses...)
+	var acknowledge func([]byte) error
+	if d.acknowledge != nil {
+		acknowledge = func(data []byte) error { return d.acknowledge(incident, data) }
+	}
+	return d.client.Request(ctx, request.Method, request.URL, request.Header, request.Body, acknowledge, d.statuses...)
 }
 
 // Close releases owned idle connections without closing borrowed transports.

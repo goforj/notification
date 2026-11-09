@@ -44,12 +44,12 @@ func New(config Config) (*Driver, error) {
 			Key         notification.IncidentKey `json:"deduplication_key"`
 			Status      string                   `json:"status"`
 		}{title, event.Body, event.Key, status}), nil
-	}, func(data []byte) error {
+	}, func(event notification.Incident, data []byte) error {
 		var ack struct {
 			Status string                   `json:"status"`
 			Key    notification.IncidentKey `json:"deduplication_key"`
 		}
-		if json.Unmarshal(data, &ack) != nil || ack.Status != "success" || ack.Key.Validate() != nil {
+		if json.Unmarshal(data, &ack) != nil || ack.Status != "success" || ack.Key != event.Key {
 			return notification.ErrOutcomeUnknown
 		}
 		return nil
