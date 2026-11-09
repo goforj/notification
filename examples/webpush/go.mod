@@ -3,8 +3,8 @@ module github.com/goforj/notification/examples/webpush
 go 1.24.0
 
 require (
-	github.com/goforj/notification v0.0.0
-	github.com/goforj/notification/driver/webpush v0.0.0
+	github.com/goforj/notification v0.0.0-20261109213702-eafcce898c23
+	github.com/goforj/notification/driver/webpush v0.0.0-20261109213702-eafcce898c23
 )
 
 require (

@@ -7,8 +7,12 @@ if [[ ! "$version" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
   exit 2
 fi
 printf 'Root module: %s\n' "$version"
-for adapter in mail apns sns webpush; do
-  printf 'Optional module: driver/%s/%s\n' "$adapter" "$version"
-done
-echo 'Publish the root first, update each optional module requirement, then verify all five with GOWORK=off and no replacements.'
+while IFS= read -r module; do
+  if [[ "$module" == driver/* ]]; then
+    printf 'Optional module: %s/%s\n' "$module" "$version"
+  fi
+done < scripts/module-manifest.txt
+echo 'Verify the pushed commit with make verify-consumer REVISION=<commit> before tagging the root.'
+echo 'Publish the root first, then pin optional modules to that published version, preserve development replacements, and verify the next pushed commit before tagging them.'
+echo 'After tags are published, run make verify-consumer REVISION= followed by the selected version.'
 echo 'This command plans tags only. It does not tag or publish.'

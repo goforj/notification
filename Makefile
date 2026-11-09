@@ -1,5 +1,5 @@
 .DEFAULT_GOAL := help
-.PHONY: help test test-race test-integration test-coverage vet tidy modules-check generate check-generated security release-plan
+.PHONY: help test test-race test-integration test-coverage vet tidy modules-check generate check-generated security release-plan verify-consumer
 
 help: ## Show available commands.
 	@awk 'BEGIN {FS = ":.*## "} /^[a-zA-Z_-]+:.*## / {printf "  %-20s %s\n", $$1, $$2}' $(MAKEFILE_LIST)
@@ -37,3 +37,6 @@ security: ## Scan every module with the pinned vulnerability scanner.
 
 release-plan: ## Plan independent runtime module tags, VERSION=v0.1.0.
 	@scripts/release-plan.sh $(VERSION)
+
+verify-consumer: ## Resolve public modules and compile all drivers, REVISION=<tag-or-commit>.
+	@GOWORK=off go -C docs run ./consumer -revision "$(REVISION)"
