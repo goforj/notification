@@ -29,7 +29,7 @@ FCM's token callback may use the application's existing Google credential source
 
 ## WhatsApp Cloud
 
-The Graph API version is required configuration. Text sends combine title and body and are limited to 4096 runes. They require an eligible customer-service window. `SendTemplate` selects an existing approved template name and language, with up to 32 positional body parameters. Header, media and button components are not supported. The full template request is bounded to 16 KiB. The library does not create templates, authorize recipients or infer policy eligibility. Native acknowledgement checks the recipient and WhatsApp message ID.
+The Graph API version is required configuration. Text sends combine title and body and are limited to 4096 runes. They require an eligible customer-service window. `SendTemplate` selects an existing approved template name and language, with up to 32 positional body parameters. Header, media and button components are not supported. The full template request is bounded to 16 KiB after JSON encoding, including escaped characters and metadata. The library does not create templates, authorize recipients or infer policy eligibility. Native acknowledgement checks the recipient and WhatsApp message ID.
 
 ## SMS
 
@@ -44,6 +44,8 @@ Twilio, Plivo, Vonage, Telnyx and ClickSend reuse the plain-text message path wi
 | incident.io | HTTP alert-source deduplication key | Trigger, Resolve (resolved alert with required recovery title) |
 | FireHydrant | Signals idempotency key | Trigger, Resolve (CLOSED event) |
 | Better Stack | Native incident ID returned by `Create` | Acknowledge and Resolve by that returned ID |
+
+incident.io accepts a success acknowledgement only when its deduplication key matches that specific trigger or recovery request.
 
 Partial lifecycle drivers intentionally do not satisfy `IncidentSender`. Their ordinary Send requires a fixed configured key, while explicit Trigger accepts a key per incident. Better Stack Send creates an incident without retaining its ID; applications that need subsequent actions use Create and persist the native ID. Escalation flags and policies are explicit configuration. No unsupported acknowledgement is simulated, and accepted asynchronous requests are not polled.
 

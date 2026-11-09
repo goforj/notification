@@ -171,7 +171,7 @@ Generated from the driver catalog by `go -C docs run ./readme`. See [portable de
 [Package source](../driver/incidentio)
 
 - Configuration: HTTP alert source, token and stable key; firing and resolve only.
-- Accepted when: HTTP 202 with native success and deduplication key.
+- Accepted when: HTTP 202 with native success and matching request deduplication key.
 - Verification: Local protocol tests; hosted verification pending.
 - [Provider protocol reference](https://docs.incident.io/openapi/tags/alert-events-v2.json).
 

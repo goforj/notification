@@ -169,10 +169,10 @@
       "id": "incidentio",
       "package": "driver/incidentio",
       "configuration": "HTTP alert source, token and stable key; firing and resolve only",
-      "acceptance": "HTTP 202 with native success and deduplication key",
+      "acceptance": "HTTP 202 with native success and matching request deduplication key",
       "verification": "Local protocol tests; hosted verification pending",
       "protocol_source": "https://docs.incident.io/openapi/tags/alert-events-v2.json",
-      "acceptance_summary": "Native alert-source acceptance"
+      "acceptance_summary": "Correlated event acceptance"
     },
     {
       "id": "jiraservicemanagement",

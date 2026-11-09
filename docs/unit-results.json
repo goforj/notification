@@ -201,8 +201,8 @@
       "total_statements": 18
     },
     "github.com/goforj/notification/driver/whatsapp": {
-      "covered_statements": 43,
-      "total_statements": 43
+      "covered_statements": 45,
+      "total_statements": 45
     },
     "github.com/goforj/notification/driver/zulip": {
       "covered_statements": 21,
@@ -213,8 +213,8 @@
       "total_statements": 93
     },
     "github.com/goforj/notification/internal/provider": {
-      "covered_statements": 145,
-      "total_statements": 145
+      "covered_statements": 149,
+      "total_statements": 149
     },
     "github.com/goforj/notification/notificationfake": {
       "covered_statements": 40,
@@ -226,10 +226,10 @@
     }
   },
   "toolchain": "go version go1.27.3 darwin/arm64",
-  "source_fingerprint": "d8854db01d06cdb47ddc9f8a33082bec396af3b43976ff7c1ef25b875b2ee671",
-  "unit_tests_passed": 326,
-  "covered_statements": 2118,
-  "total_statements": 2118,
+  "source_fingerprint": "83af2b6efaacf57f95a860bcb7f2fe2a80acad71cbf8015ffab63d5dbdc52175",
+  "unit_tests_passed": 328,
+  "covered_statements": 2124,
+  "total_statements": 2124,
   "command_statements": 283,
   "covered_command_statements": 243,
   "coverage_percent": 100,
