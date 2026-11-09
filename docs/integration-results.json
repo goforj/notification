@@ -1,7 +1,7 @@
 {
-  "verified_at": "2026-11-09T03:36:18.900855Z",
-  "source_fingerprint": "f7b7ea4e3fba976f2f50ecf840abf5b5c404d45e5c71666693a9c4fb5df0ae7b",
-  "toolchain": "go version go1.24.0 darwin/arm64",
+  "verified_at": "2026-11-09T05:05:43.829114Z",
+  "source_fingerprint": "5c28f4a5265c59be7c4c521478c8e083ae81c54a3b127f3fbab6a296a175bc94",
+  "toolchain": "go version go1.27.3 darwin/arm64",
   "passed_tests": [
     "TestGotify",
     "TestNtfy"

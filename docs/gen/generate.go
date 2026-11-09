@@ -112,6 +112,7 @@ func outputsFor(root string, apis []API) (map[string][]byte, error) {
 	if err := readJSON(root, "docs/providers/drivers.json", &catalog); err != nil {
 		return nil, err
 	}
+	nativeTests := 0
 	for _, driver := range catalog.Drivers {
 		if strings.HasPrefix(driver.Verification, "Real ") {
 			var integration IntegrationEvidence
@@ -129,10 +130,22 @@ func outputsFor(root string, apis []API) (map[string][]byte, error) {
 			if integration.SourceFingerprint != fingerprint || !reflect.DeepEqual(integration.Servers, versions) || !passed["TestNtfy"] || !passed["TestGotify"] {
 				return nil, fmt.Errorf("native integration evidence is stale; run make test-integration")
 			}
+			nativeTests = len(passed)
 			break
 		}
 	}
 	outputs := map[string][]byte{}
+	coverageBadges, err := packageCoverageBadges(unit, outputs)
+	if err != nil {
+		return nil, err
+	}
+	templates["README.md"] = strings.ReplaceAll(templates["README.md"], "{{package-coverage}}", coverageBadges)
+	integrationBadge := ""
+	if nativeTests > 0 {
+		outputs["docs/assets/badges/integration-tests.svg"] = StatusBadge("integration tests", fmt.Sprint(nativeTests), "#007ec6")
+		integrationBadge = `  <a href="docs/integration-results.json"><img src="docs/assets/badges/integration-tests.svg" alt="Executed native integration tests"></a>`
+	}
+	templates["README.md"] = strings.ReplaceAll(templates["README.md"], "{{integration-badge}}", integrationBadge)
 	var presentations map[string]Presentation
 	if err := readJSON(root, "docs/assets/driver-icons/presentation.json", &presentations); err != nil {
 		return nil, err
@@ -192,7 +205,7 @@ func outputsFor(root string, apis []API) (map[string][]byte, error) {
 		}
 		outputs[path] = []byte(text)
 	}
-	for _, item := range []struct{ Name, Label, Value, Color string }{{"status", "status", "unreleased", "#6e7681"}, {"go", "Go", "1.24+", "#007d9c"}, {"license", "license", "MIT", "#007ec6"}, {"coverage", "coverage", "100%", "#2e8540"}, {"tests", "tests", fmt.Sprint(unit.UnitTestsPassed), "#5368bd"}} {
+	for _, item := range []struct{ Name, Label, Value, Color string }{{"status", "status", "unreleased", "#6e7681"}, {"go", "Go", "1.24+", "#007d9c"}, {"license", "license", "MIT", "#007ec6"}, {"coverage", "coverage", "100%", "#2e8540"}, {"tests", "unit tests", fmt.Sprint(unit.UnitTestsPassed), "#5368bd"}} {
 		outputs["docs/assets/badges/"+item.Name+".svg"] = StatusBadge(item.Label, item.Value, item.Color)
 	}
 	for name, presentation := range features {

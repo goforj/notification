@@ -39,7 +39,7 @@ func freshUnit(t *testing.T, root string) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	putJSON(t, root, "docs/unit-results.json", UnitEvidence{SourceFingerprint: fingerprint, CoveredStatements: 1, TotalStatements: 1, UnitTestsPassed: 1})
+	putJSON(t, root, "docs/unit-results.json", UnitEvidence{SourceFingerprint: fingerprint, CoveredStatements: 1, TotalStatements: 1, UnitTestsPassed: 1, Packages: map[string]PackageCoverage{"github.com/goforj/notification": {Covered: 1, Total: 1}}})
 }
 
 // fixture builds a tiny real source/example/template composition for validation failures.
@@ -56,7 +56,7 @@ func main(){
  // hello
  // snippet:end
 }`)
-	put(t, root, "docs/readme.tmpl.md", "## Demo\n{{snippet:demo}}\n{{drivers}}\n{{api-index}}\n")
+	put(t, root, "docs/readme.tmpl.md", "{{package-coverage}}\n{{integration-badge}}\n## Demo\n{{snippet:demo}}\n{{drivers}}\n{{api-index}}\n")
 	put(t, root, "docs/advanced.tmpl.md", "# Advanced\n")
 	putJSON(t, root, "docs/providers/drivers.json", map[string]any{"drivers": []Driver{}})
 	putJSON(t, root, "docs/assets/driver-icons/presentation.json", map[string]Presentation{})
@@ -182,6 +182,9 @@ func TestDriverEvidenceAndSearchableNames(t *testing.T) {
 	outputs, err := outputsFor(root, demoAPI())
 	if err != nil {
 		t.Fatal(err)
+	}
+	if !bytes.Contains(outputs["docs/assets/badges/integration-tests.svg"], []byte("integration tests: 2")) || !bytes.Contains(outputs["README.md"], []byte("Executed native integration tests")) {
+		t.Fatal("native integration badge is not backed by the executed inventory")
 	}
 	if !strings.Contains(string(outputs["README.md"]), `<strong>ntfy</strong>`) || !strings.Contains(string(outputs["README.md"]), `align="absmiddle"`) || bytes.Contains(outputs["docs/assets/badges/driver-ntfy.svg"], []byte("<text")) {
 		t.Fatal("driver name is not searchable beside an aligned icon badge")

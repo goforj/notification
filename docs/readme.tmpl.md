@@ -5,11 +5,15 @@
 <p align="center">Send notifications in Go with a title, a body, and a configured driver.</p>
 
 <p align="center">
+  <a href="https://github.com/goforj/notification/actions/workflows/ci.yml"><img src="https://github.com/goforj/notification/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+  <a href="https://github.com/goforj/notification/actions/workflows/security.yml"><img src="https://github.com/goforj/notification/actions/workflows/security.yml/badge.svg" alt="Security"></a>
   <img src="docs/assets/badges/status.svg" alt="Unreleased">
   <img src="docs/assets/badges/go.svg" alt="Go 1.24 or newer">
   <a href="LICENSE"><img src="docs/assets/badges/license.svg" alt="MIT license"></a>
   <a href="docs/unit-results.json"><img src="docs/assets/badges/coverage.svg" alt="Unit statement coverage"></a>
   <a href="docs/unit-results.json"><img src="docs/assets/badges/tests.svg" alt="Executed unit tests"></a>
+{{integration-badge}}
+{{package-coverage}}
 </p>
 
 <p align="center"><a href="#features">Features</a> · <a href="#quick-start">Quick Start</a> · <a href="#drivers">Drivers</a> · <a href="#runnable-examples">Examples</a> · <a href="#api-index">API</a></p>

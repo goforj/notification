@@ -59,6 +59,9 @@ func TestUnitReport(t *testing.T) {
 	if evidence.CoveredStatements != 2 || evidence.TotalStatements != 2 || evidence.CommandStatements != 3 || evidence.UnitTestsPassed != 1 || evidence.CoveragePercent != 100 {
 		t.Fatal(evidence)
 	}
+	if len(evidence.Packages) != 1 || evidence.Packages["github.com/goforj/notification"] != (PackageCoverage{Covered: 2, Total: 2}) {
+		t.Fatal("package coverage includes command code or loses measured weights", evidence.Packages)
+	}
 	before, err := os.ReadFile(filepath.Join(root, "docs/unit-results.json"))
 	if err != nil {
 		t.Fatal(err)

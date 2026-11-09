@@ -17,15 +17,22 @@ import (
 
 // UnitEvidence retains exact library counts separately from executed example commands.
 type UnitEvidence struct {
-	Toolchain                string   `json:"toolchain"`
-	SourceFingerprint        string   `json:"source_fingerprint"`
-	UnitTestsPassed          int      `json:"unit_tests_passed"`
-	CoveredStatements        int      `json:"covered_statements"`
-	TotalStatements          int      `json:"total_statements"`
-	CommandStatements        int      `json:"command_statements"`
-	CoveredCommandStatements int      `json:"covered_command_statements"`
-	CoveragePercent          float64  `json:"coverage_percent"`
-	Modules                  []string `json:"modules"`
+	Packages                 map[string]PackageCoverage `json:"packages"`
+	Toolchain                string                     `json:"toolchain"`
+	SourceFingerprint        string                     `json:"source_fingerprint"`
+	UnitTestsPassed          int                        `json:"unit_tests_passed"`
+	CoveredStatements        int                        `json:"covered_statements"`
+	TotalStatements          int                        `json:"total_statements"`
+	CommandStatements        int                        `json:"command_statements"`
+	CoveredCommandStatements int                        `json:"covered_command_statements"`
+	CoveragePercent          float64                    `json:"coverage_percent"`
+	Modules                  []string                   `json:"modules"`
+}
+
+// PackageCoverage preserves exact measured statement counts for one runtime library package.
+type PackageCoverage struct {
+	Covered int `json:"covered_statements"`
+	Total   int `json:"total_statements"`
 }
 
 // Server identifies the exact upstream version and immutable integration image.
@@ -144,7 +151,7 @@ func writeJSON(root, path string, value any) error {
 
 // ReportUnit merges library and child-program coverage while testing tooling independently.
 func ReportUnit(root string) (UnitEvidence, error) {
-	evidence := UnitEvidence{}
+	evidence := UnitEvidence{Packages: map[string]PackageCoverage{}}
 	modules, err := Modules(root)
 	if err != nil {
 		return evidence, err
@@ -194,10 +201,14 @@ func ReportUnit(root string) (UnitEvidence, error) {
 			continue
 		}
 		library[location] = block
+		coverage := evidence.Packages[directory]
+		coverage.Total += block.Statements
 		evidence.TotalStatements += block.Statements
 		if block.Count > 0 {
 			evidence.CoveredStatements += block.Statements
+			coverage.Covered += block.Statements
 		}
+		evidence.Packages[directory] = coverage
 	}
 	if err := os.WriteFile(filepath.Join(root, ".artifacts/unit-coverage.out"), profile(library), 0644); err != nil {
 		return evidence, err
