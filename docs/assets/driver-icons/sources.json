@@ -119,6 +119,60 @@
       "source": "https://support.whapi.cloud/help-desk",
       "license": "Upstream brand artwork",
       "sha256": "a463f7c065128bb43ba51d58104f0622f22424ccbb7f9589632a28552e3005f9"
+    },
+    {
+      "asset": "pushover.svg",
+      "source": "https://raw.githubusercontent.com/homarr-labs/dashboard-icons/d767d7327db7f8ebd3715b552523f61889eea41c/svg/pushover.svg",
+      "license": "Apache-2.0 (Dashboard Icons)",
+      "sha256": "6004230c7c29b6a6238b0ddca0322c3a7fbd8751dc7b819928fa5232ac328def"
+    },
+    {
+      "asset": "matrix.svg",
+      "source": "https://raw.githubusercontent.com/simple-icons/simple-icons/16.0.0/icons/matrix.svg",
+      "license": "CC0-1.0 (Simple Icons)",
+      "sha256": "07e6a16f5437fb0e7704c15b97bd50f46f3fa8968e022af2b9f2395fe0419d72"
+    },
+    {
+      "asset": "mattermost.svg",
+      "source": "https://raw.githubusercontent.com/simple-icons/simple-icons/16.0.0/icons/mattermost.svg",
+      "license": "CC0-1.0 (Simple Icons)",
+      "sha256": "eb0c39d9be0cd4463c484199f672b5e99de37c0ae91ef26678efb95111283df8"
+    },
+    {
+      "asset": "rocketchat.svg",
+      "source": "Original notification repository domain artwork",
+      "license": "MIT (repository LICENSE)",
+      "sha256": "1181d757c19213ca9539ec7f1c997aa4fcd23761680c3efef1865d5c03421171"
+    },
+    {
+      "asset": "pushbullet.svg",
+      "source": "https://raw.githubusercontent.com/simple-icons/simple-icons/16.0.0/icons/pushbullet.svg",
+      "license": "CC0-1.0 (Simple Icons)",
+      "sha256": "7c0b01a99b36acfbfd09b22dfa31589ce71fb1bd1c94474db1905ae358059fa1"
+    },
+    {
+      "asset": "bark.svg",
+      "source": "Original notification repository domain artwork",
+      "license": "MIT (repository LICENSE)",
+      "sha256": "d2e824462ccd89a9061eec027bbbf1e035ad439b50b602f450531573999a1d79"
+    },
+    {
+      "asset": "zulip.svg",
+      "source": "https://raw.githubusercontent.com/simple-icons/simple-icons/16.0.0/icons/zulip.svg",
+      "license": "CC0-1.0 (Simple Icons)",
+      "sha256": "44edd594232ebacfb6bda0345706ebc09da3d84d57aa53bf37011a941fd5cc1b"
+    },
+    {
+      "asset": "ifttt.svg",
+      "source": "https://raw.githubusercontent.com/simple-icons/simple-icons/16.0.0/icons/ifttt.svg",
+      "license": "CC0-1.0 (Simple Icons)",
+      "sha256": "68640b0e929b18a966191616f522aa2c2ab767b5723b58ba7f5d797f4f20092b"
+    },
+    {
+      "asset": "join.svg",
+      "source": "Original notification repository domain artwork",
+      "license": "MIT (repository LICENSE)",
+      "sha256": "f7e42f651e26ad4d1af6da9b327c07080f83c2be11e6319f8bd1804d91c154a5"
     }
   ]
 }

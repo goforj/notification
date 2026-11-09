@@ -2,6 +2,15 @@
   "schema_version": 1,
   "drivers": [
     {
+      "id": "bark",
+      "package": "driver/bark",
+      "configuration": "Server, device key and optional group",
+      "acceptance": "Native response code",
+      "verification": "Local protocol tests; hosted verification pending",
+      "protocol_source": "https://github.com/Finb/bark-server",
+      "acceptance_summary": "Native response code"
+    },
+    {
       "id": "dingding",
       "package": "driver/dingtalk",
       "configuration": "Webhook and optional signing secret",
@@ -18,15 +27,6 @@
       "verification": "Local protocol tests; hosted verification pending",
       "protocol_source": "https://docs.discord.com/developers/resources/webhook#execute-webhook",
       "acceptance_summary": "Message ID"
-    },
-    {
-      "id": "email",
-      "package": "driver/mail",
-      "configuration": "Borrowed Mailer and recipients",
-      "acceptance": "Mail acceptance",
-      "verification": "Mail composition tests; hosted verification pending",
-      "protocol_source": null,
-      "acceptance_summary": "Mailer acceptance"
     },
     {
       "id": "feishu",
@@ -56,6 +56,15 @@
       "acceptance_summary": "Message ID and content"
     },
     {
+      "id": "ifttt",
+      "package": "driver/ifttt",
+      "configuration": "Webhooks key and event; title/body map to value1/value2",
+      "acceptance": "Event-trigger acknowledgement",
+      "verification": "Local protocol tests; hosted verification pending",
+      "protocol_source": "https://ifttt.com/maker_webhooks",
+      "acceptance_summary": "Event-trigger acknowledgement"
+    },
+    {
       "id": "jiraservicemanagement",
       "package": "driver/jsm",
       "configuration": "Cloud ID, email and API token",
@@ -63,6 +72,15 @@
       "verification": "Local protocol tests; hosted verification pending",
       "protocol_source": "https://developer.atlassian.com/cloud/jira/service-desk-ops/rest/v2/api-group-alerts/",
       "acceptance_summary": "Async request ID"
+    },
+    {
+      "id": "join",
+      "package": "driver/join",
+      "configuration": "API key and device ID",
+      "acceptance": "Native success flag",
+      "verification": "Local protocol tests; hosted verification pending",
+      "protocol_source": "https://joaoapps.com/join/api/",
+      "acceptance_summary": "Native success flag"
     },
     {
       "id": "line",
@@ -81,6 +99,33 @@
       "verification": "Local capture tests",
       "protocol_source": null,
       "acceptance_summary": "Local capture"
+    },
+    {
+      "id": "email",
+      "package": "driver/mail",
+      "configuration": "Borrowed Mailer and recipients",
+      "acceptance": "Mail acceptance",
+      "verification": "Mail composition tests; hosted verification pending",
+      "protocol_source": null,
+      "acceptance_summary": "Mailer acceptance"
+    },
+    {
+      "id": "matrix",
+      "package": "driver/matrix",
+      "configuration": "Homeserver, access token and existing unencrypted room ID",
+      "acceptance": "Event ID; fresh transaction per Send",
+      "verification": "Local protocol tests; hosted verification pending",
+      "protocol_source": "https://spec.matrix.org/v1.16/client-server-api/",
+      "acceptance_summary": "Event ID; fresh transaction per Send"
+    },
+    {
+      "id": "mattermost",
+      "package": "driver/mattermost",
+      "configuration": "Incoming webhook URL; mentions neutralized",
+      "acceptance": "Native ok acknowledgement",
+      "verification": "Local protocol tests; hosted verification pending",
+      "protocol_source": "https://docs.mattermost.com/developers/integrate/webhooks/incoming",
+      "acceptance_summary": "Native ok acknowledgement"
     },
     {
       "id": "ntfy",
@@ -108,6 +153,33 @@
       "verification": "Local protocol tests; hosted verification pending",
       "protocol_source": "https://docs.pagerduty.com/developer/send-alert-event",
       "acceptance_summary": "Event and incident key"
+    },
+    {
+      "id": "pushbullet",
+      "package": "driver/pushbullet",
+      "configuration": "Access token and optional device, email or channel",
+      "acceptance": "Native push ID",
+      "verification": "Local protocol tests; hosted verification pending",
+      "protocol_source": "https://docs.pushbullet.com/",
+      "acceptance_summary": "Native push ID"
+    },
+    {
+      "id": "pushover",
+      "package": "driver/pushover",
+      "configuration": "Application token, user/group, optional device; priorities -2 through 1",
+      "acceptance": "Native status and request ID",
+      "verification": "Local protocol tests; hosted verification pending",
+      "protocol_source": "https://pushover.net/api",
+      "acceptance_summary": "Native status and request ID"
+    },
+    {
+      "id": "rocketchat",
+      "package": "driver/rocketchat",
+      "configuration": "Incoming integration URL; mentions neutralized",
+      "acceptance": "Native success flag",
+      "verification": "Local protocol tests; hosted verification pending",
+      "protocol_source": "https://docs.rocket.chat/docs/integrations",
+      "acceptance_summary": "Native success flag"
     },
     {
       "id": "slack",
@@ -180,6 +252,15 @@
       "verification": "Local protocol tests; hosted verification pending",
       "protocol_source": "https://whapi.readme.io/reference/sendmessagetext",
       "acceptance_summary": "Send acknowledgement"
+    },
+    {
+      "id": "zulip",
+      "package": "driver/zulip",
+      "configuration": "Server, bot email/key, channel and topic",
+      "acceptance": "Success result and message ID",
+      "verification": "Local protocol tests; hosted verification pending",
+      "protocol_source": "https://zulip.com/api/send-message",
+      "acceptance_summary": "Success result and message ID"
     }
   ]
 }

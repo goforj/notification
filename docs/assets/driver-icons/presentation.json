@@ -107,5 +107,55 @@
     "label": "Whapi",
     "icon": "whapi.png",
     "accent": "#8043CB"
+  },
+  "pushover": {
+    "label": "Pushover",
+    "icon": "pushover.svg",
+    "accent": "#249DF1"
+  },
+  "matrix": {
+    "label": "Matrix",
+    "icon": "matrix.svg",
+    "accent": "#0DBD8B",
+    "fill": "#0DBD8B"
+  },
+  "mattermost": {
+    "label": "Mattermost",
+    "icon": "mattermost.svg",
+    "accent": "#0058CC",
+    "fill": "#0058CC"
+  },
+  "rocketchat": {
+    "label": "Rocket.Chat",
+    "icon": "rocketchat.svg",
+    "accent": "#F5455C"
+  },
+  "pushbullet": {
+    "label": "Pushbullet",
+    "icon": "pushbullet.svg",
+    "accent": "#4AB367",
+    "fill": "#4AB367"
+  },
+  "bark": {
+    "label": "Bark",
+    "icon": "bark.svg",
+    "accent": "#E7AC27"
+  },
+  "zulip": {
+    "label": "Zulip",
+    "icon": "zulip.svg",
+    "accent": "#6492FE",
+    "fill": "#6492FE"
+  },
+  "ifttt": {
+    "label": "IFTTT",
+    "icon": "ifttt.svg",
+    "accent": "#1471C8",
+    "fill": "#1471C8"
+  },
+  "join": {
+    "label": "Join",
+    "icon": "join.svg",
+    "accent": "#FF9800"
   }
 }
