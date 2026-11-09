@@ -2,7 +2,7 @@
   <img src="docs/assets/logo.png" width="300" alt="notification logo">
 </p>
 
-<p align="center">Send notifications in Go with a title, a body, and a configured driver.</p>
+<p align="center">One Go API for chat, email, SMS, push, and on-call alerts.</p>
 
 <p align="center">
   <a href="https://github.com/goforj/notification/actions/workflows/ci.yml"><img src="https://github.com/goforj/notification/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
