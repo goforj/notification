@@ -230,8 +230,8 @@
       "demo_adapter": "templates/demo/internal/notification/dingding_provider.go.tmpl",
       "demo_ui_exposed": true,
       "canonical_id": "dingding",
-      "library_status": "planned",
-      "library_surface": null
+      "library_status": "available",
+      "library_surface": "driver/dingtalk (Local protocol tests; hosted verification pending)"
     },
     {
       "id": "discord",
@@ -240,8 +240,8 @@
       "demo_adapter": "templates/demo/internal/notification/discord_provider.go.tmpl",
       "demo_ui_exposed": true,
       "canonical_id": "discord",
-      "library_status": "planned",
-      "library_surface": null
+      "library_status": "available",
+      "library_surface": "driver/discord (Local protocol tests; hosted verification pending)"
     },
     {
       "id": "elks",
@@ -261,7 +261,7 @@
       "demo_ui_exposed": true,
       "canonical_id": "email",
       "library_status": "available",
-      "library_surface": "driver/mail with configured Mailer"
+      "library_surface": "driver/mail (Mail composition tests; hosted verification pending)"
     },
     {
       "id": "evolution",
@@ -280,8 +280,8 @@
       "demo_adapter": "templates/demo/internal/notification/feishu_provider.go.tmpl",
       "demo_ui_exposed": true,
       "canonical_id": "feishu",
-      "library_status": "planned",
-      "library_surface": null
+      "library_status": "available",
+      "library_surface": "driver/feishu (Local protocol tests; hosted verification pending)"
     },
     {
       "id": "flashduty",
@@ -320,8 +320,8 @@
       "demo_adapter": "templates/demo/internal/notification/google_chat_provider.go.tmpl",
       "demo_ui_exposed": true,
       "canonical_id": "googlechat",
-      "library_status": "planned",
-      "library_surface": null
+      "library_status": "available",
+      "library_surface": "driver/googlechat (Local protocol tests; hosted verification pending)"
     },
     {
       "id": "googlesheets",
@@ -350,8 +350,8 @@
       "demo_adapter": "templates/demo/internal/notification/gotify_provider.go.tmpl",
       "demo_ui_exposed": true,
       "canonical_id": "gotify",
-      "library_status": "planned",
-      "library_surface": null
+      "library_status": "available",
+      "library_surface": "driver/gotify (Real Gotify 3.1.1 server verified)"
     },
     {
       "id": "grafanaoncall",
@@ -410,8 +410,8 @@
       "demo_adapter": "templates/demo/internal/notification/jira_service_management_provider.go.tmpl",
       "demo_ui_exposed": true,
       "canonical_id": "jiraservicemanagement",
-      "library_status": "planned",
-      "library_surface": null
+      "library_status": "available",
+      "library_surface": "driver/jsm (Local protocol tests; hosted verification pending)"
     },
     {
       "id": "keep",
@@ -440,8 +440,8 @@
       "demo_adapter": "templates/demo/internal/notification/line_provider.go.tmpl",
       "demo_ui_exposed": true,
       "canonical_id": "line",
-      "library_status": "planned",
-      "library_surface": null
+      "library_status": "available",
+      "library_surface": "driver/line (Local protocol tests; hosted verification pending)"
     },
     {
       "id": "log",
@@ -451,7 +451,7 @@
       "demo_ui_exposed": true,
       "canonical_id": "log",
       "library_status": "available",
-      "library_surface": "driver/log"
+      "library_surface": "driver/log (Local capture tests)"
     },
     {
       "id": "lunasea",
@@ -520,8 +520,8 @@
       "demo_adapter": "templates/demo/internal/notification/ntfy_provider.go.tmpl",
       "demo_ui_exposed": true,
       "canonical_id": "ntfy",
-      "library_status": "planned",
-      "library_surface": null
+      "library_status": "available",
+      "library_surface": "driver/ntfy (Real ntfy 2.37.2 server verified)"
     },
     {
       "id": "octopush",
@@ -570,8 +570,8 @@
       "demo_adapter": "templates/demo/internal/notification/opsgenie_provider.go.tmpl",
       "demo_ui_exposed": true,
       "canonical_id": "opsgenie",
-      "library_status": "planned",
-      "library_surface": null
+      "library_status": "available",
+      "library_surface": "driver/opsgenie (Local protocol tests; hosted verification pending)"
     },
     {
       "id": "pagerduty",
@@ -580,8 +580,8 @@
       "demo_adapter": "templates/demo/internal/notification/pagerduty_provider.go.tmpl",
       "demo_ui_exposed": true,
       "canonical_id": "pagerduty",
-      "library_status": "planned",
-      "library_surface": null
+      "library_status": "available",
+      "library_surface": "driver/pagerduty (Local protocol tests; hosted verification pending)"
     },
     {
       "id": "pagertree",
@@ -761,7 +761,7 @@
       "demo_ui_exposed": true,
       "canonical_id": "slack",
       "library_status": "available",
-      "library_surface": "driver/webhook (Slack-compatible)"
+      "library_surface": "driver/slack (Local protocol tests; hosted verification pending)"
     },
     {
       "id": "smsc",
@@ -831,7 +831,7 @@
       "demo_ui_exposed": true,
       "canonical_id": "email",
       "library_status": "available",
-      "library_surface": "driver/mail with SMTP Mailer"
+      "library_surface": "driver/mail (Mail composition tests; hosted verification pending)"
     },
     {
       "id": "splunk",
@@ -880,8 +880,8 @@
       "demo_adapter": "templates/demo/internal/notification/teams_provider.go.tmpl",
       "demo_ui_exposed": true,
       "canonical_id": "teams",
-      "library_status": "planned",
-      "library_surface": null
+      "library_status": "available",
+      "library_surface": "driver/teams (Local protocol tests; hosted verification pending)"
     },
     {
       "id": "telegram",
@@ -890,8 +890,8 @@
       "demo_adapter": "templates/demo/internal/notification/telegram_provider.go.tmpl",
       "demo_ui_exposed": true,
       "canonical_id": "telegram",
-      "library_status": "planned",
-      "library_surface": null
+      "library_status": "available",
+      "library_surface": "driver/telegram (Local protocol tests; hosted verification pending)"
     },
     {
       "id": "threema",
@@ -910,8 +910,8 @@
       "demo_adapter": "templates/demo/internal/notification/twilio_provider.go.tmpl",
       "demo_ui_exposed": true,
       "canonical_id": "twilio",
-      "library_status": "planned",
-      "library_surface": null
+      "library_status": "available",
+      "library_surface": "driver/twilio (Local protocol tests; hosted verification pending)"
     },
     {
       "id": "waha",
@@ -920,8 +920,8 @@
       "demo_adapter": "templates/demo/internal/notification/waha_provider.go.tmpl",
       "demo_ui_exposed": true,
       "canonical_id": "waha",
-      "library_status": "planned",
-      "library_surface": null
+      "library_status": "available",
+      "library_surface": "driver/waha (Local protocol tests; paired-session verification pending)"
     },
     {
       "id": "webhook",
@@ -931,7 +931,7 @@
       "demo_ui_exposed": true,
       "canonical_id": "webhook",
       "library_status": "available",
-      "library_surface": "driver/webhook (Generic)"
+      "library_surface": "driver/webhook (Local protocol tests; hosted verification pending)"
     },
     {
       "id": "webpush",
@@ -950,8 +950,8 @@
       "demo_adapter": "templates/demo/internal/notification/wecom_provider.go.tmpl",
       "demo_ui_exposed": true,
       "canonical_id": "wecom",
-      "library_status": "planned",
-      "library_surface": null
+      "library_status": "available",
+      "library_surface": "driver/wecom (Local protocol tests; hosted verification pending)"
     },
     {
       "id": "whapi",
@@ -960,8 +960,8 @@
       "demo_adapter": "templates/demo/internal/notification/whapi_provider.go.tmpl",
       "demo_ui_exposed": true,
       "canonical_id": "whapi",
-      "library_status": "planned",
-      "library_surface": null
+      "library_status": "available",
+      "library_surface": "driver/whapi (Local protocol tests; hosted verification pending)"
     },
     {
       "id": "wpush",

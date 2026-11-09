@@ -56,13 +56,9 @@ def inventory(checkout):
         evidence.append({'path': str(path.relative_to(checkout)), 'sha256': hashlib.sha256(path.read_bytes()).hexdigest()})
     commit = subprocess.run(['git', '-C', str(checkout), 'rev-parse', 'HEAD'], check=True, capture_output=True, text=True).stdout.strip()
     entries = []
-    library = {
-        'log': 'driver/log',
-        'webhook': 'driver/webhook (Generic)',
-        'slack': 'driver/webhook (Slack-compatible)',
-        'email': 'driver/mail with configured Mailer',
-        'smtp': 'driver/mail with SMTP Mailer',
-    }
+    catalog = json.loads((ROOT / 'docs/providers/drivers.json').read_text())['drivers']
+    library = {entry['id']: entry['package'] + ' (' + entry['verification'] + ')' for entry in catalog}
+    library['smtp'] = library['email']
     mail_transports = {'sendgrid': 'mailsendgrid', 'resend': 'mailresend'}
     for name in sorted(ids):
         constructor = direct.get(name)
@@ -96,7 +92,7 @@ def markdown(data):
              f"Source commit: `{data['source_commit']}`. Exact source file hashes are retained in [the JSON snapshot](uptime-gopher.json).", '',
              f"The backend recognizes {counts['backend_ids']} IDs; the UI exposes {counts['ui_ids']}. {counts['dedicated_ids']} IDs use {counts['dedicated_adapters']} dedicated adapters, while {counts['generic_alias_ids']} IDs use the generic webhook compatibility envelope.", '',
              'Dedicated means provider-specific code exists. It does not establish that the current upstream API accepts its payload or that hosted delivery was tested. Generic compatibility means the demo sends its own provider/text/message envelope to a configured URL; it is not native provider support.', '',
-             'Available library surfaces below retain their existing test scope: local log capture, local webhook wire contracts, and Mail composition. SendGrid and Resend are candidates for composition through sibling Mail drivers, not newly verified notification integrations.', '',
+             'Library surfaces below distinguish real-server verification from protocol fixtures and pending hosted verification. SendGrid and Resend are candidates for composition through sibling Mail drivers, not newly verified notification integrations.', '',
              '## Dedicated demo adapters', '', '| Provider ID | Demo UI | Current notification library surface |', '| --- | --- | --- |']
     for entry in data['providers']:
         if entry['demo_implementation'] == 'dedicated':

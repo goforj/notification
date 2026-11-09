@@ -1,15 +1,16 @@
 {
   "toolchain": "go version go1.27.3 darwin/arm64",
-  "source_fingerprint": "f6052d26d6c2cbb5df829b8156e1cdc47841232960ddd62af1cb3b4d100a012b",
-  "unit_tests_passed": 154,
-  "covered_statements": 587,
-  "total_statements": 587,
-  "command_statements": 65,
-  "covered_command_statements": 56,
+  "source_fingerprint": "eec015032f5c1806e5d8f8a841e41f225399c4aa38881303bc5d46646b7fd3c3",
+  "unit_tests_passed": 189,
+  "covered_statements": 1206,
+  "total_statements": 1206,
+  "command_statements": 106,
+  "covered_command_statements": 89,
   "coverage_percent": 100.0,
   "modules": [
     ".",
     "driver/mail",
-    "examples/mail"
+    "examples/mail",
+    "integration"
   ]
 }

@@ -61,7 +61,7 @@ Keep existing small constructors where they are clear. New constructors validate
 
 ### Add simple sender composition
 
-Proposed shape, not implemented:
+Implemented shape:
 
 ```go
 sender := notification.New(notification.Fanout(
@@ -76,13 +76,13 @@ The error-only Sender contract means nil is handled, which can include log captu
 
 ### Preserve structured errors through the facade
 
-Currently the simple webhook Send path discards Outcome.RetryAfter, and Notifier's safe-error normalization collapses arbitrary wrapped/joined errors to one sentinel. Before adding composition, introduce a bounded safe typed error carrying provider/target classification and retry advice. Support errors.Is and errors.As, and retain multiple failures without exposing tokens, URLs, recipient addresses, or server bodies. The ordinary Send signature can remain error-only.
+The simple path now preserves Outcome.RetryAfter and bounded joined failures through DeliveryError and TargetError. These retain provider/target classification and retry advice. They support errors.Is and errors.As, and retain multiple failures without exposing tokens, URLs, recipient addresses, or server bodies. The ordinary Send signature can remain error-only.
 
 ### Model incident lifecycle as an optional capability
 
 Plain messages cannot express trigger versus resolve, stable incident correlation, severity, and source. PagerDuty, Opsgenie, and JSM need those concepts. Use a small domain-neutral incident capability alongside Sender, with typed incident data and explicit trigger/acknowledge/resolve operations. It should not require every email/chat/SMS driver to implement an incident workflow or make monitoring fields mandatory in Message.
 
-Prototype this against PagerDuty and JSM before finalizing exported names. Map monitor down/up to explicit incident actions in the demo, using server-owned stable scope and keys. Keep provider deduplication identity separate from a notification request ID.
+The implementation exposes IncidentSender alongside Sender and exercises it against PagerDuty and JSM protocol fixtures. Map monitor down/up to explicit incident actions in the demo, using server-owned stable scope and keys. Keep provider deduplication identity separate from a notification request ID.
 
 ### Share transport mechanics and provider facts
 
@@ -107,4 +107,6 @@ Exhaustive coverage means accounting for these IDs and their migration paths. It
 4. Prove each driver with the shared Sender contract, native request/acknowledgement fixtures, authentication and failure cases, cancellation, redaction, and applicable real-backend/provider integration coverage. Record hosted checks as pending when no authorized sandbox is available.
 5. Integrate the library into Uptime Gopher through an explicit application adapter and configuration/history migration. Generate the frontend provider list and validate the largest generated composition under /tmp.
 
-The next bounded implementation should be composition/errors plus a representative first extraction group. This review establishes the complete backlog and API constraints; it does not certify or implement the remaining providers.
+Composition, safe errors, shared HTTP mechanics, incident lifecycles and all 20 distinct dedicated demo adapters are now implemented. See the [driver catalog](providers/drivers.json), the [generated support matrix](../README.md#drivers), and [real-server evidence](integration-results.json). Hosted providers and paired WhatsApp sessions have local protocol tests with external verification pending, as explicitly authorized by the maintainer.
+
+The 67 generic aliases remain individually inventoried protocol work. Framework integration and persisted configuration/history migration remain separate work; no demo configuration or stored provider ID was changed here.

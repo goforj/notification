@@ -32,7 +32,8 @@ class GenerationTests(unittest.TestCase):
             root = Path(directory)
             (root / 'examples/demo').mkdir(parents=True)
             (root / 'examples/demo/main.go').write_text('// snippet:start\nnotification.New()\nfmt.Println("{{a}}")\n// {{a}}\n// snippet:end')
-            (root / 'docs').mkdir()
+            (root / 'docs/providers').mkdir(parents=True)
+            (root / 'docs/providers/drivers.json').write_text(json.dumps({'drivers': []}))
             (root / 'docs/readme.tmpl.md').write_text('## Demo\n{{snippet:demo}}\n{{api-index}}')
             with patch.object(generator, 'ROOT', root), patch.object(generator, 'APIS', [('New', '.', 'New', 'demo', 'Demo')]), patch.object(generator.subprocess, 'run'):
                 evidence = {'source_fingerprint': generator.source_fingerprint(), 'covered_statements': 1, 'total_statements': 1, 'unit_tests_passed': 1}
@@ -47,6 +48,33 @@ class GenerationTests(unittest.TestCase):
                 evidence_path.write_text(json.dumps(evidence))
                 with self.assertRaisesRegex(ValueError, 'coverage'):
                     generator.outputs()
+
+    def test_driver_evidence(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / 'docs/providers').mkdir(parents=True)
+            (root / 'integration').mkdir()
+            (root / 'docs/readme.tmpl.md').write_text('{{drivers}}\n{{api-index}}')
+            entry = {'id': 'ntfy', 'package': 'driver/ntfy', 'configuration': 'topic',
+                     'acceptance': 'native acknowledgement', 'verification': 'Real server verified'}
+            (root / 'docs/providers/drivers.json').write_text(json.dumps({'drivers': [entry]}))
+            (root / 'integration/versions.json').write_text('{}')
+            with patch.object(generator, 'ROOT', root), patch.object(generator, 'APIS', []):
+                fingerprint = generator.source_fingerprint()
+                (root / 'docs/unit-results.json').write_text(json.dumps({
+                    'source_fingerprint': fingerprint, 'covered_statements': 1,
+                    'total_statements': 1, 'unit_tests_passed': 1}))
+                evidence = {'source_fingerprint': fingerprint, 'servers': {}, 'passed_tests': []}
+                path = root / 'docs/integration-results.json'
+                path.write_text(json.dumps(evidence))
+                with self.assertRaisesRegex(ValueError, 'integration evidence is stale'):
+                    generator.outputs()
+                evidence['passed_tests'] = ['TestNtfy', 'TestGotify']
+                path.write_text(json.dumps(evidence))
+                with self.assertRaisesRegex(ValueError, 'missing driver package'):
+                    generator.outputs()
+                (root / 'driver/ntfy').mkdir(parents=True)
+                self.assertIn('[ntfy](driver/ntfy)', generator.outputs()['README.md'])
 
 
 if __name__ == '__main__':

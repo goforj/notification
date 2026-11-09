@@ -42,12 +42,11 @@ The log driver captures locally. A nil error means the driver handled the messag
 
 ## Drivers
 
-| Driver | Configuration | Successful handling |
-| ---: | --- | --- |
-| Log | A borrowed `*slog.Logger` | Local capture |
-| Generic webhook | `webhook.Config.URL` | HTTP 2xx acceptance |
-| Slack-compatible webhook | `webhook.Config.URL` and `Format: webhook.Slack` | HTTP 2xx plus an `ok` acknowledgement |
-| Mail | A borrowed Mailer and recipient addresses | Legacy Mail acceptance |
+{{drivers}}
+
+Hosted verification is pending unless explicitly stated above. Local protocol fixtures exercise native requests, rejection codes and acknowledgements. Real-server tests run immutable ntfy and Gotify images; see [integration evidence](docs/integration-results.json). HTTP or native acceptance never proves recipient delivery.
+
+The [complete Uptime Gopher inventory](docs/providers/uptime-gopher.md) records all 88 IDs. All 20 distinct dedicated demo adapters have library implementations, with SMTP sharing Mail. The 67 compatibility aliases remain a protocol-review backlog, not native support claims. Opsgenie is legacy migration support. Teams uses Workflows; LINE uses the Messaging API.
 
 The root module uses only the standard library. Mail is an optional module using goforj/mail v0.3.1. Drivers own their configured destinations; a `Message` contains only content. Errors preserve safe cancellation and provider classifications without returning provider prose. See [delivery contracts](docs/contracts.md) for bounds and ownership.
 
@@ -61,7 +60,7 @@ go mod edit -replace=github.com/goforj/notification=$HOME/code/notification
 go mod tidy
 ```
 
-Log, generic webhook, and Slack-compatible webhook packages are included in the root module:
+HTTP providers and the log driver are included in the root module:
 
 ```go
 import "github.com/goforj/notification"
@@ -96,6 +95,8 @@ It borrows an ordinary `*mail.Mailer` and configured recipients. Mail continues 
 | [Webhook](examples/webhook/main.go) | `go run ./examples/webhook` | A message sent to a configured local HTTP provider |
 | [Mail](examples/mail/main.go) | `cd examples/mail && go run .` | Mail defaults and a configured recipient with a fake transport |
 | [Fake](examples/fake/main.go) | `go run ./examples/fake` | Application testing through Sender |
+| [Composition](examples/composition/main.go) | `go run ./examples/composition` | Fanout, conservative fallback and safe retry advice |
+| [Incident](examples/incident/main.go) | `go run ./examples/incident` | Stable lifecycle keys with a local PagerDuty protocol fixture |
 | [Advanced fallback](examples/fallback/main.go) | `go run ./examples/fallback` | Optional recipient planning, fallback, and identity |
 
 The runner discovers and executes every program and verifies the expected output immediately after each print call. Child programs participate in coverage and race runs. Local tests verify webhook wire behavior and Mail composition; they make no hosted-provider delivery claim.
@@ -109,6 +110,18 @@ The runner discovers and executes every program and verifies the expected output
 The URL is driver configuration. `AllowPrivate` below permits the local test server; the default destination policy rejects private and special addresses.
 
 {{snippet:webhook}}
+
+## Composition
+
+Use ordinary senders for application-level fanout or conservative fallback. Fanout attempts every target with at most eight concurrent calls. Fallback advances only after permanent rejection, unauthorized access or unsupported rendering; uncertainty and transient failures stop it to avoid accidental duplicates. Both borrow one to 64 configured senders and never retry.
+
+{{snippet:composition}}
+
+## Incident lifecycle
+
+PagerDuty, JSM and legacy Opsgenie additionally implement `IncidentSender`. Construct keys from stable scoped IDs and use the same key for trigger, acknowledge and resolve. Ordinary `Send` requires a fixed configured key on these drivers. JSM and Opsgenie return asynchronous acceptance, without polling for completion.
+
+{{snippet:incident}}
 
 ## Mail delivery
 
@@ -131,6 +144,7 @@ Applications that need recipient lookup, preferences, localized templates, fallb
 ```sh
 make test
 make test-race
+make test-integration # Requires Docker.
 make vet
 make check-generated
 make security

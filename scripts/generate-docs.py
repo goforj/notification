@@ -12,6 +12,12 @@ import textwrap
 ROOT = Path(__file__).resolve().parent.parent
 APIS = [
     ('New', '.', 'New', 'quickstart', 'Quick Start'),
+    ('Fanout', '.', 'Fanout', 'composition', 'Composition'),
+    ('Fallback', '.', 'Fallback', 'composition', 'Composition'),
+    ('DeliveryError.RetryAfter', '.', 'DeliveryError.RetryAfter', 'composition', 'Composition'),
+    ('pagerduty.Driver.Trigger', 'driver/pagerduty', 'Driver.Trigger', 'incident', 'Incident lifecycle'),
+    ('pagerduty.Driver.Acknowledge', 'driver/pagerduty', 'Driver.Acknowledge', 'incident', 'Incident lifecycle'),
+    ('pagerduty.Driver.Resolve', 'driver/pagerduty', 'Driver.Resolve', 'incident', 'Incident lifecycle'),
     ('Notifier.Send', '.', 'Notifier.Send', 'quickstart', 'Quick Start'),
     ('webhook.New', 'driver/webhook', 'New', 'webhook', 'Webhook delivery'),
     ('notificationfake.New', 'notificationfake', 'New', 'fake', 'Application testing'),
@@ -73,6 +79,18 @@ def outputs():
         if sum(content.count(marker) for content in templates.values()) != 1:
             raise ValueError(f'example {name} needs one documentation target')
         templates = {path: content.replace(marker, '```go\n' + code + '\n```') for path, content in templates.items()}
+    catalog = json.loads((ROOT / 'docs/providers/drivers.json').read_text())['drivers']
+    if any(entry['verification'].startswith('Real ') for entry in catalog):
+        integration = json.loads((ROOT / 'docs/integration-results.json').read_text())
+        versions = json.loads((ROOT / 'integration/versions.json').read_text())
+        if integration['source_fingerprint'] != source_fingerprint() or integration['servers'] != versions or not {'TestNtfy', 'TestGotify'} <= set(integration['passed_tests']):
+            raise ValueError('native integration evidence is stale; run make test-integration')
+    driver_rows = ['| Driver | Configuration | Successful handling | Verification |', '| --- | --- | --- | --- |']
+    for entry in catalog:
+        if not (ROOT / entry['package']).is_dir():
+            raise ValueError('missing driver package: ' + entry['package'])
+        driver_rows.append(f"| [{entry['id']}]({entry['package']}) | {entry['configuration']} | {entry['acceptance']} | {entry['verification']} |")
+    templates['README.md'] = templates['README.md'].replace('{{drivers}}', '\n'.join(driver_rows))
     readme = templates['README.md']
     rows = ['| API | Example |', '| --- | --- |']
     for label, package, symbol, example, heading in APIS:

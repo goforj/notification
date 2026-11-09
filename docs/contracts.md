@@ -12,6 +12,18 @@ Application services can depend on `Sender`. `notificationfake.New()` validates 
 
 Applications own recipient authorization, endpoint verification, preferences, translations, and the choice to send a notification. The optional dispatcher provides the mechanisms for those policies.
 
+## Sender composition and error evidence
+
+`Fanout` and `Fallback` borrow one to 64 concurrency-safe senders and copy their configured lists. Invalid counts panic at construction. Fanout joins every started call and retains target errors in configuration order, with at most eight concurrent calls. Each call has its own concurrency bound; applications control aggregate admission. Fallback advances only after permanent rejection, unauthorized access or unsupported rendering. It stops on unknown acceptance, throttling, retryable failure, cancellation or invalid wiring. A nil error from a capture driver also ends fallback.
+
+`DeliveryError` retains a bounded driver identity, rejection versus uncertainty and up to 24 hours of retry advice. `TargetError.Index` identifies the zero-based composition target. The facade preserves these types through `errors.As` and safe sentinels through `errors.Is`, including joined failures. Arbitrary provider prose, URLs and underlying network errors are removed. None of this advice schedules a retry.
+
+## Incident capability
+
+`IncidentSender` is optional. PagerDuty, JSM and legacy Opsgenie support explicit Trigger, Acknowledge and Resolve operations with a stable `IncidentKey`. Keys are bounded to 255 bytes and must use application-owned scoped identities. Display names must not determine correlation. Incident titles and bodies follow Message validation, with a required title and additional provider limits. Empty severity and source use configured defaults. Ordinary Send on these drivers requires a fixed configured key.
+
+JSM resolves the alias to a native alert ID before acknowledgement or closure. Lookup and mutation are two separate network operations. Asynchronous request acceptance does not prove the alert has been created or changed. No driver polls or waits for workflow completion.
+
 ## Advanced intent and planning
 
 Construct one `Dispatcher` with `NewDispatcher` per authoritative application and tenant scope. Scope never comes from request values or context. Requests contain opaque recipient references and typed scalar values. A trusted `Planner` resolves endpoints, locale, IANA time zone, and suppression or deferral. It must classify every requested recipient, cannot change scope, and cannot mix a disposition and immediate delivery for the same recipient.
@@ -46,7 +58,7 @@ Observer hooks must return promptly and be concurrency-safe. Dispatch recovers o
 
 ## HTTP behavior
 
-The webhook driver accepts trusted planner-resolved HTTP or HTTPS URLs, disables redirects and environment proxies, and validates all DNS answers at connection time before dialing a resolved IP. Default policy rejects private and special addresses; `AllowPrivate` explicitly permits internal services and local tests. Configure it at construction, never from an untrusted request. Production credentials should travel over HTTPS.
+Built-in HTTP drivers use trusted configured HTTP or HTTPS URLs. The advanced webhook adapter also accepts trusted planner-resolved endpoints. They disable redirects and environment proxies, and validate all DNS answers at connection time before dialing a resolved IP. Default policy rejects private and special addresses; `AllowPrivate` explicitly permits internal services and local tests. Configure it at construction, never from an untrusted request. Production credentials should travel over HTTPS.
 
 Generic JSON sends `{ "title": "...", "body": "..." }` and classifies 2xx as provider acceptance. Slack-compatible mode sends plain text with `mrkdwn: false` and additionally requires the `ok` acknowledgement. 429 is throttled, 401/403 unauthorized, 5xx retryable, and other non-2xx responses permanent. Transport uncertainty remains unknown. Responses are bounded to 64 KiB plus one detection byte; provider bodies never enter errors. No generic idempotency header is advertised or silently assumed.
 
@@ -56,4 +68,4 @@ The optional `driver/mail` module configures recipients with `New(mailer, addres
 
 ## Implementation boundary
 
-This repository implements the synchronous foundation of the [framework proposal](designs/framework-proposal.md), under the singular module name requested by the maintainer. It does not yet implement durable SQL journals, Queue submission or claims, generated GoForj components, inbox storage, localization adapters, provider packs, or demo migration. The common Message API and optional NewDispatcher boundary supersede the proposal's application-facing constructor. The proposal is historical planning context; these contracts describe the implemented API.
+This repository implements the synchronous foundation of the [framework proposal](designs/framework-proposal.md), under the singular module name requested by the maintainer. It does not yet implement durable SQL journals, Queue submission or claims, generated GoForj components, inbox storage, localization adapters, the 67 remaining compatibility-alias protocols, or demo migration. The common Message API and optional NewDispatcher boundary supersede the proposal's application-facing constructor. The proposal is historical planning context; these contracts describe the implemented API.

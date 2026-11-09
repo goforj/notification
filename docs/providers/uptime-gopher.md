@@ -8,33 +8,33 @@ The backend recognizes 88 IDs; the UI exposes 26. 21 IDs use 20 dedicated adapte
 
 Dedicated means provider-specific code exists. It does not establish that the current upstream API accepts its payload or that hosted delivery was tested. Generic compatibility means the demo sends its own provider/text/message envelope to a configured URL; it is not native provider support.
 
-Available library surfaces below retain their existing test scope: local log capture, local webhook wire contracts, and Mail composition. SendGrid and Resend are candidates for composition through sibling Mail drivers, not newly verified notification integrations.
+Library surfaces below distinguish real-server verification from protocol fixtures and pending hosted verification. SendGrid and Resend are candidates for composition through sibling Mail drivers, not newly verified notification integrations.
 
 ## Dedicated demo adapters
 
 | Provider ID | Demo UI | Current notification library surface |
 | --- | --- | --- |
-| dingding | Yes | Planned |
-| discord | Yes | Planned |
-| email | Yes | driver/mail with configured Mailer |
-| feishu | Yes | Planned |
-| googlechat | Yes | Planned |
-| gotify | Yes | Planned |
-| jiraservicemanagement | Yes | Planned |
-| line | Yes | Planned |
-| log | Yes | driver/log |
-| ntfy | Yes | Planned |
-| opsgenie | Yes | Planned |
-| pagerduty | Yes | Planned |
-| slack | Yes | driver/webhook (Slack-compatible) |
-| smtp | Yes | driver/mail with SMTP Mailer |
-| teams | Yes | Planned |
-| telegram | Yes | Planned |
-| twilio | Yes | Planned |
-| waha | Yes | Planned |
-| webhook | Yes | driver/webhook (Generic) |
-| wecom | Yes | Planned |
-| whapi | Yes | Planned |
+| dingding | Yes | driver/dingtalk (Local protocol tests; hosted verification pending) |
+| discord | Yes | driver/discord (Local protocol tests; hosted verification pending) |
+| email | Yes | driver/mail (Mail composition tests; hosted verification pending) |
+| feishu | Yes | driver/feishu (Local protocol tests; hosted verification pending) |
+| googlechat | Yes | driver/googlechat (Local protocol tests; hosted verification pending) |
+| gotify | Yes | driver/gotify (Real Gotify 3.1.1 server verified) |
+| jiraservicemanagement | Yes | driver/jsm (Local protocol tests; hosted verification pending) |
+| line | Yes | driver/line (Local protocol tests; hosted verification pending) |
+| log | Yes | driver/log (Local capture tests) |
+| ntfy | Yes | driver/ntfy (Real ntfy 2.37.2 server verified) |
+| opsgenie | Yes | driver/opsgenie (Local protocol tests; hosted verification pending) |
+| pagerduty | Yes | driver/pagerduty (Local protocol tests; hosted verification pending) |
+| slack | Yes | driver/slack (Local protocol tests; hosted verification pending) |
+| smtp | Yes | driver/mail (Mail composition tests; hosted verification pending) |
+| teams | Yes | driver/teams (Local protocol tests; hosted verification pending) |
+| telegram | Yes | driver/telegram (Local protocol tests; hosted verification pending) |
+| twilio | Yes | driver/twilio (Local protocol tests; hosted verification pending) |
+| waha | Yes | driver/waha (Local protocol tests; paired-session verification pending) |
+| webhook | Yes | driver/webhook (Local protocol tests; hosted verification pending) |
+| wecom | Yes | driver/wecom (Local protocol tests; hosted verification pending) |
+| whapi | Yes | driver/whapi (Local protocol tests; hosted verification pending) |
 
 SMTP and Email share the same demo adapter. Their stored provider IDs remain distinct for migration.
 

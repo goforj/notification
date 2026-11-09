@@ -1,0 +1,20 @@
+{
+  "verified_at": "2026-11-09T01:16:41.754620+00:00",
+  "source_fingerprint": "eec015032f5c1806e5d8f8a841e41f225399c4aa38881303bc5d46646b7fd3c3",
+  "toolchain": "go version go1.24.0 darwin/arm64",
+  "passed_tests": [
+    "TestGotify",
+    "TestNtfy"
+  ],
+  "servers": {
+    "ntfy": {
+      "version": "2.37.2",
+      "image": "binwiederhier/ntfy@sha256:1875ddcf815c8a3c981d6d78c67a93452d0abba79b1ab9520b1f5f5238902bd7"
+    },
+    "gotify": {
+      "version": "3.1.1",
+      "image": "gotify/server@sha256:44fc5bbd1c0618878e33073d38c2c13126b48f245c3fe12236b1da48eb203b86"
+    }
+  },
+  "scope": "Real disposable ntfy and Gotify server tests. All other hosted or paired-session verification remains pending."
+}
