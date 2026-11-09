@@ -2,6 +2,7 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 mkdir -p .artifacts
+rm -f .artifacts/unit-[0-9]*.out .artifacts/unit-[0-9]*.json
 rm -rf .artifacts/coverdata
 mkdir .artifacts/coverdata
 python3 -m unittest discover -s scripts -p '*_test.py'

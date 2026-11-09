@@ -37,7 +37,8 @@ profile = 'mode: atomic\n' + ''.join(f'{key} {statements} {count}\n' for key, (s
 spec = importlib.util.spec_from_file_location('docs_generator', root / 'scripts/generate-docs.py')
 generator = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(generator)
-evidence = {'source_fingerprint': generator.source_fingerprint(), 'unit_tests_passed': len(passed), 'covered_statements': covered, 'total_statements': total,
+toolchain = subprocess.run(['go', 'version'], text=True, capture_output=True, check=True).stdout.strip()
+evidence = {'toolchain': toolchain, 'source_fingerprint': generator.source_fingerprint(), 'unit_tests_passed': len(passed), 'covered_statements': covered, 'total_statements': total,
             'command_statements': sum(s for s, _ in command_blocks.values()), 'covered_command_statements': sum(s for s, c in command_blocks.values() if c > 0), 'coverage_percent': 100 * covered / total if total else 0, 'modules': (root / 'scripts/module-manifest.txt').read_text().splitlines()}
 (root / 'docs/unit-results.json').write_text(json.dumps(evidence, indent=2) + '\n')
 print(f'Unit tests passed: {len(passed)}; coverage: {covered}/{total} statements')
