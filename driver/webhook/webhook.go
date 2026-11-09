@@ -7,6 +7,7 @@ package webhook
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"net/http"
 	"strings"
 	"time"
@@ -127,7 +128,7 @@ func (d *Driver) Deliver(ctx context.Context, delivery notification.Delivery[not
 		return outcome, err
 	}
 	if d.format == Slack && (!response.Complete || strings.TrimSpace(string(response.Body)) != "ok") {
-		return notification.Outcome{Status: notification.Unknown}, notification.ErrOutcomeUnknown
+		return notification.Outcome{Status: notification.Unknown}, errors.Join(notification.ErrOutcomeUnknown, ctx.Err())
 	}
 	return outcome, nil
 }

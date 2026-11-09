@@ -58,3 +58,58 @@ func TestServerErrorDoesNotReplayAcceptedWork(t *testing.T) {
 		})
 	}
 }
+
+// interruptedResponse supplies deterministic cancellation during a response-body read.
+type interruptedResponse struct{ cancel context.CancelFunc }
+
+// Read cancels after headers have already been accepted by the HTTP client.
+func (body interruptedResponse) Read([]byte) (int, error) { body.cancel(); return 0, context.Canceled }
+
+// Close completes the local response fixture without owning a network connection.
+func (interruptedResponse) Close() error { return nil }
+
+// interruptedTransport isolates acknowledgement handling from timing-dependent network cancellation.
+type interruptedTransport struct {
+	status int
+	cancel context.CancelFunc
+}
+
+// RoundTrip returns headers while leaving the body incomplete when its caller cancels.
+func (transport interruptedTransport) RoundTrip(request *http.Request) (*http.Response, error) {
+	return &http.Response{StatusCode: transport.status, Header: http.Header{}, Body: interruptedResponse{transport.cancel}, Request: request}, nil
+}
+
+// TestInterruptedResponseEvidence retains positive headers and exposes cancellation for uncertain operations.
+func TestInterruptedResponseEvidence(t *testing.T) {
+	for _, entry := range []struct {
+		name     string
+		format   Format
+		status   int
+		accepted bool
+	}{
+		{"generic acceptance", Generic, http.StatusOK, true},
+		{"Slack acknowledgement", Slack, http.StatusOK, false},
+		{"server error", Generic, http.StatusInternalServerError, false},
+	} {
+		t.Run(entry.name, func(t *testing.T) {
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+			driver, err := New(Config{URL: "https://notification.invalid", Format: entry.format, Transport: interruptedTransport{status: entry.status, cancel: cancel}})
+			if err != nil {
+				t.Fatal(err)
+			}
+			defer driver.Close()
+			err = driver.Send(ctx, notification.Message{Body: "body"})
+			if entry.accepted {
+				if err != nil {
+					t.Fatal("positive acceptance erased", err)
+				}
+				return
+			}
+			var detail *notification.DeliveryError
+			if !errors.Is(err, context.Canceled) || !errors.Is(err, notification.ErrOutcomeUnknown) || !errors.As(err, &detail) || detail.Status() != notification.Unknown {
+				t.Fatal("uncertain cancellation lost", err)
+			}
+		})
+	}
+}

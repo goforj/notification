@@ -233,3 +233,33 @@ func TestConfiguration(t *testing.T) {
 	}
 	_ = driver.Close()
 }
+
+// canceledResponseBody interrupts a response after its headers become available.
+type canceledResponseBody struct{ cancel context.CancelFunc }
+
+// Read preserves a deterministic cancellation boundary without a live push service.
+func (body canceledResponseBody) Read([]byte) (int, error) {
+	body.cancel()
+	return 0, context.Canceled
+}
+
+// Close releases the fixture's response lifetime.
+func (canceledResponseBody) Close() error { return nil }
+
+// TestServerResponseCancellation retains cancellation alongside uncertain push acceptance.
+func TestServerResponseCancellation(t *testing.T) {
+	config, _, _ := receiver(t)
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	config.HTTP.Transport = roundTripperFunc(func(request *http.Request) (*http.Response, error) {
+		return &http.Response{StatusCode: http.StatusInternalServerError, Header: http.Header{}, Body: canceledResponseBody{cancel: cancel}, Request: request}, nil
+	})
+	driver, err := New(config)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer driver.Close()
+	if err := driver.Send(ctx, notification.Message{Body: "interrupted response"}); !errors.Is(err, context.Canceled) || !errors.Is(err, notification.ErrOutcomeUnknown) || !errors.Is(err, notification.ErrRetryable) {
+		t.Fatal("response cancellation evidence", err)
+	}
+}

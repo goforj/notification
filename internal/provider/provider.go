@@ -67,7 +67,7 @@ func (c *Client) Request(ctx context.Context, method, endpoint string, headers h
 	}
 	if acknowledge != nil {
 		if !response.Complete {
-			return notification.NewDeliveryError(c.name, notification.Outcome{Status: notification.Unknown}, notification.ErrOutcomeUnknown)
+			return notification.NewDeliveryError(c.name, notification.Outcome{Status: notification.Unknown}, ctx.Err())
 		}
 		if err := acknowledge(response.Body); err != nil {
 			status := notification.Unknown

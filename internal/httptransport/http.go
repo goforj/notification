@@ -139,7 +139,7 @@ func Request(client *http.Client, ctx context.Context, method, address string, h
 		return bounded, notification.Outcome{Status: notification.Failed}, notification.ErrUnauthorized
 	case response.StatusCode == http.StatusRequestTimeout || response.StatusCode >= 500:
 		// Receivers and proxies can fail after committing work, so transient HTTP failure cannot prove rejection.
-		return bounded, notification.Outcome{Status: notification.Unknown, RetryAfter: RetryAfter(response.Header.Get("Retry-After"), time.Now())}, notification.ErrRetryable
+		return bounded, notification.Outcome{Status: notification.Unknown, RetryAfter: RetryAfter(response.Header.Get("Retry-After"), time.Now())}, errors.Join(notification.ErrRetryable, ctx.Err())
 	default:
 		return bounded, notification.Outcome{Status: notification.Failed}, notification.ErrPermanent
 	}
