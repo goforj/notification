@@ -154,7 +154,7 @@ func outputsFor(root string, apis []API) (map[string][]byte, error) {
 			return nil, err
 		}
 		outputs[asset] = badge
-		fmt.Fprintf(&drivers, "<tr><td width=\"260\" nowrap><a href=\"%s\"><img src=\"%s\" width=\"22\" height=\"22\" alt=\"\" align=\"absmiddle\"> <strong>%s</strong></a></td><td>%s</td><td>%s</td></tr>\n", driver.Package, asset, html.EscapeString(presentation.Label), html.EscapeString(acceptanceSummary(driver)), html.EscapeString(verificationSummary(driver)))
+		fmt.Fprintf(&drivers, "<tr><td width=\"260\" nowrap><img src=\"%s\" width=\"22\" height=\"22\" alt=\"\" align=\"absmiddle\"> <a href=\"%s\"><strong>%s</strong></a></td><td>%s</td><td>%s</td></tr>\n", asset, driver.Package, html.EscapeString(presentation.Label), html.EscapeString(acceptanceSummary(driver)), html.EscapeString(verificationSummary(driver)))
 	}
 	drivers.WriteString("</tbody>\n</table>")
 	templates["README.md"] = strings.ReplaceAll(templates["README.md"], "{{drivers}}", drivers.String())

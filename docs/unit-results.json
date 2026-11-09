@@ -1,6 +1,6 @@
 {
   "toolchain": "go version go1.24.0 darwin/arm64",
-  "source_fingerprint": "ac233bf2be1bb005867b352ca290cc1ae13474c82800fa7f7e3518b24ecacd1c",
+  "source_fingerprint": "f7b7ea4e3fba976f2f50ecf840abf5b5c404d45e5c71666693a9c4fb5df0ae7b",
   "unit_tests_passed": 224,
   "covered_statements": 1206,
   "total_statements": 1206,

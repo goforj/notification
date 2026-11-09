@@ -186,6 +186,9 @@ func TestDriverEvidenceAndSearchableNames(t *testing.T) {
 	if !strings.Contains(string(outputs["README.md"]), `<strong>ntfy</strong>`) || !strings.Contains(string(outputs["README.md"]), `align="absmiddle"`) || bytes.Contains(outputs["docs/assets/badges/driver-ntfy.svg"], []byte("<text")) {
 		t.Fatal("driver name is not searchable beside an aligned icon badge")
 	}
+	if !strings.Contains(string(outputs["README.md"]), `align="absmiddle"> <a href="driver/ntfy"><strong>ntfy</strong></a>`) {
+		t.Fatal("driver icon or gap was included in the text link")
+	}
 	if strings.Contains(string(outputs["README.md"]), ">Name</th>") {
 		t.Fatal("duplicate name column retained")
 	}
