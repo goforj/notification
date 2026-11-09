@@ -5,8 +5,10 @@ import (
 	"context"
 	"encoding/base64"
 	"encoding/json"
+	"errors"
 	"net/http"
 	"net/url"
+	"strconv"
 	"strings"
 
 	"github.com/goforj/notification"
@@ -41,30 +43,7 @@ func New(config Config) (*Driver, error) {
 		body := url.Values{"from": {config.From}, "to": {strings.TrimPrefix(config.To, "+")}, "text": {text}, "type": {"unicode"}}
 		return provider.Request{Method: http.MethodPost, URL: base + "/sms/json", Header: http.Header{"Authorization": {auth}, "Content-Type": {"application/x-www-form-urlencoded"}}, Body: []byte(body.Encode())}, nil
 	}, func(data []byte) error {
-		var ack struct {
-			Messages []struct {
-				ID     string  `json:"message-id"`
-				Status *string `json:"status"`
-			} `json:"messages"`
-		}
-		if json.Unmarshal(data, &ack) != nil || len(ack.Messages) != 1 || ack.Messages[0].Status == nil {
-			return notification.ErrOutcomeUnknown
-		}
-		switch *ack.Messages[0].Status {
-		case "0":
-			if ack.Messages[0].ID == "" {
-				return notification.ErrOutcomeUnknown
-			}
-			return nil
-		case "1":
-			return notification.ErrThrottled
-		case "4":
-			return notification.ErrUnauthorized
-		case "5":
-			return notification.ErrRetryable
-		default:
-			return notification.ErrPermanent
-		}
+		return acknowledge(config.To, data)
 	})
 	if err != nil {
 		return nil, err
@@ -79,3 +58,53 @@ func (d *Driver) Send(ctx context.Context, message notification.Message) error {
 
 // Close releases only owned idle connections; injected transports remain caller-owned.
 func (d *Driver) Close() error { return d.sender.Close() }
+
+// acknowledge requires every native segment to be accepted before reporting whole-message acceptance.
+func acknowledge(to string, data []byte) error {
+	var ack struct {
+		Count    string `json:"message-count"`
+		Messages []struct {
+			ID     string `json:"message-id"`
+			Status string `json:"status"`
+			To     string `json:"to"`
+		} `json:"messages"`
+	}
+	if json.Unmarshal(data, &ack) != nil {
+		return notification.ErrOutcomeUnknown
+	}
+	count, err := strconv.Atoi(ack.Count)
+	if err != nil || count < 1 || count > 64 || len(ack.Messages) != count {
+		return notification.ErrOutcomeUnknown
+	}
+	ids := map[string]bool{}
+	accepted := false
+	var failures []error
+	for _, part := range ack.Messages {
+		status, err := strconv.Atoi(part.Status)
+		if err != nil || status < 0 {
+			return notification.ErrOutcomeUnknown
+		}
+		if status == 0 {
+			if !provider.Token(part.ID) || ids[part.ID] || strings.TrimPrefix(part.To, "+") != strings.TrimPrefix(to, "+") {
+				return notification.ErrOutcomeUnknown
+			}
+			ids[part.ID] = true
+			accepted = true
+			continue
+		}
+		switch status {
+		case 1:
+			failures = append(failures, notification.ErrThrottled)
+		case 4:
+			failures = append(failures, notification.ErrUnauthorized)
+		case 5:
+			failures = append(failures, notification.ErrRetryable)
+		default:
+			failures = append(failures, notification.ErrPermanent)
+		}
+	}
+	if accepted && len(failures) > 0 {
+		return notification.ErrOutcomeUnknown
+	}
+	return errors.Join(failures...)
+}

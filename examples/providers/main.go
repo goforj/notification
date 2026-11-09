@@ -394,7 +394,7 @@ func main() {
 		"signal":        `{"timestamp":"1700000000000"}`,
 		"apprise":       `{"status":"SUCCESS"}`,
 		"plivo":         `{"api_id":"request-42","message_uuid":["message-42"]}`,
-		"vonage":        `{"messages":[{"status":"0","message-id":"message-42"}]}`,
+		"vonage":        `{"message-count":"1","messages":[{"status":"0","message-id":"message-42","to":"12125550101"}]}`,
 		"telnyx":        `{"data":{"id":"message-42","to":[{"phone_number":"+12125550101","status":"queued"}]}}`,
 		"clicksend":     `{"response_code":"SUCCESS","data":{"messages":[{"status":"SUCCESS","message_id":"message-42"}]}}`,
 		"goalert":       `{}`,

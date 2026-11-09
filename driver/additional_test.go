@@ -94,7 +94,7 @@ func TestAdditionalProviders(t *testing.T) {
 		}, `{"api_id":"request-42","message_uuid":["message-42"]}`, []string{`{}`, `{"api_id":"42","message_uuid":[]}`, `{"api_id":"42","message_uuid":[""]}`}},
 		{"vonage", func(base string, h notification.HTTPConfig) (nativeSender, error) {
 			return vonage.New(vonage.Config{BaseURL: base, APIKey: "fixture1", APISecret: "secret", From: "Helpdesk", To: "+12125550101", HTTP: h})
-		}, `{"messages":[{"status":"0","message-id":"message-42"}]}`, []string{`{}`, `{"messages":[{}]}`, `{"messages":[{"status":"0"}]}`, `{"messages":[{"status":"1"}]}`, `{"messages":[{"status":"4"}]}`, `{"messages":[{"status":"5"}]}`, `{"messages":[{"status":"2"}]}`}},
+		}, `{"message-count":"1","messages":[{"status":"0","message-id":"message-42","to":"12125550101"}]}`, []string{`{}`, `{"messages":[{}]}`, `{"messages":[{"status":"0"}]}`, `{"messages":[{"status":"1"}]}`, `{"messages":[{"status":"4"}]}`, `{"messages":[{"status":"5"}]}`, `{"messages":[{"status":"2"}]}`}},
 		{"telnyx", func(base string, h notification.HTTPConfig) (nativeSender, error) {
 			return telnyx.New(telnyx.Config{BaseURL: base, Token: "fixture", From: "+12125550100", To: "+12125550101", MessagingProfileID: "profile", HTTP: h})
 		}, `{"data":{"id":"message-42","to":[{"phone_number":"+12125550101","status":"queued"}]}}`, []string{`{}`, `{"data":{"id":"42","to":[]}}`, `{"data":{"id":"42","to":[{"phone_number":"wrong","status":"queued"}]}}`, `{"data":{"id":"42","to":[{"phone_number":"+12125550101","status":"failed"}]}}`, `{"data":{"id":"42","to":[{"phone_number":"+12125550101","status":"unknown"}]}}`}},

@@ -63,14 +63,14 @@ func New(config Config) (*Driver, error) {
 			return notification.ErrOutcomeUnknown
 		}
 		if ack.Code != "SUCCESS" {
-			return notification.ErrPermanent
+			return rejection(ack.Code)
 		}
 		if len(ack.Data.Messages) != 1 {
 			return notification.ErrOutcomeUnknown
 		}
 		message := ack.Data.Messages[0]
 		if message.Status != "SUCCESS" {
-			return notification.ErrPermanent
+			return rejection(message.Status)
 		}
 		if message.ID == "" {
 			return notification.ErrOutcomeUnknown
@@ -90,3 +90,17 @@ func (d *Driver) Send(ctx context.Context, message notification.Message) error {
 
 // Close releases only owned idle connections; injected transports remain caller-owned.
 func (d *Driver) Close() error { return d.sender.Close() }
+
+// rejection preserves native throttling and incomplete evidence instead of enabling duplicate fallback.
+func rejection(code string) error {
+	switch code {
+	case "THROTTLED":
+		return notification.ErrThrottled
+	case "MISSING_CREDENTIALS", "INVALID_CREDENTIALS":
+		return notification.ErrUnauthorized
+	case "ACCOUNT_NOT_ACTIVATED", "INVALID_RECIPIENT", "INVALID_SENDER_ID", "INSUFFICIENT_CREDIT", "COUNTRY_NOT_ENABLED", "ALREADY_EXISTS", "EMPTY_MESSAGE", "TOO_MANY_RECIPIENTS", "MISSING_REQUIRED_FIELDS", "INVALID_SCHEDULE", "NOT_ENOUGH_PERMISSION_TO_LIST_ID", "INVALID_LANG", "INVALID_VOICE", "SUBJECT_REQUIRED", "INVALID_MEDIA_FILE", "REGISTRATION_NEEDED":
+		return notification.ErrPermanent
+	default:
+		return notification.ErrOutcomeUnknown
+	}
+}
