@@ -24,30 +24,72 @@ func main() {
 		w.WriteHeader(http.StatusAccepted)
 	}))
 	defer provider.Close()
-	driver, err := webhook.New(webhook.Config{AllowPrivate: true})
+
+	driver, err := webhook.New(webhook.Config{
+		AllowPrivate: true,
+	})
 	if err != nil {
 		panic(err)
 	}
 	defer driver.Close()
-	recipient := notification.RecipientRef{Type: "system", ID: "on_call"}
+
+	recipient := notification.RecipientRef{
+		Type: "system",
+		ID:   "on_call",
+	}
 	plan := notification.Plan{}
 	for _, name := range []string{"primary", "backup"} {
 		plan.Deliveries = append(plan.Deliveries, notification.PlannedDelivery{
-			Recipient: recipient, Channel: "webhook", Driver: name, Locale: "en", TimeZone: "UTC",
-			Endpoint: notification.Endpoint{Identity: name, Address: notification.Address(provider.URL + "/" + name)},
+			Recipient: recipient,
+			Channel:   "webhook",
+			Driver:    name,
+			Endpoint: notification.Endpoint{
+				Identity: name,
+				Address:  notification.Address(provider.URL + "/" + name),
+			},
+			Locale:   "en",
+			TimeZone: "UTC",
 		})
 	}
-	notifier, err := notification.New(notification.Scope{Application: "helpdesk"}, notification.NewMemoryPlanner(map[string]notification.Plan{"ticket.updated": plan}),
-		[]notification.Route{{Name: "ticket.updated", Revision: "v1", Policy: notification.FirstSuccess}},
-		[]notification.Adapter{
-			notification.NewAdapter("webhook", "primary", "v1", notification.Literal("Ticket", "T-42 changed"), driver),
-			notification.NewAdapter("webhook", "backup", "v1", notification.Literal("Ticket", "T-42 changed"), driver),
-		}, notification.WithJournal(notification.NewMemoryJournal()),
+
+	scope := notification.Scope{
+		Application: "helpdesk",
+	}
+	planner := notification.NewMemoryPlanner(map[string]notification.Plan{
+		"ticket.updated": plan,
+	})
+	routes := []notification.Route{
+		{
+			Name:     "ticket.updated",
+			Revision: "v1",
+			Policy:   notification.FirstSuccess,
+		},
+	}
+	renderer := notification.Literal("Ticket", "T-42 changed")
+	adapters := []notification.Adapter{
+		notification.NewAdapter("webhook", "primary", "v1", renderer, driver),
+		notification.NewAdapter("webhook", "backup", "v1", renderer, driver),
+	}
+
+	notifier, err := notification.New(
+		scope,
+		planner,
+		routes,
+		adapters,
+		notification.WithJournal(notification.NewMemoryJournal()),
 	)
 	if err != nil {
 		panic(err)
 	}
-	request := notification.Request{ID: "update-42", Route: "ticket.updated", Recipients: []notification.RecipientRef{recipient}, Content: notification.Content{Key: "ticket.changed"}}
+
+	request := notification.Request{
+		ID:         "update-42",
+		Route:      "ticket.updated",
+		Recipients: []notification.RecipientRef{recipient},
+		Content: notification.Content{
+			Key: "ticket.changed",
+		},
+	}
 	result, err := notifier.Send(context.Background(), request)
 	if err != nil {
 		panic(err)

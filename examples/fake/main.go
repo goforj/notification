@@ -14,10 +14,24 @@ func main() {
 	// snippet:start
 	fake := notificationfake.New()
 	var sender notification.Sender = fake
-	result, err := sender.Send(context.Background(), notification.Request{
-		ID: "assignment-42", Route: "ticket.updated", Recipients: []notification.RecipientRef{{Type: "user", ID: "user-42"}},
-		Content: notification.Content{Key: "ticket.changed", Values: []notification.Value{notification.String("ticket", "T-42")}},
-	})
+
+	request := notification.Request{
+		ID:    "assignment-42",
+		Route: "ticket.updated",
+		Recipients: []notification.RecipientRef{
+			{
+				Type: "user",
+				ID:   "user-42",
+			},
+		},
+		Content: notification.Content{
+			Key: "ticket.changed",
+			Values: []notification.Value{
+				notification.String("ticket", "T-42"),
+			},
+		},
+	}
+	result, err := sender.Send(context.Background(), request)
 	if err != nil {
 		panic(err)
 	}

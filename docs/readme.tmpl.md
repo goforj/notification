@@ -69,7 +69,9 @@ go run ./examples/fallback  # Generic webhook against a local HTTP provider.
 Slack-compatible transport uses the included webhook package:
 
 ```go
-driver, err := webhook.New(webhook.Config{Format: webhook.Slack})
+driver, err := webhook.New(webhook.Config{
+    Format: webhook.Slack,
+})
 ```
 
 The optional Mail adapter has its own module. Until independent module tags are published, consumers must use local replacements:

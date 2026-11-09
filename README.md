@@ -37,26 +37,59 @@ go run ./examples/quickstart
 The configured log driver captures the attempt. `BestEffort` succeeds while preserving unknown provider evidence.
 
 ```go
-recipient := notification.RecipientRef{Type: "system", ID: "on_call"}
+recipient := notification.RecipientRef{
+	Type: "system",
+	ID:   "on_call",
+}
 planner := notification.NewMemoryPlanner(map[string]notification.Plan{
-	"ticket.updated": {Deliveries: []notification.PlannedDelivery{{
-		Recipient: recipient, Channel: "log", Driver: "local",
-		Endpoint: notification.Endpoint{Identity: "local", Address: notification.Address("local")},
-		Locale:   "en", TimeZone: "UTC",
-	}}},
+	"ticket.updated": {
+		Deliveries: []notification.PlannedDelivery{
+			{
+				Recipient: recipient,
+				Channel:   "log",
+				Driver:    "local",
+				Endpoint: notification.Endpoint{
+					Identity: "local",
+					Address:  notification.Address("local"),
+				},
+				Locale:   "en",
+				TimeZone: "UTC",
+			},
+		},
+	},
 })
+
+scope := notification.Scope{
+	Application: "helpdesk",
+}
+routes := []notification.Route{
+	{
+		Name:     "ticket.updated",
+		Revision: "v1",
+		Policy:   notification.BestEffort,
+	},
+}
 driver := log.New(slog.New(slog.NewTextHandler(io.Discard, nil)))
-notifier, err := notification.New(notification.Scope{Application: "helpdesk"}, planner,
-	[]notification.Route{{Name: "ticket.updated", Revision: "v1", Policy: notification.BestEffort}},
-	[]notification.Adapter{notification.NewAdapter("log", "local", "v1", notification.Literal("Ticket updated", "Ticket T-42 has a new owner."), driver)},
-)
+renderer := notification.Literal("Ticket updated", "Ticket T-42 has a new owner.")
+adapter := notification.NewAdapter("log", "local", "v1", renderer, driver)
+
+notifier, err := notification.New(scope, planner, routes, []notification.Adapter{adapter})
 if err != nil {
 	panic(err)
 }
-result, err := notifier.Send(context.Background(), notification.Request{
-	ID: "assignment-42", Route: "ticket.updated", Recipients: []notification.RecipientRef{recipient},
-	Content: notification.Content{Key: "ticket.assignment.changed", Values: []notification.Value{notification.String("ticket", "T-42")}},
-})
+
+request := notification.Request{
+	ID:         "assignment-42",
+	Route:      "ticket.updated",
+	Recipients: []notification.RecipientRef{recipient},
+	Content: notification.Content{
+		Key: "ticket.assignment.changed",
+		Values: []notification.Value{
+			notification.String("ticket", "T-42"),
+		},
+	},
+}
+result, err := notifier.Send(context.Background(), request)
 if err != nil {
 	panic(err)
 }
@@ -97,7 +130,9 @@ go run ./examples/fallback  # Generic webhook against a local HTTP provider.
 Slack-compatible transport uses the included webhook package:
 
 ```go
-driver, err := webhook.New(webhook.Config{Format: webhook.Slack})
+driver, err := webhook.New(webhook.Config{
+    Format: webhook.Slack,
+})
 ```
 
 The optional Mail adapter has its own module. Until independent module tags are published, consumers must use local replacements:
@@ -153,30 +188,72 @@ provider := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *h
 	w.WriteHeader(http.StatusAccepted)
 }))
 defer provider.Close()
-driver, err := webhook.New(webhook.Config{AllowPrivate: true})
+
+driver, err := webhook.New(webhook.Config{
+	AllowPrivate: true,
+})
 if err != nil {
 	panic(err)
 }
 defer driver.Close()
-recipient := notification.RecipientRef{Type: "system", ID: "on_call"}
+
+recipient := notification.RecipientRef{
+	Type: "system",
+	ID:   "on_call",
+}
 plan := notification.Plan{}
 for _, name := range []string{"primary", "backup"} {
 	plan.Deliveries = append(plan.Deliveries, notification.PlannedDelivery{
-		Recipient: recipient, Channel: "webhook", Driver: name, Locale: "en", TimeZone: "UTC",
-		Endpoint: notification.Endpoint{Identity: name, Address: notification.Address(provider.URL + "/" + name)},
+		Recipient: recipient,
+		Channel:   "webhook",
+		Driver:    name,
+		Endpoint: notification.Endpoint{
+			Identity: name,
+			Address:  notification.Address(provider.URL + "/" + name),
+		},
+		Locale:   "en",
+		TimeZone: "UTC",
 	})
 }
-notifier, err := notification.New(notification.Scope{Application: "helpdesk"}, notification.NewMemoryPlanner(map[string]notification.Plan{"ticket.updated": plan}),
-	[]notification.Route{{Name: "ticket.updated", Revision: "v1", Policy: notification.FirstSuccess}},
-	[]notification.Adapter{
-		notification.NewAdapter("webhook", "primary", "v1", notification.Literal("Ticket", "T-42 changed"), driver),
-		notification.NewAdapter("webhook", "backup", "v1", notification.Literal("Ticket", "T-42 changed"), driver),
-	}, notification.WithJournal(notification.NewMemoryJournal()),
+
+scope := notification.Scope{
+	Application: "helpdesk",
+}
+planner := notification.NewMemoryPlanner(map[string]notification.Plan{
+	"ticket.updated": plan,
+})
+routes := []notification.Route{
+	{
+		Name:     "ticket.updated",
+		Revision: "v1",
+		Policy:   notification.FirstSuccess,
+	},
+}
+renderer := notification.Literal("Ticket", "T-42 changed")
+adapters := []notification.Adapter{
+	notification.NewAdapter("webhook", "primary", "v1", renderer, driver),
+	notification.NewAdapter("webhook", "backup", "v1", renderer, driver),
+}
+
+notifier, err := notification.New(
+	scope,
+	planner,
+	routes,
+	adapters,
+	notification.WithJournal(notification.NewMemoryJournal()),
 )
 if err != nil {
 	panic(err)
 }
-request := notification.Request{ID: "update-42", Route: "ticket.updated", Recipients: []notification.RecipientRef{recipient}, Content: notification.Content{Key: "ticket.changed"}}
+
+request := notification.Request{
+	ID:         "update-42",
+	Route:      "ticket.updated",
+	Recipients: []notification.RecipientRef{recipient},
+	Content: notification.Content{
+		Key: "ticket.changed",
+	},
+}
 result, err := notifier.Send(context.Background(), request)
 if err != nil {
 	panic(err)
@@ -200,22 +277,63 @@ The optional adapter uses Mail defaults and delegates transport. This program us
 transport := mailfake.New()
 mailer := mail.New(transport, mail.WithDefaultFrom("sender@example.com", "Helpdesk"))
 driver := notificationmail.New(mailer)
-renderer := notification.RendererFunc[notificationmail.Payload](func(context.Context, notification.RenderRequest) (notificationmail.Payload, error) {
-	return notificationmail.Payload{Subject: "Ticket updated", Text: "Ticket T-42 changed."}, nil
-})
-recipient := notification.RecipientRef{Type: "user", ID: "user-42"}
-planner := notification.NewMemoryPlanner(map[string]notification.Plan{"ticket.updated": {Deliveries: []notification.PlannedDelivery{{
-	Recipient: recipient, Channel: "email", Driver: "mail", Locale: "en", TimeZone: "UTC",
-	Endpoint: notification.Endpoint{Identity: "verified-email-42", Address: notification.Address("recipient@example.com")},
-}}}})
-notifier, err := notification.New(notification.Scope{Application: "helpdesk"}, planner,
-	[]notification.Route{{Name: "ticket.updated", Revision: "v1", Policy: notification.AllRequired}},
-	[]notification.Adapter{notification.NewAdapter("email", "mail", "v1", renderer, driver)},
+renderer := notification.RendererFunc[notificationmail.Payload](
+	func(context.Context, notification.RenderRequest) (notificationmail.Payload, error) {
+		return notificationmail.Payload{
+			Subject: "Ticket updated",
+			Text:    "Ticket T-42 changed.",
+		}, nil
+	},
 )
+
+recipient := notification.RecipientRef{
+	Type: "user",
+	ID:   "user-42",
+}
+planner := notification.NewMemoryPlanner(map[string]notification.Plan{
+	"ticket.updated": {
+		Deliveries: []notification.PlannedDelivery{
+			{
+				Recipient: recipient,
+				Channel:   "email",
+				Driver:    "mail",
+				Endpoint: notification.Endpoint{
+					Identity: "verified-email-42",
+					Address:  notification.Address("recipient@example.com"),
+				},
+				Locale:   "en",
+				TimeZone: "UTC",
+			},
+		},
+	},
+})
+
+scope := notification.Scope{
+	Application: "helpdesk",
+}
+routes := []notification.Route{
+	{
+		Name:     "ticket.updated",
+		Revision: "v1",
+		Policy:   notification.AllRequired,
+	},
+}
+adapter := notification.NewAdapter("email", "mail", "v1", renderer, driver)
+
+notifier, err := notification.New(scope, planner, routes, []notification.Adapter{adapter})
 if err != nil {
 	panic(err)
 }
-result, err := notifier.Send(context.Background(), notification.Request{ID: "mail-42", Route: "ticket.updated", Recipients: []notification.RecipientRef{recipient}, Content: notification.Content{Key: "ticket.changed"}})
+
+request := notification.Request{
+	ID:         "mail-42",
+	Route:      "ticket.updated",
+	Recipients: []notification.RecipientRef{recipient},
+	Content: notification.Content{
+		Key: "ticket.changed",
+	},
+}
+result, err := notifier.Send(context.Background(), request)
 if err != nil {
 	panic(err)
 }
@@ -230,10 +348,24 @@ Depend on `notification.Sender` in application code. The capture fake validates 
 ```go
 fake := notificationfake.New()
 var sender notification.Sender = fake
-result, err := sender.Send(context.Background(), notification.Request{
-	ID: "assignment-42", Route: "ticket.updated", Recipients: []notification.RecipientRef{{Type: "user", ID: "user-42"}},
-	Content: notification.Content{Key: "ticket.changed", Values: []notification.Value{notification.String("ticket", "T-42")}},
-})
+
+request := notification.Request{
+	ID:    "assignment-42",
+	Route: "ticket.updated",
+	Recipients: []notification.RecipientRef{
+		{
+			Type: "user",
+			ID:   "user-42",
+		},
+	},
+	Content: notification.Content{
+		Key: "ticket.changed",
+		Values: []notification.Value{
+			notification.String("ticket", "T-42"),
+		},
+	},
+}
+result, err := sender.Send(context.Background(), request)
 if err != nil {
 	panic(err)
 }

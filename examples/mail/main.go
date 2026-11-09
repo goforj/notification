@@ -17,22 +17,63 @@ func main() {
 	transport := mailfake.New()
 	mailer := mail.New(transport, mail.WithDefaultFrom("sender@example.com", "Helpdesk"))
 	driver := notificationmail.New(mailer)
-	renderer := notification.RendererFunc[notificationmail.Payload](func(context.Context, notification.RenderRequest) (notificationmail.Payload, error) {
-		return notificationmail.Payload{Subject: "Ticket updated", Text: "Ticket T-42 changed."}, nil
-	})
-	recipient := notification.RecipientRef{Type: "user", ID: "user-42"}
-	planner := notification.NewMemoryPlanner(map[string]notification.Plan{"ticket.updated": {Deliveries: []notification.PlannedDelivery{{
-		Recipient: recipient, Channel: "email", Driver: "mail", Locale: "en", TimeZone: "UTC",
-		Endpoint: notification.Endpoint{Identity: "verified-email-42", Address: notification.Address("recipient@example.com")},
-	}}}})
-	notifier, err := notification.New(notification.Scope{Application: "helpdesk"}, planner,
-		[]notification.Route{{Name: "ticket.updated", Revision: "v1", Policy: notification.AllRequired}},
-		[]notification.Adapter{notification.NewAdapter("email", "mail", "v1", renderer, driver)},
+	renderer := notification.RendererFunc[notificationmail.Payload](
+		func(context.Context, notification.RenderRequest) (notificationmail.Payload, error) {
+			return notificationmail.Payload{
+				Subject: "Ticket updated",
+				Text:    "Ticket T-42 changed.",
+			}, nil
+		},
 	)
+
+	recipient := notification.RecipientRef{
+		Type: "user",
+		ID:   "user-42",
+	}
+	planner := notification.NewMemoryPlanner(map[string]notification.Plan{
+		"ticket.updated": {
+			Deliveries: []notification.PlannedDelivery{
+				{
+					Recipient: recipient,
+					Channel:   "email",
+					Driver:    "mail",
+					Endpoint: notification.Endpoint{
+						Identity: "verified-email-42",
+						Address:  notification.Address("recipient@example.com"),
+					},
+					Locale:   "en",
+					TimeZone: "UTC",
+				},
+			},
+		},
+	})
+
+	scope := notification.Scope{
+		Application: "helpdesk",
+	}
+	routes := []notification.Route{
+		{
+			Name:     "ticket.updated",
+			Revision: "v1",
+			Policy:   notification.AllRequired,
+		},
+	}
+	adapter := notification.NewAdapter("email", "mail", "v1", renderer, driver)
+
+	notifier, err := notification.New(scope, planner, routes, []notification.Adapter{adapter})
 	if err != nil {
 		panic(err)
 	}
-	result, err := notifier.Send(context.Background(), notification.Request{ID: "mail-42", Route: "ticket.updated", Recipients: []notification.RecipientRef{recipient}, Content: notification.Content{Key: "ticket.changed"}})
+
+	request := notification.Request{
+		ID:         "mail-42",
+		Route:      "ticket.updated",
+		Recipients: []notification.RecipientRef{recipient},
+		Content: notification.Content{
+			Key: "ticket.changed",
+		},
+	}
+	result, err := notifier.Send(context.Background(), request)
 	if err != nil {
 		panic(err)
 	}
