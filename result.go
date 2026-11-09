@@ -58,7 +58,8 @@ type Observation struct {
 	Duration time.Duration
 }
 
-// Observer consumes observations without blocking dispatch and must be concurrency-safe.
+// Observer consumes observations synchronously and must be concurrency-safe.
+// Observe must return promptly; the dispatcher isolates hook panics.
 type Observer interface{ Observe(Observation) }
 
 // ObserverFunc adapts a non-blocking observation hook.

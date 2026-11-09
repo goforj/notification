@@ -77,45 +77,79 @@ func safeLeaf(err error) error {
 		}
 	}
 	if custom, ok := err.(interface{ Is(error) bool }); ok {
+		var matches []error
 		for _, candidate := range safeClasses {
 			if custom.Is(candidate) {
-				return candidate
+				matches = append(matches, candidate)
 			}
+		}
+		if len(matches) == 1 {
+			return matches[0]
+		}
+		if len(matches) > 1 {
+			return errors.Join(matches...)
 		}
 	}
 	return nil
 }
 
-// sanitize bounds traversal of collaborator errors while preserving owned typed evidence.
-func sanitize(err, fallback error, depth int, remaining *int) error {
+// sanitize bounds error traversal, preserving outer classifications and explicit wrapped evidence.
+// Classified wrappers may explain an opaque cause; missing traversal evidence remains uncertain.
+func sanitize(err, fallback error, depth int, remaining *int, classified bool) error {
 	*remaining--
-	if err == nil || depth > 16 || *remaining < 0 {
+	if depth > 16 || *remaining < 0 {
 		return fallback
 	}
-	if safe := safeLeaf(err); safe != nil {
-		return safe
+	if err == nil {
+		if classified {
+			return nil
+		}
+		return fallback
 	}
+	safe := safeLeaf(err)
 	switch e := err.(type) {
 	case *DeliveryError:
-		return &DeliveryError{e.driver, e.status, e.retryAfter, sanitize(e.cause, fallback, depth+1, remaining)}
+		return &DeliveryError{e.driver, e.status, e.retryAfter, sanitize(e.cause, fallback, depth+1, remaining, false)}
 	case *TargetError:
-		return &TargetError{e.index, sanitize(e.cause, fallback, depth+1, remaining)}
+		return &TargetError{e.index, sanitize(e.cause, fallback, depth+1, remaining, false)}
 	case interface{ Unwrap() []error }:
 		children := e.Unwrap()
-		if len(children) > 64 {
+		truncated := len(children) > 64
+		if truncated {
 			children = children[:64]
 		}
-		var safe []error
+		var failures []error
+		if safe != nil {
+			failures = append(failures, safe)
+		}
 		for _, child := range children {
 			if child != nil {
-				safe = append(safe, sanitize(child, fallback, depth+1, remaining))
+				if cause := sanitize(child, fallback, depth+1, remaining, classified || safe != nil); cause != nil {
+					failures = append(failures, cause)
+				}
 			}
 		}
-		if len(safe) > 0 {
-			return errors.Join(safe...)
+		// Hidden children may contradict a rejection, even when their wrapper is classified.
+		if truncated {
+			failures = append(failures, fallback)
+		}
+		if len(failures) > 0 {
+			return errors.Join(failures...)
 		}
 	case interface{ Unwrap() error }:
-		return sanitize(e.Unwrap(), fallback, depth+1, remaining)
+		inner := sanitize(e.Unwrap(), fallback, depth+1, remaining, classified || safe != nil)
+		if safe == nil {
+			return inner
+		}
+		if inner != nil {
+			return errors.Join(safe, inner)
+		}
+	}
+	if safe != nil {
+		return safe
+	}
+	if classified {
+		return nil
 	}
 	return fallback
 }

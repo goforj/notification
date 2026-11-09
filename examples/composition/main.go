@@ -16,7 +16,7 @@ func main() {
 	// snippet:start
 	chat := notificationfake.New()
 	push := notificationfake.New()
-	sender := notification.New(notification.Fanout(chat, push))
+	sender := notification.Fanout(chat, push)
 	message := notification.Message{
 		Title: "Monitor down",
 		Body:  "API health check failed.",
@@ -28,7 +28,7 @@ func main() {
 	// captured targets: 2
 
 	chat.Respond(notification.ErrPermanent)
-	backup := notification.New(notification.Fallback(chat, push))
+	backup := notification.Fallback(chat, push)
 	if err := backup.Send(context.Background(), message); err != nil {
 		panic(err)
 	}

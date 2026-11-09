@@ -67,7 +67,7 @@ func TestSanitizer(t *testing.T) {
 		wide[i] = ErrPermanent
 	}
 	err := safeError(wide, ErrOutcomeUnknown)
-	if len(err.(interface{ Unwrap() []error }).Unwrap()) != 64 {
+	if len(err.(interface{ Unwrap() []error }).Unwrap()) != 65 || !errors.Is(err, ErrOutcomeUnknown) {
 		t.Fatal("error width was not bounded")
 	}
 	var tree error = ErrPermanent
@@ -83,5 +83,84 @@ func TestSanitizer(t *testing.T) {
 	}
 	if !errors.Is(safeError(errors.Join(ErrUnauthorized, ErrThrottled), ErrOutcomeUnknown), ErrUnauthorized) {
 		t.Fatal("joined classification lost")
+	}
+}
+
+// multipleClassifications models a custom driver error with more than one safe classification.
+type multipleClassifications struct{ classes []error }
+
+// Error provides private diagnostics that must stay out of public errors.
+func (multipleClassifications) Error() string { return "private multi-class provider response" }
+
+// Is exposes independent classifications without requiring an unwrap chain.
+func (e multipleClassifications) Is(target error) bool {
+	for _, class := range e.classes {
+		if target == class {
+			return true
+		}
+	}
+	return false
+}
+
+// TestCustomErrorPreservesAllClassifications keeps uncertainty and cancellation visible through the facade.
+func TestCustomErrorPreservesAllClassifications(t *testing.T) {
+	cause := multipleClassifications{[]error{ErrPermanent, ErrOutcomeUnknown, context.Canceled}}
+	err := New(reject(cause)).Send(context.Background(), Message{Body: "public fixture"})
+	for _, class := range cause.classes {
+		if !errors.Is(err, class) {
+			t.Fatalf("classification lost: %v", class)
+		}
+	}
+	if strings.Contains(err.Error(), "private") {
+		t.Fatal("provider prose disclosed")
+	}
+}
+
+// classifiedWrapper supplies definite outer evidence alongside a standard wrapped cause.
+type classifiedWrapper struct{ cause error }
+
+// Error provides private context that is deliberately stripped from public diagnostics.
+func (classifiedWrapper) Error() string { return "private wrapper" }
+
+// Is supplies the wrapper's rejection classification independently of its cause.
+func (classifiedWrapper) Is(target error) bool { return target == ErrPermanent }
+
+// Unwrap permits errors.Is to discover more specific evidence in the cause.
+func (e classifiedWrapper) Unwrap() error { return e.cause }
+
+// classifiedGroup supplies outer evidence for an independently classified error group.
+type classifiedGroup struct{ children []error }
+
+// Error keeps provider diagnostics outside the public error chain.
+func (classifiedGroup) Error() string { return "private classified group" }
+
+// Is describes a rejected operation without hiding contradictory child evidence.
+func (classifiedGroup) Is(target error) bool { return target == ErrPermanent }
+
+// Unwrap exposes bounded child evidence to the sanitizer.
+func (e classifiedGroup) Unwrap() []error { return e.children }
+
+// TestClassifiedWrapping preserves explicit causes without turning explanatory prose into uncertainty.
+func TestClassifiedWrapping(t *testing.T) {
+	for _, cause := range []error{nil, errors.New("private explanation"), fmt.Errorf("private: %w", errors.New("private nested explanation")), classifiedGroup{[]error{errors.New("private explanation")}}} {
+		err := safeError(classifiedWrapper{cause}, ErrOutcomeUnknown)
+		if !errors.Is(err, ErrPermanent) || errors.Is(err, ErrOutcomeUnknown) || strings.Contains(err.Error(), "private") {
+			t.Fatal("classified rejection changed")
+		}
+	}
+	for _, cause := range []error{ErrOutcomeUnknown, fmt.Errorf("private: %w", ErrOutcomeUnknown), classifiedGroup{[]error{ErrOutcomeUnknown}}} {
+		err := safeError(classifiedWrapper{cause}, ErrOutcomeUnknown)
+		if !errors.Is(err, ErrPermanent) || !errors.Is(err, ErrOutcomeUnknown) || strings.Contains(err.Error(), "private") {
+			t.Fatal("wrapped evidence lost")
+		}
+	}
+	children := make([]error, 65)
+	for i := range children {
+		children[i] = ErrPermanent
+	}
+	for _, cause := range []error{classifiedWrapper{&errorCycle{}}, classifiedGroup{children}} {
+		if err := safeError(cause, ErrOutcomeUnknown); !errors.Is(err, ErrOutcomeUnknown) {
+			t.Fatal("truncation lost uncertainty")
+		}
 	}
 }

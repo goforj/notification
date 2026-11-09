@@ -132,3 +132,31 @@ func TestFallback(t *testing.T) {
 		t.Fatal("cancellation lost between attempts")
 	}
 }
+
+// TestFallbackStopsOnIncompleteEvidence prevents a backup from duplicating uncertain provider work.
+func TestFallbackStopsOnIncompleteEvidence(t *testing.T) {
+	wide := make(errorGroup, 65)
+	for i := range wide {
+		wide[i] = ErrPermanent
+	}
+	wide[len(wide)-1] = ErrOutcomeUnknown
+	for _, test := range []struct {
+		name  string
+		cause error
+	}{
+		{"custom uncertainty", multipleClassifications{[]error{ErrPermanent, ErrOutcomeUnknown}}},
+		{"custom throttling", multipleClassifications{[]error{ErrPermanent, ErrThrottled}}},
+		{"truncated group", wide},
+		{"wrapped uncertainty", classifiedWrapper{ErrOutcomeUnknown}},
+		{"classified group", classifiedGroup{[]error{ErrOutcomeUnknown}}},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			calls := 0
+			backup := SenderFunc(func(context.Context, Message) error { calls++; return nil })
+			err := Fallback(reject(test.cause), backup).Send(context.Background(), Message{Body: "public fixture"})
+			if err == nil || calls != 0 {
+				t.Fatal("fallback advanced without proof of rejection")
+			}
+		})
+	}
+}

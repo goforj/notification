@@ -19,6 +19,7 @@ var applicationAPI = []API{
 	{"New", ".", "New", "quickstart", "Quick Start"},
 	{"Fanout", ".", "Fanout", "composition", "Composition"},
 	{"Fallback", ".", "Fallback", "composition", "Composition"},
+	{"SenderFunc.Send", ".", "SenderFunc.Send", "decorator", "Custom senders"},
 	{"DeliveryError.RetryAfter", ".", "DeliveryError.RetryAfter", "composition", "Composition"},
 	{"pagerduty.Driver.Trigger", "driver/pagerduty", "Driver.Trigger", "incident", "Incident lifecycle"},
 	{"pagerduty.Driver.Acknowledge", "driver/pagerduty", "Driver.Acknowledge", "incident", "Incident lifecycle"},

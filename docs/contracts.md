@@ -8,7 +8,7 @@ A `Message` contains only `Title` and `Body`. Destinations are trusted driver co
 
 A nil error means the selected driver handled the message. For log this means local capture, for generic webhook it means HTTP 2xx acceptance, and for Mail it means legacy Mail success. It never proves recipient receipt. No retries, scheduling, fallback, deduplication, or background tasks are implicit in the common path. Errors retain safe classifications while discarding arbitrary collaborator prose. Cancellation during transport may leave provider acceptance uncertain; do not assume a canceled send was unsent.
 
-Application services can depend on `Sender`. `notificationfake.New()` validates and captures messages without contacting providers. `Messages()` returns a copied slice, and `Respond(err)` scripts a test failure. No fake result implies provider delivery.
+Application services can depend on `Sender`. `Fanout` and `Fallback` already implement this interface and do not need a `New` wrapper. Use `New` to apply validation and safe errors around application-owned `SenderFunc` implementations; a function adapter itself invokes the supplied function directly. `notificationfake.New()` validates and captures messages without contacting providers. `Messages()` returns a copied slice, and `Respond(err)` scripts a test failure. No fake result implies provider delivery.
 
 Applications own recipient authorization, endpoint verification, preferences, translations, and the choice to send a notification. The optional dispatcher provides the mechanisms for those policies.
 
@@ -16,7 +16,7 @@ Applications own recipient authorization, endpoint verification, preferences, tr
 
 `Fanout` and `Fallback` borrow one to 64 concurrency-safe senders and copy their configured lists. Invalid counts panic at construction. Fanout joins every started call and retains target errors in configuration order, with at most eight concurrent calls. Each call has its own concurrency bound; applications control aggregate admission. Fallback advances only after permanent rejection, unauthorized access or unsupported rendering. It stops on unknown acceptance, throttling, retryable failure, cancellation or invalid wiring. A nil error from a capture driver also ends fallback.
 
-`DeliveryError` retains a bounded driver identity, rejection versus uncertainty and up to 24 hours of retry advice. `TargetError.Index` identifies the zero-based composition target. The facade preserves these types through `errors.As` and safe sentinels through `errors.Is`, including joined failures. Arbitrary provider prose, URLs and underlying network errors are removed. None of this advice schedules a retry.
+`DeliveryError` retains a bounded driver identity, rejection versus uncertainty and up to 24 hours of retry advice. `TargetError.Index` identifies the zero-based composition target. The facade preserves these types through `errors.As` and safe sentinels through `errors.Is`, including joined failures. Custom `Is` methods and standard wrapped causes retain all explicit safe classifications. Reaching the error traversal depth, width, or node budget retains unknown evidence instead of assuming that hidden causes prove rejection. Arbitrary provider prose, URLs and underlying network errors are removed. None of this advice schedules a retry.
 
 ## Incident capability
 
@@ -69,3 +69,11 @@ The optional `driver/mail` module configures recipients with `New(mailer, addres
 ## Implementation boundary
 
 This repository implements the synchronous foundation of the [framework proposal](designs/framework-proposal.md), under the singular module name requested by the maintainer. It does not yet implement durable SQL journals, Queue submission or claims, generated GoForj components, inbox storage, localization adapters, the 67 remaining compatibility-alias protocols, or demo migration. The common Message API and optional NewDispatcher boundary supersede the proposal's application-facing constructor. The proposal is historical planning context; these contracts describe the implemented API.
+
+## Application decorators and observers
+
+Implement `Sender` or use `SenderFunc` to add application-owned metrics, admission control, or tracing around a configured sender. Preserve the returned error and caller context. Decorators do not need a new library option or an advanced dispatcher. Keep message text and raw collaborator errors out of logs.
+
+Advanced `Observer` hooks run synchronously and must return promptly. Panic isolation does not create asynchronous execution or prevent a slow hook from delaying the caller.
+
+HTTP drivers own their transports. A concrete global `*http.Transport` is cloned, retaining its existing TLS settings while enforcing destination policy, connection bounds, disabled proxies, and redirect rejection. A global instrumentation wrapper implementing another `http.RoundTripper` no longer prevents construction; the driver creates its own bounded transport. Application-wide wrappers are not adopted as notification transports. Sender decorators and dispatcher observers are the current instrumentation seams.

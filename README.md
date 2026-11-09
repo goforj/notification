@@ -139,6 +139,7 @@ It borrows an ordinary `*mail.Mailer` and configured recipients. Mail continues 
 | [Mail](examples/mail/main.go) | `cd examples/mail && go run .` | Mail defaults and a configured recipient with a fake transport |
 | [Fake](examples/fake/main.go) | `go run ./examples/fake` | Application testing through Sender |
 | [Composition](examples/composition/main.go) | `go run ./examples/composition` | Fanout, conservative fallback and safe retry advice |
+| [Decorator](examples/decorator/main.go) | `go run ./examples/decorator` | Application metrics through SenderFunc |
 | [Incident](examples/incident/main.go) | `go run ./examples/incident` | Stable lifecycle keys with a local PagerDuty protocol fixture |
 | [Advanced fallback](examples/fallback/main.go) | `go run ./examples/fallback` | Optional recipient planning, fallback, and identity |
 
@@ -151,6 +152,7 @@ The runner discovers and executes every program and verifies the expected output
 | [New](#quick-start) | Quick Start |
 | [Fanout](#composition) | Composition |
 | [Fallback](#composition) | Composition |
+| [SenderFunc.Send](#custom-senders) | Custom senders |
 | [DeliveryError.RetryAfter](#composition) | Composition |
 | [pagerduty.Driver.Trigger](#incident-lifecycle) | Incident lifecycle |
 | [pagerduty.Driver.Acknowledge](#incident-lifecycle) | Incident lifecycle |
@@ -194,12 +196,12 @@ fmt.Println("message accepted")
 
 ## Composition
 
-Use ordinary senders for application-level fanout or conservative fallback. Fanout attempts every target with at most eight concurrent calls. Fallback advances only after permanent rejection, unauthorized access or unsupported rendering; uncertainty and transient failures stop it to avoid accidental duplicates. Both borrow one to 64 configured senders and never retry.
+Use ordinary senders for application-level fanout or conservative fallback. Fanout attempts every target with at most eight concurrent calls. Fallback advances only after permanent rejection, unauthorized access or unsupported rendering; uncertainty and transient failures stop it to avoid accidental duplicates. Both return a `Sender` directly, borrow one to 64 configured senders, and never retry. A `New` wrapper is optional around a composition; use it when wrapping a custom handler that needs common validation and safe errors.
 
 ```go
 chat := notificationfake.New()
 push := notificationfake.New()
-sender := notification.New(notification.Fanout(chat, push))
+sender := notification.Fanout(chat, push)
 message := notification.Message{
 	Title: "Monitor down",
 	Body:  "API health check failed.",
@@ -211,7 +213,7 @@ fmt.Println("captured targets:", len(chat.Messages())+len(push.Messages()))
 // captured targets: 2
 
 chat.Respond(notification.ErrPermanent)
-backup := notification.New(notification.Fallback(chat, push))
+backup := notification.Fallback(chat, push)
 if err := backup.Send(context.Background(), message); err != nil {
 	panic(err)
 }
@@ -228,6 +230,37 @@ if errors.As(err, &failure) {
 	fmt.Println("retry advice:", failure.RetryAfter())
 	// retry advice: 30s
 }
+```
+
+## Custom senders
+
+Use `SenderFunc` to adapt an existing service or decorate a configured sender with application metrics or tracing. Preserve the caller's context and returned error. `New` applies validation and safe errors around the custom handler, so invalid messages do not reach it.
+
+```go
+driver := notificationfake.New()
+var attempts atomic.Int64
+
+instrumented := notification.SenderFunc(func(ctx context.Context, message notification.Message) error {
+	attempts.Add(1)
+	return driver.Send(ctx, message)
+})
+notifier := notification.New(instrumented)
+
+err := notifier.Send(context.Background(), notification.Message{
+	Title: "Ticket updated",
+	Body:  "Ticket T-42 has a new owner.",
+})
+if err != nil {
+	panic(err)
+}
+fmt.Println("attempted sends:", attempts.Load())
+// attempted sends: 1
+
+err = notifier.Send(context.Background(), notification.Message{})
+fmt.Println("invalid message:", errors.Is(err, notification.ErrInvalidMessage))
+// invalid message: true
+fmt.Println("attempted sends:", attempts.Load())
+// attempted sends: 1
 ```
 
 ## Incident lifecycle
@@ -302,7 +335,7 @@ fmt.Println("captured messages:", len(fake.Messages()))
 
 ## Advanced dispatch
 
-Applications that need recipient lookup, preferences, localized templates, fallback, or deduplication can use `NewDispatcher`. These capabilities are optional and keep their explicit delivery results. See [advanced dispatch](docs/advanced.md) for the complete runnable example and migration from the earlier API.
+Applications that need recipient lookup, preferences, localized templates, per-recipient fallback, or deduplication can use `NewDispatcher`. These capabilities are optional and keep their explicit delivery results. Use `Fallback` for ordered configured destinations; use `NewDispatcher` when fallback must follow application recipient policy. See [advanced dispatch](docs/advanced.md) for the complete runnable example and migration from the earlier API.
 
 ## Development
 
@@ -315,6 +348,6 @@ make check-generated
 make security
 ```
 
-Documentation is generated by the Go tools in `docs/`, using the runnable examples as the source of truth. `make test` validates every module, executes the example programs, and enforces exact 100% library unit statement coverage. See [development and release](docs/development.md) for independent module tags and [delivery contracts](docs/contracts.md) for guarantees and limits.
+Documentation is generated by the Go tools in `docs/`, using the runnable examples as the source of truth. `make test` validates every module, executes the example programs, and enforces exact 100% library unit statement coverage. See [development and release](docs/development.md) for independent module tags, [delivery contracts](docs/contracts.md) for guarantees and limits, and the [API review](docs/api-review.md) for the simplicity and composition decisions.
 
 The [original framework proposal](docs/designs/framework-proposal.md) records the larger roadmap. Durable Queue integration, SQL persistence, inboxes, and GoForj generation remain future work.

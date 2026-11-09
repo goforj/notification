@@ -1,8 +1,8 @@
 {
   "packages": {
     "github.com/goforj/notification": {
-      "covered_statements": 417,
-      "total_statements": 417
+      "covered_statements": 439,
+      "total_statements": 439
     },
     "github.com/goforj/notification/driver/dingtalk": {
       "covered_statements": 20,
@@ -85,8 +85,8 @@
       "total_statements": 18
     },
     "github.com/goforj/notification/internal/httptransport": {
-      "covered_statements": 85,
-      "total_statements": 85
+      "covered_statements": 88,
+      "total_statements": 88
     },
     "github.com/goforj/notification/internal/provider": {
       "covered_statements": 86,
@@ -102,12 +102,12 @@
     }
   },
   "toolchain": "go version go1.27.3 darwin/arm64",
-  "source_fingerprint": "724cb7df355bd9639d1c2b782ed81886326560b36281fd3689ef2714d416b682",
-  "unit_tests_passed": 224,
-  "covered_statements": 1206,
-  "total_statements": 1206,
-  "command_statements": 106,
-  "covered_command_statements": 89,
+  "source_fingerprint": "c3d0e3e40e2ff563db1be2f521d4d98eac579f4ba6429b04855981629a486541",
+  "unit_tests_passed": 234,
+  "covered_statements": 1231,
+  "total_statements": 1231,
+  "command_statements": 119,
+  "covered_command_statements": 101,
   "coverage_percent": 100,
   "modules": [
     ".",

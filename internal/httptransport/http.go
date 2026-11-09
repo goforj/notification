@@ -28,7 +28,20 @@ func New(config notification.HTTPConfig) (*http.Client, *http.Transport, error) 
 	if resolver == nil {
 		resolver = net.DefaultResolver
 	}
-	transport := http.DefaultTransport.(*http.Transport).Clone()
+	var transport *http.Transport
+	if defaults, ok := http.DefaultTransport.(*http.Transport); ok {
+		transport = defaults.Clone()
+	} else {
+		// Application instrumentation may replace the global RoundTripper. Keep an
+		// owned transport so its wrapper cannot bypass destination checks or redirects.
+		transport = &http.Transport{
+			ForceAttemptHTTP2:     true,
+			MaxIdleConns:          100,
+			IdleConnTimeout:       90 * time.Second,
+			TLSHandshakeTimeout:   10 * time.Second,
+			ExpectContinueTimeout: time.Second,
+		}
+	}
 	transport.Proxy = nil
 	transport.MaxConnsPerHost = 16
 	transport.MaxResponseHeaderBytes = 32768

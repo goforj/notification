@@ -27,7 +27,8 @@ type Sender interface {
 	Send(context.Context, Message) error
 }
 
-// SenderFunc adapts an application-owned message handler.
+// SenderFunc adapts an application-owned message handler or decorator.
+// Use New to apply common validation and safe errors around a custom handler.
 type SenderFunc func(context.Context, Message) error
 
 // Send invokes the configured message handler.

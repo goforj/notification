@@ -49,5 +49,5 @@ var safeClasses = []error{
 // safeError prevents untrusted prose from entering errors while retaining bounded diagnostics.
 func safeError(err error, fallback error) error {
 	remaining := 512
-	return sanitize(err, fallback, 0, &remaining)
+	return sanitize(err, fallback, 0, &remaining, false)
 }

@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"net/http"
+	"net/http/httptest"
 	"net/netip"
 	"testing"
 
@@ -27,5 +28,41 @@ func TestRequestValidation(t *testing.T) {
 	}
 	if Public(netip.MustParseAddr("3fff::1")) {
 		t.Fatal("IPv6 documentation range permitted")
+	}
+}
+
+// customDefaultTransport models application-wide HTTP instrumentation outside the library's ownership.
+type customDefaultTransport struct{}
+
+// RoundTrip must not replace the notification transport's destination policy.
+func (customDefaultTransport) RoundTrip(*http.Request) (*http.Response, error) {
+	return nil, errors.New("application transport must not handle notification requests")
+}
+
+// TestCustomDefaultTransport permits standard HTTP instrumentation without sharing its transport policy.
+func TestCustomDefaultTransport(t *testing.T) {
+	original := http.DefaultTransport
+	http.DefaultTransport = customDefaultTransport{}
+	defer func() { http.DefaultTransport = original }()
+	client, transport, err := New(notification.HTTPConfig{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer transport.CloseIdleConnections()
+	if client.Transport != transport || transport.Proxy != nil || transport.DialContext == nil || !transport.ForceAttemptHTTP2 {
+		t.Fatal("owned destination policy changed")
+	}
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) { w.WriteHeader(http.StatusAccepted) }))
+	defer server.Close()
+	if _, out, err := Request(client, context.Background(), http.MethodPost, server.URL, nil, nil); !errors.Is(err, notification.ErrPermanent) || out.Status != notification.Failed {
+		t.Fatal("private destination policy bypassed", err)
+	}
+	allowed, owned, err := New(notification.HTTPConfig{AllowPrivate: true})
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer owned.CloseIdleConnections()
+	if _, out, err := Request(allowed, context.Background(), http.MethodPost, server.URL, nil, nil); err != nil || out.Status != notification.Accepted {
+		t.Fatal("owned transport did not deliver", err)
 	}
 }
