@@ -43,12 +43,21 @@ def snippet(source):
     return textwrap.dedent(region).strip()
 
 
-def badge(label, value, color='#6078d8', icon=False):
-    """Render a repository-owned accessible SVG with an optional bell icon."""
-    text = label if not value else label + ': ' + value
-    width = max(100, 30 + len(text) * 7)
-    shape = '<path d="M9 17h10l-2-3v-4a3 3 0 0 0-6 0v4l-2 3m4 3h2" fill="none" stroke="white" stroke-width="1.5"/>' if icon else ''
-    return f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="28" role="img" aria-label="{html.escape(text)}"><title>{html.escape(text)}</title><rect width="{width}" height="28" rx="5" fill="{color}"/>{shape}<text x="{28 if icon else 12}" y="18" fill="white" font-family="Verdana,sans-serif" font-size="12">{html.escape(text)}</text></svg>\n'
+def text_width(text):
+    """Estimate proportional badge text widths at the shared 11px font size."""
+    return sum(3 if c in "ilI.,:;!|' " else 9 if c in "mwMW@%" else 7 if c.isupper() or c.isdigit() else 6 for c in text)
+
+
+def badge(label, value, color='#007ec6', icon=False):
+    """Render compact status segments or a single icon and feature label."""
+    title = html.escape(label + (': ' + value if value else ''))
+    if icon:
+        width = text_width(label) + 32
+        return f'''<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="22" role="img" aria-label="{title}"><title>{title}</title><rect width="{width}" height="22" rx="3" fill="{color}"/><path d="M7 14h9l-2-3V8a2.5 2.5 0 0 0-5 0v3l-2 3m3 3h3" fill="none" stroke="white" stroke-width="1.3"/><text x="23" y="15" fill="white" font-family="Verdana,DejaVu Sans,sans-serif" font-size="11">{html.escape(label)}</text></svg>\n'''
+    left = text_width(label) + 12
+    right = text_width(value) + 12
+    width = left + right
+    return f'''<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="20" role="img" aria-label="{title}"><title>{title}</title><clipPath id="badge"><rect width="{width}" height="20" rx="3"/></clipPath><g clip-path="url(#badge)"><path fill="#555" d="M0 0h{left}v20H0z"/><path fill="{color}" d="M{left} 0h{right}v20H{left}z"/></g><g fill="#fff" text-anchor="middle" font-family="Verdana,DejaVu Sans,sans-serif" font-size="11"><text x="{left / 2:g}" y="14">{html.escape(label)}</text><text x="{left + right / 2:g}" y="14">{html.escape(value)}</text></g></svg>\n'''
 
 
 def outputs():
@@ -79,8 +88,8 @@ def outputs():
     if re.search(r'\{\{(?:snippet:|api-index)', readme):
         raise ValueError('unresolved README marker')
     result = {'README.md': readme}
-    for name, label, value in [('status', 'status', 'unreleased'), ('go', 'Go', '1.24+'), ('license', 'license', 'MIT'), ('coverage', 'library unit coverage', '100%'), ('tests', 'unit tests', str(evidence['unit_tests_passed']))]:
-        result[f'docs/assets/badges/{name}.svg'] = badge(label, value)
+    for name, label, value, color in [('status', 'status', 'unreleased', '#6e7681'), ('go', 'Go', '1.24+', '#007d9c'), ('license', 'license', 'MIT', '#007ec6'), ('coverage', 'coverage', '100%', '#2e8540'), ('tests', 'tests', str(evidence['unit_tests_passed']), '#5368bd')]:
+        result[f'docs/assets/badges/{name}.svg'] = badge(label, value, color)
     for name, label in [('intent', 'Semantic intent'), ('policy', 'Recipient policy'), ('channels', 'Typed channels'), ('identity', 'Explicit identity'), ('diagnostics', 'Safe diagnostics'), ('testing', 'Isolated testing')]:
         result[f'docs/assets/badges/{name}.svg'] = badge(label, '', '#33436b', True)
     return result
