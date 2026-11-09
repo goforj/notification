@@ -195,6 +195,18 @@ func TestDriverEvidenceAndSearchableNames(t *testing.T) {
 	if strings.Contains(string(outputs["README.md"]), ">Name</th>") {
 		t.Fatal("duplicate name column retained")
 	}
+	servers["matrix"] = Server{Version: "1", Image: "pinned"}
+	putJSON(t, root, "integration/versions.json", servers)
+	evidence.Servers = servers
+	putJSON(t, root, "docs/integration-results.json", evidence)
+	if _, err := outputsFor(root, demoAPI()); err == nil {
+		t.Fatal("Matrix evidence omitted")
+	}
+	evidence.PassedTests = append(evidence.PassedTests, "TestMatrix")
+	putJSON(t, root, "docs/integration-results.json", evidence)
+	if _, err := outputsFor(root, demoAPI()); err != nil {
+		t.Fatal(err)
+	}
 	putJSON(t, root, "docs/assets/driver-icons/presentation.json", map[string]Presentation{})
 	if _, err := outputsFor(root, demoAPI()); err == nil {
 		t.Fatal("missing presentation accepted")

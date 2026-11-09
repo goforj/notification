@@ -1,5 +1,7 @@
 # Notification destination coverage review
 
+This is a historical research snapshot. The selected expansion is now implemented; see [current implementation](provider-expansion.md) and [driver contracts](drivers.md).
+
 Reviewed 2026-11-09 against notification commit 57ff449. The library has 20 driver packages, including Mail and local log capture. This review assesses destination breadth separately from the [API and release-readiness review](api-review.md). A usable API and passing driver tests do not establish broad ecosystem coverage.
 
 The current library covers many chat and incident destinations, but it does not yet justify a claim to cover most notification needs. The clearest omissions are established personal push services and self-hosted chat, followed by browser and application push. No reliable percentage of users covered can be calculated from public provider catalogs.

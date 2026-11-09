@@ -157,5 +157,124 @@
     "label": "Join",
     "icon": "join.svg",
     "accent": "#FF9800"
+  },
+  "homeassistant": {
+    "label": "Home Assistant",
+    "icon": "homeassistant.svg",
+    "accent": "#18BCF2",
+    "fill": "#18BCF2"
+  },
+  "nextcloudtalk": {
+    "label": "Nextcloud Talk",
+    "icon": "nextcloudtalk.svg",
+    "accent": "#0082C9",
+    "fill": "#0082C9"
+  },
+  "signal": {
+    "label": "Signal relay",
+    "icon": "signal.svg",
+    "accent": "#3A76F0",
+    "fill": "#3A76F0"
+  },
+  "apprise": {
+    "label": "Apprise API",
+    "icon": "apprise.svg",
+    "accent": "#3283C8"
+  },
+  "fcm": {
+    "label": "Firebase Cloud Messaging",
+    "icon": "fcm.svg",
+    "accent": "#DD2C00",
+    "fill": "#DD2C00"
+  },
+  "apns": {
+    "label": "Apple APNs",
+    "icon": "apns.svg",
+    "accent": "#555555",
+    "fill": "#555555"
+  },
+  "webpush": {
+    "label": "Web Push",
+    "icon": "webpush.svg",
+    "accent": "#EF652A"
+  },
+  "sns": {
+    "label": "Amazon SNS",
+    "icon": "sns.svg",
+    "accent": "#D62B74"
+  },
+  "onesignal": {
+    "label": "OneSignal",
+    "icon": "onesignal.svg",
+    "accent": "#E54B4D"
+  },
+  "expo": {
+    "label": "Expo",
+    "icon": "expo.svg",
+    "accent": "#4630EB",
+    "fill": "#4630EB"
+  },
+  "whatsapp": {
+    "label": "WhatsApp Cloud",
+    "icon": "whatsapp.svg",
+    "accent": "#25D366",
+    "fill": "#25D366"
+  },
+  "plivo": {
+    "label": "Plivo",
+    "icon": "plivo.svg",
+    "accent": "#00A478"
+  },
+  "vonage": {
+    "label": "Vonage",
+    "icon": "vonage.svg",
+    "accent": "#555555",
+    "fill": "#555555"
+  },
+  "telnyx": {
+    "label": "Telnyx",
+    "icon": "telnyx.svg",
+    "accent": "#00C08B"
+  },
+  "clicksend": {
+    "label": "ClickSend",
+    "icon": "clicksend.svg",
+    "accent": "#00A8E0"
+  },
+  "goalert": {
+    "label": "GoAlert",
+    "icon": "goalert.svg",
+    "accent": "#D64A39"
+  },
+  "signl4": {
+    "label": "SIGNL4",
+    "icon": "signl4.svg",
+    "accent": "#F04E30"
+  },
+  "pagertree": {
+    "label": "PagerTree",
+    "icon": "pagertree.svg",
+    "accent": "#35A853"
+  },
+  "betterstack": {
+    "label": "Better Stack",
+    "icon": "betterstack.svg",
+    "accent": "#5D5FEF",
+    "fill": "#5D5FEF"
+  },
+  "incidentio": {
+    "label": "incident.io",
+    "icon": "incidentio.svg",
+    "accent": "#F59E0B"
+  },
+  "ilert": {
+    "label": "ilert",
+    "icon": "ilert.svg",
+    "accent": "#5B3CC4"
+  },
+  "firehydrant": {
+    "label": "FireHydrant",
+    "icon": "firehydrant.svg",
+    "accent": "#E44A3F"
   }
 }

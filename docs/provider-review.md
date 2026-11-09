@@ -1,5 +1,7 @@
 # Provider coverage and Go notification API review
 
+This is a historical research snapshot. The selected expansion is now implemented; see [current implementation](provider-expansion.md) and [driver contracts](drivers.md).
+
 Reviewed 2026-11-08. This review covers Uptime Gopher's authoritative GoForj demo templates and five Go notification libraries. It recommends the next implementation boundary; the proposed additions below are not shipped APIs or verified provider integrations.
 
 The [2026-11-09 destination coverage review](provider-coverage-review.md) extends this extraction-focused review with fresh cross-ecosystem catalogs and a prioritized list of missing destinations. It does not add runtime support claims.

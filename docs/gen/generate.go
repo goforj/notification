@@ -30,11 +30,16 @@ var applicationAPI = []API{
 	{"notificationfake.New", "notificationfake", "New", "fake", "Application testing"},
 	{"Fake.Messages", "notificationfake", "Fake.Messages", "fake", "Application testing"},
 	{"notificationmail.New", "driver/mail", "New", "mail", "Mail delivery"},
+	{"apns.New", "driver/apns", "New", "apns", "Application push"},
+	{"sns.New", "driver/sns", "New", "sns", "Application push"},
+	{"webpush.New", "driver/webpush", "New", "webpush", "Application push"},
+	{"whatsapp.Driver.SendTemplate", "driver/whatsapp", "Driver.SendTemplate", "whatsapp", "WhatsApp Cloud"},
 }
 
 // Driver records provider-owned handling semantics and executed verification scope.
 type Driver struct {
 	ID                string `json:"id"`
+	Module            string `json:"module,omitempty"`
 	AcceptanceSummary string `json:"acceptance_summary"`
 	ProtocolSource    string `json:"protocol_source"`
 	Package           string `json:"package"`
@@ -129,7 +134,7 @@ func outputsFor(root string, apis []API) (map[string][]byte, error) {
 			for _, name := range integration.PassedTests {
 				passed[name] = true
 			}
-			if integration.SourceFingerprint != fingerprint || !reflect.DeepEqual(integration.Servers, versions) || !passed["TestNtfy"] || !passed["TestGotify"] {
+			if integration.SourceFingerprint != fingerprint || !reflect.DeepEqual(integration.Servers, versions) || !passed["TestNtfy"] || !passed["TestGotify"] || (versions["matrix"].Image != "" && !passed["TestMatrix"]) {
 				return nil, fmt.Errorf("native integration evidence is stale; run make test-integration")
 			}
 			nativeTests = len(passed)

@@ -40,7 +40,7 @@ func TestCompactDriverSummaries(t *testing.T) {
 			t.Fatal(got, entry.want)
 		}
 	}
-	driver := Driver{ID: "fixture", Package: "driver/fixture", Configuration: "configured endpoint", Acceptance: "native identity", AcceptanceSummary: "Message ID", Verification: "pending", ProtocolSource: "https://example.com/protocol"}
+	driver := Driver{Module: "example/optional", ID: "fixture", Package: "driver/fixture", Configuration: "configured endpoint", Acceptance: "native identity", AcceptanceSummary: "Message ID", Verification: "pending", ProtocolSource: "https://example.com/protocol"}
 	if acceptanceSummary(driver) != "Message ID" {
 		t.Fatal("summary missing")
 	}
@@ -49,7 +49,7 @@ func TestCompactDriverSummaries(t *testing.T) {
 		t.Fatal("full contract fallback missing")
 	}
 	guide := driverGuide([]Driver{driver}, map[string]Presentation{"fixture": {Label: "Fixture"}})
-	for _, required := range []string{"configured endpoint", "native identity", "pending", "https://example.com/protocol"} {
+	for _, required := range []string{"example/optional", "configured endpoint", "native identity", "pending", "https://example.com/protocol"} {
 		if !strings.Contains(guide, required) {
 			t.Fatal("detailed contract lost", required)
 		}

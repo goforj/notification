@@ -1,21 +1,18 @@
 # Provider expansion implementation
 
-The maintainer authorized implementing the integrations identified in the [coverage review](provider-coverage-review.md), together with the horizontal GoForj Mail integration. This work preserves Message, Sender, synchronous execution, explicit transport ownership and the root minimum Go version.
+All 31 integrations selected in the [coverage review](provider-coverage-review.md) are implemented, bringing the catalog to 51 driver packages. The small Message and Sender API, synchronous execution, explicit transport ownership and Go 1.24 minimum remain intact.
 
-## Progress
+- Chat and personal push: Pushover, Matrix, Mattermost, Rocket.Chat, Pushbullet, Bark, Zulip, IFTTT and Join.
+- Automation and relays: Home Assistant, Nextcloud Talk, Signal relay and Apprise API.
+- Application push: Web Push, FCM HTTP v1, APNs, SNS, OneSignal and Expo.
+- WhatsApp Cloud: ordinary text and explicit approved-template sends.
+- SMS: Plivo, Vonage, Telnyx and ClickSend.
+- On-call: GoAlert, SIGNL4, PagerTree, Better Stack, incident.io, ilert and FireHydrant.
 
-- Implemented: Pushover (non-emergency priorities), Matrix (unencrypted room messages), Mattermost, Rocket.Chat, Pushbullet, Bark, Zulip, IFTTT and Join. Native configuration and response fixtures, common Sender conformance, malformed responses, owned/borrowed transport behavior and errors are tested. Hosted verification remains pending.
-- Implemented: Mail composition tests using real SMTP, Resend, SendGrid, Mailgun and Postmark drivers against local protocol fixtures, plus a runnable real-driver Mail and Slack fanout example. Email providers remain owned by Mail. SES continues through its separate Mail module; no new hosted SES verification is claimed.
-- Pending: Home Assistant, Nextcloud Talk, Signal relay and Apprise API.
-- Pending: Web Push, FCM HTTP v1, APNs, SNS, OneSignal and Expo.
-- Pending: native WhatsApp Cloud, including explicit template sends.
-- Pending: Plivo, Vonage, Telnyx and ClickSend.
-- Pending: GoAlert, SIGNL4, PagerTree, Better Stack, incident.io, ilert and FireHydrant.
+Mail composition uses real SMTP, Resend, SendGrid, Mailgun and Postmark drivers against local fixtures. Its runnable example composes Mail and Slack through Fanout. Email provider implementations remain owned by GoForj Mail; SES continues through Mail's optional SES module.
 
-The initial checkpoint passed 280 unit tests with exact 1428/1428 library statement coverage, every module's race and vet checks, pinned real ntfy/Gotify integration, and deterministic documentation generation. Subsequent checkpoints must regenerate evidence for their own source state. This file is a work record, not a statement that pending providers are supported.
+Native request fixtures check literal paths, authentication, recipients and response acknowledgements. APNs uses real local HTTP/2 and TLS, including certificate authentication. SNS uses an actual AWS SDK client with SigV4 and XML. Web Push tests independently decrypt ciphertext and validate VAPID signatures. Matrix additionally passes a pinned real Synapse homeserver test, joining the existing real ntfy and Gotify tests.
 
-## Boundaries
+[Unit evidence](unit-results.json) and [integration evidence](integration-results.json) contain the measured counts, source fingerprints and exact server pins. All eleven modules participate in unit, race, vet, module-inventory and security checks. Five runtime modules have independent release tag plans; this work does not publish them.
 
-Pushover emergency receipts, encrypted Matrix rooms, Signal pairing, downstream Apprise providers, mobile delivery receipts and on-call lifecycle operations require explicit protocol scope. Unsupported operations must never be silently represented as a successful ordinary message send. A provider's own scheduling or repetition must not be presented as library-owned retries. Hosted and paired-device verification remains pending unless executed.
-
-Cloud SDK or cryptographic protocol dependencies should remain optional modules when needed, following the existing Mail pattern. Any added module must be included in the module inventory, coverage, race, vet, security and release planning. The root module should remain standard-library-only.
+See [provider capabilities](provider-capabilities.md) for explicit protocol boundaries. Hosted-provider delivery and paired Signal verification remain pending. Historical generic webhook aliases are inventory records, not claims of native support.

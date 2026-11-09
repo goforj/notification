@@ -1,8 +1,8 @@
 # Development and release
 
-The root module requires Go 1.24 and uses only the standard library. `driver/mail` is an independently publishable optional module using goforj/mail v0.3.1. `examples/mail` is a local example module and is not published independently. `docs` is a separate Go tooling module following the sibling library layout, with `gen`, `readme`, `report`, `inventory`, and `modules` packages. It is not a published runtime module. `scripts/module-manifest.txt` inventories all five modules.
+The root module requires Go 1.24 and uses only the standard library. `driver/mail`, `driver/apns`, `driver/sns` and `driver/webpush` are independently publishable optional modules. Mail uses goforj/mail v0.3.1. Their four matching example modules are local and are not published independently. `docs` is a separate Go tooling module following the sibling library layout, with `gen`, `readme`, `report`, `inventory`, and `modules` packages. It is not a published runtime module. `scripts/module-manifest.txt` inventories all eleven modules.
 
-Run `make test` to execute each module, discover and run canonical example programs, collect child-process coverage, merge actual statement blocks, and enforce exact 100% library unit coverage. Every first-party runtime library package is instrumented, including the optional driver and shared conformance helpers. The separate documentation tooling module runs its own Go tests and participates in race and vet checks; tooling coverage is separate from the runtime library metric. Example command entry points are executed and output-checked; their startup error handlers are outside the library statement metric. Executed test events, toolchain identity, and statement counts produce `docs/unit-results.json`. Go versions can instrument different statement blocks, so CI enforces exact coverage for each toolchain without requiring their raw statement totals to match the committed report. `make test-race` instruments the child example programs as well as tests. `make test-integration` requires Docker and runs real ntfy and Gotify servers from immutable image digests. It verifies server versions, native acceptance, integer priorities and stored messages. It uses one server per provider per package run and cleans up after failures. The `integration` module isolates Testcontainers dependencies and retains its relative root replacement. Its tagged tests are separate from the unit coverage metric. Successful execution writes `docs/integration-results.json`; hosted services and paired WhatsApp sessions remain pending.
+Run `make test` to execute each module, discover and run canonical example programs, collect child-process coverage, merge actual statement blocks, and enforce exact 100% library unit coverage. Every first-party runtime library package is instrumented, including all optional drivers and shared conformance helpers. The separate documentation tooling module runs its own Go tests and participates in race and vet checks; tooling coverage is separate from the runtime library metric. Example command entry points are executed and output-checked; their startup error handlers are outside the library statement metric. Executed test events, toolchain identity, and statement counts produce `docs/unit-results.json`. Go versions can instrument different statement blocks, so CI enforces exact coverage for each toolchain without requiring their raw statement totals to match the committed report. `make test-race` instruments the child example programs as well as tests. `make test-integration` requires Docker and runs real ntfy, Gotify and Matrix Synapse servers from immutable image digests. It verifies server versions, native acceptance, integer priorities, authenticated Matrix room-version-12 messages and stored messages. It uses one server per provider per package run and cleans up after failures. The `integration` module isolates Testcontainers dependencies and retains its relative root replacement. Its tagged tests are separate from the unit coverage metric. Successful execution writes `docs/integration-results.json`; hosted services and paired Signal sessions remain pending.
 
 Run `make vet`, `make modules-check`, and `make tidy`. Intentional relative replacements keep optional modules testing unpublished root changes. Tests run with `GOWORK=off`. CI checks that tidy leaves module files unchanged.
 
@@ -12,15 +12,15 @@ Install the repository-pinned scanner with `go install golang.org/x/vuln/cmd/gov
 
 ## Independent release
 
-`make release-plan VERSION=v0.1.0` prints the root and `driver/mail` tag names without creating them. Before an authorized release:
+`make release-plan VERSION=v0.1.0` prints the root and all four optional module tag names without creating them. Before an authorized release:
 
 1. Run the complete checks and inspect staged changes.
 2. Publish the root tag and verify the module resolves from a clean consumer.
-3. Change the optional adapter's root requirement from the development placeholder to that published version. Keep its relative replacement for repository development.
-4. Publish the independent `driver/mail/vX.Y.Z` tag and verify it resolves separately.
-5. Validate both modules and the Mail example in a temporary external consumer with `GOWORK=off` and no local replacements.
+3. Change each optional module's root requirement from the development placeholder to that published version. Keep its relative replacement for repository development.
+4. Publish independent `driver/mail/vX.Y.Z`, `driver/apns/vX.Y.Z`, `driver/sns/vX.Y.Z` and `driver/webpush/vX.Y.Z` tags and verify each resolves separately.
+5. Validate all five runtime modules and their examples in a temporary external consumer with `GOWORK=off` and no local replacements.
 
-A root tag does not publish the Mail module. No version, release badge, published checksum, hosted provider integration, or Codecov upload is implied by passing local tests.
+A root tag does not publish the optional modules. No version, release badge, published checksum, hosted provider integration, or Codecov upload is implied by passing local tests.
 
 ## Provider expansion research
 

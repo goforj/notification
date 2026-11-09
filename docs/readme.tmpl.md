@@ -40,11 +40,11 @@ The log driver captures locally. A nil error means the driver handled the messag
 
 {{drivers}}
 
-All drivers have local tests. ntfy and Gotify also pass real-server tests; hosted and paired-session verification remains pending for other providers. See [driver configuration and delivery contracts](docs/drivers.md) for details and [integration evidence](docs/integration-results.json) for exact server versions.
+All drivers have local tests. ntfy, Gotify and Matrix also pass real-server tests; hosted and paired-session verification remains pending for other providers. See [driver configuration and delivery contracts](docs/drivers.md) for details and [integration evidence](docs/integration-results.json) for exact server versions.
 
 Mail reuses your configured GoForj Mailer for SMTP, SendGrid, Resend, Mailgun, Postmark, or Amazon SES (a separate Mail module). Teams uses Workflows, LINE uses the Messaging API, and Opsgenie provides legacy integration support.
 
-The root module uses only the standard library. Mail is an optional module using goforj/mail v0.3.1. Drivers own their configured destinations; a `Message` contains only content. Errors preserve safe cancellation and provider classifications without returning provider prose. See [delivery contracts](docs/contracts.md) for bounds and ownership.
+The root module uses only the standard library. Mail, APNs, SNS and Web Push are optional modules. Mail uses goforj/mail v0.3.1. Drivers own their configured destinations; a `Message` contains only content. Errors preserve safe cancellation and provider classifications without returning provider prose. See [delivery contracts](docs/contracts.md) for bounds and ownership.
 
 ## Installation
 
@@ -56,7 +56,7 @@ go mod edit -replace=github.com/goforj/notification=$HOME/code/notification
 go mod tidy
 ```
 
-HTTP providers and the log driver are included in the root module:
+Most HTTP providers and the log driver are included in the root module:
 
 ```go
 import "github.com/goforj/notification"
@@ -81,7 +81,7 @@ go mod edit -replace=github.com/goforj/notification/driver/mail=$HOME/code/notif
 go mod tidy
 ```
 
-It borrows an ordinary `*mail.Mailer` and configured recipients. Mail continues to own sender defaults, email composition, and transport.
+It borrows an ordinary `*mail.Mailer` and configured recipients. Mail continues to own sender defaults, email composition, and transport. APNs, SNS and Web Push follow the same optional-module pattern: substitute `apns`, `sns` or `webpush` for `mail` in both module paths above. Their cryptographic or AWS SDK dependencies stay outside the root module. See [provider capabilities](docs/provider-capabilities.md) for supported operations and protocol limits.
 
 ## Runnable Examples
 
@@ -90,6 +90,11 @@ It borrows an ordinary `*mail.Mailer` and configured recipients. Mail continues 
 | [Quick start](examples/quickstart/main.go) | `go run ./examples/quickstart` | A title and body through the log driver |
 | [Webhook](examples/webhook/main.go) | `go run ./examples/webhook` | A message sent to a configured local HTTP provider |
 | [Mail](examples/mail/main.go) | `cd examples/mail && go run .` | A real Mail Resend driver and Slack composed through Fanout against local fixtures |
+| [Provider catalog](examples/providers/main.go) | `go run ./examples/providers` | Native root-provider configurations and a push/chat fanout |
+| [WhatsApp templates](examples/whatsapp/main.go) | `go run ./examples/whatsapp` | Explicit approved-template sends against a local fixture |
+| [APNs](examples/apns/main.go) | `cd examples/apns && go run .` | Signed alerts over real HTTP/2 and TLS |
+| [SNS](examples/sns/main.go) | `cd examples/sns && go run .` | A borrowed AWS SDK client and a native local response |
+| [Web Push](examples/webpush/main.go) | `cd examples/webpush && go run .` | Encrypted browser push and VAPID authentication |
 | [Fake](examples/fake/main.go) | `go run ./examples/fake` | Application testing through Sender |
 | [Composition](examples/composition/main.go) | `go run ./examples/composition` | Fanout, conservative fallback and safe retry advice |
 | [Custom HTTP transport](examples/transport/main.go) | `go run ./examples/transport` | Caller-owned transport and TLS trust roots |
@@ -131,7 +136,7 @@ Use `SenderFunc` to adapt an existing service or decorate a configured sender wi
 
 ## Incident lifecycle
 
-PagerDuty, JSM and legacy Opsgenie additionally implement `IncidentSender`. Construct keys from stable scoped IDs and use the same key for trigger, acknowledge and resolve. Ordinary `Send` requires a fixed configured key on these drivers. JSM and Opsgenie return asynchronous acceptance, without polling for completion.
+PagerDuty, JSM, legacy Opsgenie, SIGNL4, PagerTree and ilert additionally implement `IncidentSender`. Construct keys from stable scoped IDs and use the same key for trigger, acknowledge and resolve. Ordinary `Send` requires a fixed configured key on these drivers. JSM and Opsgenie return asynchronous acceptance, without polling for completion.
 
 {{snippet:incident}}
 
@@ -142,6 +147,30 @@ Reuse the application-owned GoForj Mailer and configure notification recipients 
 {{snippet:mail}}
 
 See [Mail integration](docs/mail.md) for provider choices, rich email, lifecycle and verification details.
+
+## Native provider configuration
+
+All providers share the same `Sender` interface. Configure destinations once and compose senders with `Fanout` or `Fallback`. The runnable catalog includes each new root driver with readable configuration and local protocol fixtures.
+
+{{snippet:providers}}
+
+## Application push
+
+APNs owns and refreshes its provider JWT, or borrows an explicitly configured certificate transport. SNS borrows an AWS SDK v2 publisher, preserving the SDK credential model. Web Push encrypts the standard browser subscription payload and signs VAPID authentication. These optional modules do not add dependencies to the root module.
+
+{{snippet:apns}}
+
+{{snippet:sns}}
+
+{{snippet:webpush}}
+
+FCM HTTP v1 accepts a caller-supplied `TokenSource` function for refreshed OAuth access tokens. OneSignal and Expo submit native push requests. Acceptance means the service accepted the request or ticket; the library does not poll delivery receipts.
+
+## WhatsApp Cloud
+
+Ordinary `Send` uses free-form text within the recipient's customer-service window. Use `SendTemplate` with an already approved template outside that window. Configure the Graph API version explicitly. The library does not create templates or verify service-window eligibility.
+
+{{snippet:whatsapp}}
 
 ## Application testing
 

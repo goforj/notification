@@ -2,6 +2,35 @@
 
 Generated from the driver catalog by `go -C docs run ./readme`. See [portable delivery contracts](contracts.md) and [executed integration evidence](integration-results.json). Provider acceptance never proves recipient delivery.
 
+## Amazon SNS
+
+[Package source](../driver/sns)
+
+- Configuration: Optional module; borrowed AWS SDK v2 publisher and one topic, endpoint or phone.
+- Accepted when: Native SNS message ID.
+- Verification: Local protocol tests; hosted verification pending.
+- Optional module: `github.com/goforj/notification/driver/sns`. See [installation](../README.md#installation).
+- [Provider protocol reference](https://docs.aws.amazon.com/sns/latest/api/API_Publish.html).
+
+## Apple APNs
+
+[Package source](../driver/apns)
+
+- Configuration: Optional module; device/topic and ES256 credentials or explicit certificate transport.
+- Accepted when: HTTP/2 acceptance and request ID.
+- Verification: Local protocol tests; hosted verification pending.
+- Optional module: `github.com/goforj/notification/driver/apns`. See [installation](../README.md#installation).
+- [Provider protocol reference](https://developer.apple.com/documentation/usernotifications/sending-notification-requests-to-apns).
+
+## Apprise API
+
+[Package source](../driver/apprise)
+
+- Configuration: Stateful server configuration key and optional credentials/tag.
+- Accepted when: Non-streaming relay acceptance.
+- Verification: Local protocol tests; hosted verification pending.
+- [Provider protocol reference](https://appriseit.com/api/usage/).
+
 ## Bark
 
 [Package source](../driver/bark)
@@ -10,6 +39,24 @@ Generated from the driver catalog by `go -C docs run ./readme`. See [portable de
 - Accepted when: Native response code.
 - Verification: Local protocol tests; hosted verification pending.
 - [Provider protocol reference](https://github.com/Finb/bark-server).
+
+## Better Stack
+
+[Package source](../driver/betterstack)
+
+- Configuration: API token, requester and escalation choices; Create returns a native incident ID.
+- Accepted when: Native incident ID; actions preserve ID.
+- Verification: Local protocol tests; hosted verification pending.
+- [Provider protocol reference](https://betterstack.com/docs/uptime/api/create-a-new-incident/).
+
+## ClickSend
+
+[Package source](../driver/clicksend)
+
+- Configuration: Username/API key, recipient and optional sender.
+- Accepted when: Native envelope and per-message result.
+- Verification: Local protocol tests; hosted verification pending.
+- [Provider protocol reference](https://developers.clicksend.com/docs/).
 
 ## DingTalk
 
@@ -29,6 +76,15 @@ Generated from the driver catalog by `go -C docs run ./readme`. See [portable de
 - Verification: Local protocol tests; hosted verification pending.
 - [Provider protocol reference](https://docs.discord.com/developers/resources/webhook#execute-webhook).
 
+## Expo
+
+[Package source](../driver/expo)
+
+- Configuration: Expo push token and optional access token.
+- Accepted when: Native push ticket; not a delivery receipt.
+- Verification: Local protocol tests; hosted verification pending.
+- [Provider protocol reference](https://docs.expo.dev/push-notifications/sending-notifications/).
+
 ## Feishu
 
 [Package source](../driver/feishu)
@@ -37,6 +93,33 @@ Generated from the driver catalog by `go -C docs run ./readme`. See [portable de
 - Accepted when: Native code; timestamped HMAC when configured.
 - Verification: Local protocol tests; hosted verification pending.
 - [Provider protocol reference](https://open.feishu.cn/document/client-docs/bot-v3/add-custom-bot).
+
+## Firebase Cloud Messaging
+
+[Package source](../driver/fcm)
+
+- Configuration: Project, device or topic and borrowed refreshing OAuth token function.
+- Accepted when: Project-scoped native message name.
+- Verification: Local protocol tests; hosted verification pending.
+- [Provider protocol reference](https://firebase.google.com/docs/cloud-messaging/send/v1-api).
+
+## FireHydrant
+
+[Package source](../driver/firehydrant)
+
+- Configuration: Signals webhook and stable key; OPEN and CLOSED only.
+- Accepted when: Native Signals acceptance.
+- Verification: Local protocol tests; hosted verification pending.
+- [Provider protocol reference](https://docs.firehydrant.com/docs/generic-webhook-event-source).
+
+## GoAlert
+
+[Package source](../driver/goalert)
+
+- Configuration: Server/integration token and stable key; trigger and close only.
+- Accepted when: Generic Incoming acceptance.
+- Verification: Local protocol tests; hosted verification pending.
+- [Provider protocol reference](https://github.com/target/goalert).
 
 ## Google Chat
 
@@ -56,6 +139,15 @@ Generated from the driver catalog by `go -C docs run ./readme`. See [portable de
 - Verification: Real Gotify 3.1.1 server verified.
 - [Provider protocol reference](https://gotify.net/docs/pushmsg).
 
+## Home Assistant
+
+[Package source](../driver/homeassistant)
+
+- Configuration: Server, long-lived access token and notify service.
+- Accepted when: Notify service response.
+- Verification: Local protocol tests; hosted verification pending.
+- [Provider protocol reference](https://contributors.home-assistant.io/core/internals/rest-api/).
+
 ## IFTTT
 
 [Package source](../driver/ifttt)
@@ -64,6 +156,24 @@ Generated from the driver catalog by `go -C docs run ./readme`. See [portable de
 - Accepted when: Event-trigger acknowledgement.
 - Verification: Local protocol tests; hosted verification pending.
 - [Provider protocol reference](https://ifttt.com/maker_webhooks).
+
+## ilert
+
+[Package source](../driver/ilert)
+
+- Configuration: Integration key and stable alert key; ALERT, ACCEPT and RESOLVE.
+- Accepted when: HTTP 202 event acceptance.
+- Verification: Local protocol tests; hosted verification pending.
+- [Provider protocol reference](https://docs.ilert.com/developer-docs/rest-api/api-reference/events).
+
+## incident.io
+
+[Package source](../driver/incidentio)
+
+- Configuration: HTTP alert source, token and stable key; firing and resolve only.
+- Accepted when: HTTP 202 with native success and deduplication key.
+- Verification: Local protocol tests; hosted verification pending.
+- [Provider protocol reference](https://docs.incident.io/openapi/tags/alert-events-v2.json).
 
 ## Jira Service Management
 
@@ -114,7 +224,7 @@ Generated from the driver catalog by `go -C docs run ./readme`. See [portable de
 
 - Configuration: Homeserver, access token and existing unencrypted room ID.
 - Accepted when: Event ID; fresh transaction per Send.
-- Verification: Local protocol tests; hosted verification pending.
+- Verification: Real Synapse 1.164.2 server verified.
 - [Provider protocol reference](https://spec.matrix.org/v1.16/client-server-api/).
 
 ## Mattermost
@@ -126,6 +236,15 @@ Generated from the driver catalog by `go -C docs run ./readme`. See [portable de
 - Verification: Local protocol tests; hosted verification pending.
 - [Provider protocol reference](https://docs.mattermost.com/developers/integrate/webhooks/incoming).
 
+## Nextcloud Talk
+
+[Package source](../driver/nextcloudtalk)
+
+- Configuration: Server, user/app password and existing room token.
+- Accepted when: OCS status and message ID.
+- Verification: Local protocol tests; hosted verification pending.
+- [Provider protocol reference](https://github.com/nextcloud/spreed/blob/main/docs/chat.md).
+
 ## ntfy
 
 [Package source](../driver/ntfy)
@@ -134,6 +253,15 @@ Generated from the driver catalog by `go -C docs run ./readme`. See [portable de
 - Accepted when: Native message identity and topic acknowledgement.
 - Verification: Real ntfy 2.37.2 server verified.
 - [Provider protocol reference](https://docs.ntfy.sh/publish/).
+
+## OneSignal
+
+[Package source](../driver/onesignal)
+
+- Configuration: Application API key and one subscription or external user identity.
+- Accepted when: Native message ID and recipient checks.
+- Verification: Local protocol tests; hosted verification pending.
+- [Provider protocol reference](https://documentation.onesignal.com/reference/create-message).
 
 ## Opsgenie
 
@@ -152,6 +280,24 @@ Generated from the driver catalog by `go -C docs run ./readme`. See [portable de
 - Accepted when: Events v2 acknowledgement; trigger, acknowledge, resolve.
 - Verification: Local protocol tests; hosted verification pending.
 - [Provider protocol reference](https://docs.pagerduty.com/developer/send-alert-event).
+
+## PagerTree
+
+[Package source](../driver/pagertree)
+
+- Configuration: Incoming integration URL and stable key; full incident lifecycle.
+- Accepted when: Native integration acceptance.
+- Verification: Local protocol tests; hosted verification pending.
+- [Provider protocol reference](https://pagertree.com/docs/integration-guides).
+
+## Plivo
+
+[Package source](../driver/plivo)
+
+- Configuration: Account ID/token and E.164 sender/recipient.
+- Accepted when: Native request and message UUID.
+- Verification: Local protocol tests; hosted verification pending.
+- [Provider protocol reference](https://docs.plivo.com/docs/messaging/api/message/send-a-message).
 
 ## Pushbullet
 
@@ -180,6 +326,24 @@ Generated from the driver catalog by `go -C docs run ./readme`. See [portable de
 - Verification: Local protocol tests; hosted verification pending.
 - [Provider protocol reference](https://docs.rocket.chat/docs/integrations).
 
+## Signal relay
+
+[Package source](../driver/signal)
+
+- Configuration: Application-owned paired signal-cli REST relay, sender and recipient.
+- Accepted when: Native send timestamp.
+- Verification: Local protocol tests; paired-session verification pending.
+- [Provider protocol reference](https://github.com/bbernhard/signal-cli-rest-api).
+
+## SIGNL4
+
+[Package source](../driver/signl4)
+
+- Configuration: Webhook and stable key; trigger, acknowledge and resolve.
+- Accepted when: Native webhook acceptance.
+- Verification: Local protocol tests; hosted verification pending.
+- [Provider protocol reference](https://docs.signl4.com/integrations/webhook/).
+
 ## Slack
 
 [Package source](../driver/slack)
@@ -207,6 +371,15 @@ Generated from the driver catalog by `go -C docs run ./readme`. See [portable de
 - Verification: Local protocol tests; hosted verification pending.
 - [Provider protocol reference](https://core.telegram.org/bots/api#sendmessage).
 
+## Telnyx
+
+[Package source](../driver/telnyx)
+
+- Configuration: API token, E.164 sender/recipient and optional messaging profile.
+- Accepted when: Recipient-correlated message status.
+- Verification: Local protocol tests; hosted verification pending.
+- [Provider protocol reference](https://developers.telnyx.com/api-reference/messages/send-a-message).
+
 ## Twilio
 
 [Package source](../driver/twilio)
@@ -216,6 +389,15 @@ Generated from the driver catalog by `go -C docs run ./readme`. See [portable de
 - Verification: Local protocol tests; hosted verification pending.
 - [Provider protocol reference](https://www.twilio.com/docs/messaging/api/message-resource).
 
+## Vonage
+
+[Package source](../driver/vonage)
+
+- Configuration: API key/secret, sender and E.164 recipient; Unicode SMS.
+- Accepted when: Per-message native status and ID.
+- Verification: Local protocol tests; hosted verification pending.
+- [Provider protocol reference](https://developer.vonage.com/en/api/sms).
+
 ## WAHA
 
 [Package source](../driver/waha)
@@ -224,6 +406,16 @@ Generated from the driver catalog by `go -C docs run ./readme`. See [portable de
 - Accepted when: HTTP acceptance across engine response schemas.
 - Verification: Local protocol tests; paired-session verification pending.
 - [Provider protocol reference](https://waha.devlike.pro/docs/how-to/send-messages/).
+
+## Web Push
+
+[Package source](../driver/webpush)
+
+- Configuration: Optional module; browser subscription, VAPID keys/contact and delivery headers.
+- Accepted when: Encrypted push-service acceptance.
+- Verification: Local protocol tests; hosted verification pending.
+- Optional module: `github.com/goforj/notification/driver/webpush`. See [installation](../README.md#installation).
+- [Provider protocol reference](https://web.dev/articles/push-notifications-web-push-protocol).
 
 ## Webhook
 
@@ -250,6 +442,15 @@ Generated from the driver catalog by `go -C docs run ./readme`. See [portable de
 - Accepted when: Native sent acknowledgement.
 - Verification: Local protocol tests; hosted verification pending.
 - [Provider protocol reference](https://whapi.readme.io/reference/sendmessagetext).
+
+## WhatsApp Cloud
+
+[Package source](../driver/whatsapp)
+
+- Configuration: Meta token, phone ID, explicit API version and recipient; approved templates are explicit.
+- Accepted when: Native message and recipient acknowledgement.
+- Verification: Local protocol tests; hosted verification pending.
+- [Provider protocol reference](https://www.postman.com/meta/whatsapp-business-platform/request/o65u5m5/send-message-template-text).
 
 ## Zulip
 

@@ -1,9 +1,10 @@
 {
-  "verified_at": "2026-11-09T20:09:50.555608Z",
-  "source_fingerprint": "622b43eb4c7b5f0452dab0c19cc496efe56d3c769646373f10712ebf3eccf767",
+  "verified_at": "2026-11-09T21:15:52.25462Z",
+  "source_fingerprint": "d8854db01d06cdb47ddc9f8a33082bec396af3b43976ff7c1ef25b875b2ee671",
   "toolchain": "go version go1.27.3 darwin/arm64",
   "passed_tests": [
     "TestGotify",
+    "TestMatrix",
     "TestNtfy"
   ],
   "servers": {
@@ -11,10 +12,14 @@
       "version": "3.1.1",
       "image": "gotify/server@sha256:44fc5bbd1c0618878e33073d38c2c13126b48f245c3fe12236b1da48eb203b86"
     },
+    "matrix": {
+      "version": "1.164.2",
+      "image": "ghcr.io/element-hq/synapse:v1.164.2@sha256:f0df87cff259872637b4b5e5174b9977e5e3046dd421505407803b5e45c5f842"
+    },
     "ntfy": {
       "version": "2.37.2",
       "image": "binwiederhier/ntfy@sha256:1875ddcf815c8a3c981d6d78c67a93452d0abba79b1ab9520b1f5f5238902bd7"
     }
   },
-  "scope": "Real disposable ntfy and Gotify server tests. All other hosted or paired-session verification remains pending."
+  "scope": "Real disposable server tests listed in servers. All other hosted or paired-session verification remains pending."
 }

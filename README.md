@@ -64,43 +64,65 @@ The log driver captures locally. A nil error means the driver handled the messag
 <table>
 <thead><tr><th align="left" width="260">Driver</th><th align="left">Acceptance</th><th align="left">Verification</th></tr></thead>
 <tbody>
+<tr><td width="260" nowrap><img src="docs/assets/badges/driver-sns.svg" width="22" height="22" alt="" align="absmiddle"> <a href="driver/sns"><strong>Amazon SNS</strong></a></td><td>Native SNS message ID</td><td>Protocol tests</td></tr>
+<tr><td width="260" nowrap><img src="docs/assets/badges/driver-apns.svg" width="22" height="22" alt="" align="absmiddle"> <a href="driver/apns"><strong>Apple APNs</strong></a></td><td>HTTP/2 acceptance and request ID</td><td>Protocol tests</td></tr>
+<tr><td width="260" nowrap><img src="docs/assets/badges/driver-apprise.svg" width="22" height="22" alt="" align="absmiddle"> <a href="driver/apprise"><strong>Apprise API</strong></a></td><td>Non-streaming relay acceptance</td><td>Protocol tests</td></tr>
 <tr><td width="260" nowrap><img src="docs/assets/badges/driver-bark.svg" width="22" height="22" alt="" align="absmiddle"> <a href="driver/bark"><strong>Bark</strong></a></td><td>Native response code</td><td>Protocol tests</td></tr>
+<tr><td width="260" nowrap><img src="docs/assets/badges/driver-betterstack.svg" width="22" height="22" alt="" align="absmiddle"> <a href="driver/betterstack"><strong>Better Stack</strong></a></td><td>Native incident ID; actions preserve ID</td><td>Protocol tests</td></tr>
+<tr><td width="260" nowrap><img src="docs/assets/badges/driver-clicksend.svg" width="22" height="22" alt="" align="absmiddle"> <a href="driver/clicksend"><strong>ClickSend</strong></a></td><td>Native envelope and per-message result</td><td>Protocol tests</td></tr>
 <tr><td width="260" nowrap><img src="docs/assets/badges/driver-dingding.svg" width="22" height="22" alt="" align="absmiddle"> <a href="driver/dingtalk"><strong>DingTalk</strong></a></td><td>Robot response code</td><td>Protocol tests</td></tr>
 <tr><td width="260" nowrap><img src="docs/assets/badges/driver-discord.svg" width="22" height="22" alt="" align="absmiddle"> <a href="driver/discord"><strong>Discord</strong></a></td><td>Message ID</td><td>Protocol tests</td></tr>
+<tr><td width="260" nowrap><img src="docs/assets/badges/driver-expo.svg" width="22" height="22" alt="" align="absmiddle"> <a href="driver/expo"><strong>Expo</strong></a></td><td>Native push ticket; not a delivery receipt</td><td>Protocol tests</td></tr>
 <tr><td width="260" nowrap><img src="docs/assets/badges/driver-feishu.svg" width="22" height="22" alt="" align="absmiddle"> <a href="driver/feishu"><strong>Feishu</strong></a></td><td>Bot response code</td><td>Protocol tests</td></tr>
+<tr><td width="260" nowrap><img src="docs/assets/badges/driver-fcm.svg" width="22" height="22" alt="" align="absmiddle"> <a href="driver/fcm"><strong>Firebase Cloud Messaging</strong></a></td><td>Project-scoped native message name</td><td>Protocol tests</td></tr>
+<tr><td width="260" nowrap><img src="docs/assets/badges/driver-firehydrant.svg" width="22" height="22" alt="" align="absmiddle"> <a href="driver/firehydrant"><strong>FireHydrant</strong></a></td><td>Native Signals acceptance</td><td>Protocol tests</td></tr>
+<tr><td width="260" nowrap><img src="docs/assets/badges/driver-goalert.svg" width="22" height="22" alt="" align="absmiddle"> <a href="driver/goalert"><strong>GoAlert</strong></a></td><td>Generic Incoming acceptance</td><td>Protocol tests</td></tr>
 <tr><td width="260" nowrap><img src="docs/assets/badges/driver-googlechat.svg" width="22" height="22" alt="" align="absmiddle"> <a href="driver/googlechat"><strong>Google Chat</strong></a></td><td>Message resource</td><td>Protocol tests</td></tr>
 <tr><td width="260" nowrap><img src="docs/assets/badges/driver-gotify.svg" width="22" height="22" alt="" align="absmiddle"> <a href="driver/gotify"><strong>Gotify</strong></a></td><td>Message ID and content</td><td>Gotify 3.1.1</td></tr>
+<tr><td width="260" nowrap><img src="docs/assets/badges/driver-homeassistant.svg" width="22" height="22" alt="" align="absmiddle"> <a href="driver/homeassistant"><strong>Home Assistant</strong></a></td><td>Notify service response</td><td>Protocol tests</td></tr>
 <tr><td width="260" nowrap><img src="docs/assets/badges/driver-ifttt.svg" width="22" height="22" alt="" align="absmiddle"> <a href="driver/ifttt"><strong>IFTTT</strong></a></td><td>Event-trigger acknowledgement</td><td>Protocol tests</td></tr>
+<tr><td width="260" nowrap><img src="docs/assets/badges/driver-ilert.svg" width="22" height="22" alt="" align="absmiddle"> <a href="driver/ilert"><strong>ilert</strong></a></td><td>HTTP 202 event acceptance</td><td>Protocol tests</td></tr>
+<tr><td width="260" nowrap><img src="docs/assets/badges/driver-incidentio.svg" width="22" height="22" alt="" align="absmiddle"> <a href="driver/incidentio"><strong>incident.io</strong></a></td><td>Native alert-source acceptance</td><td>Protocol tests</td></tr>
 <tr><td width="260" nowrap><img src="docs/assets/badges/driver-jiraservicemanagement.svg" width="22" height="22" alt="" align="absmiddle"> <a href="driver/jsm"><strong>Jira Service Management</strong></a></td><td>Async request ID</td><td>Protocol tests</td></tr>
 <tr><td width="260" nowrap><img src="docs/assets/badges/driver-join.svg" width="22" height="22" alt="" align="absmiddle"> <a href="driver/join"><strong>Join</strong></a></td><td>Native success flag</td><td>Protocol tests</td></tr>
 <tr><td width="260" nowrap><img src="docs/assets/badges/driver-line.svg" width="22" height="22" alt="" align="absmiddle"> <a href="driver/line"><strong>LINE</strong></a></td><td>Push acknowledgement</td><td>Protocol tests</td></tr>
 <tr><td width="260" nowrap><img src="docs/assets/badges/driver-log.svg" width="22" height="22" alt="" align="absmiddle"> <a href="driver/log"><strong>Log</strong></a></td><td>Local capture</td><td>Local capture</td></tr>
 <tr><td width="260" nowrap><img src="docs/assets/badges/driver-email.svg" width="22" height="22" alt="" align="absmiddle"> <a href="driver/mail"><strong>Mail</strong></a></td><td>Mailer acceptance</td><td>Composition tests</td></tr>
-<tr><td width="260" nowrap><img src="docs/assets/badges/driver-matrix.svg" width="22" height="22" alt="" align="absmiddle"> <a href="driver/matrix"><strong>Matrix</strong></a></td><td>Event ID; fresh transaction per Send</td><td>Protocol tests</td></tr>
+<tr><td width="260" nowrap><img src="docs/assets/badges/driver-matrix.svg" width="22" height="22" alt="" align="absmiddle"> <a href="driver/matrix"><strong>Matrix</strong></a></td><td>Event ID; fresh transaction per Send</td><td>Synapse 1.164.2</td></tr>
 <tr><td width="260" nowrap><img src="docs/assets/badges/driver-mattermost.svg" width="22" height="22" alt="" align="absmiddle"> <a href="driver/mattermost"><strong>Mattermost</strong></a></td><td>Native ok acknowledgement</td><td>Protocol tests</td></tr>
+<tr><td width="260" nowrap><img src="docs/assets/badges/driver-nextcloudtalk.svg" width="22" height="22" alt="" align="absmiddle"> <a href="driver/nextcloudtalk"><strong>Nextcloud Talk</strong></a></td><td>OCS status and message ID</td><td>Protocol tests</td></tr>
 <tr><td width="260" nowrap><img src="docs/assets/badges/driver-ntfy.svg" width="22" height="22" alt="" align="absmiddle"> <a href="driver/ntfy"><strong>ntfy</strong></a></td><td>Message ID and topic</td><td>ntfy 2.37.2</td></tr>
+<tr><td width="260" nowrap><img src="docs/assets/badges/driver-onesignal.svg" width="22" height="22" alt="" align="absmiddle"> <a href="driver/onesignal"><strong>OneSignal</strong></a></td><td>Native message ID and recipient checks</td><td>Protocol tests</td></tr>
 <tr><td width="260" nowrap><img src="docs/assets/badges/driver-opsgenie.svg" width="22" height="22" alt="" align="absmiddle"> <a href="driver/opsgenie"><strong>Opsgenie</strong></a></td><td>Async request ID</td><td>Protocol tests</td></tr>
 <tr><td width="260" nowrap><img src="docs/assets/badges/driver-pagerduty.svg" width="22" height="22" alt="" align="absmiddle"> <a href="driver/pagerduty"><strong>PagerDuty</strong></a></td><td>Event and incident key</td><td>Protocol tests</td></tr>
+<tr><td width="260" nowrap><img src="docs/assets/badges/driver-pagertree.svg" width="22" height="22" alt="" align="absmiddle"> <a href="driver/pagertree"><strong>PagerTree</strong></a></td><td>Native integration acceptance</td><td>Protocol tests</td></tr>
+<tr><td width="260" nowrap><img src="docs/assets/badges/driver-plivo.svg" width="22" height="22" alt="" align="absmiddle"> <a href="driver/plivo"><strong>Plivo</strong></a></td><td>Native request and message UUID</td><td>Protocol tests</td></tr>
 <tr><td width="260" nowrap><img src="docs/assets/badges/driver-pushbullet.svg" width="22" height="22" alt="" align="absmiddle"> <a href="driver/pushbullet"><strong>Pushbullet</strong></a></td><td>Native push ID</td><td>Protocol tests</td></tr>
 <tr><td width="260" nowrap><img src="docs/assets/badges/driver-pushover.svg" width="22" height="22" alt="" align="absmiddle"> <a href="driver/pushover"><strong>Pushover</strong></a></td><td>Native status and request ID</td><td>Protocol tests</td></tr>
 <tr><td width="260" nowrap><img src="docs/assets/badges/driver-rocketchat.svg" width="22" height="22" alt="" align="absmiddle"> <a href="driver/rocketchat"><strong>Rocket.Chat</strong></a></td><td>Native success flag</td><td>Protocol tests</td></tr>
+<tr><td width="260" nowrap><img src="docs/assets/badges/driver-signal.svg" width="22" height="22" alt="" align="absmiddle"> <a href="driver/signal"><strong>Signal relay</strong></a></td><td>Native send timestamp</td><td>Protocol tests</td></tr>
+<tr><td width="260" nowrap><img src="docs/assets/badges/driver-signl4.svg" width="22" height="22" alt="" align="absmiddle"> <a href="driver/signl4"><strong>SIGNL4</strong></a></td><td>Native webhook acceptance</td><td>Protocol tests</td></tr>
 <tr><td width="260" nowrap><img src="docs/assets/badges/driver-slack.svg" width="22" height="22" alt="" align="absmiddle"> <a href="driver/slack"><strong>Slack</strong></a></td><td>ok acknowledgement</td><td>Protocol tests</td></tr>
 <tr><td width="260" nowrap><img src="docs/assets/badges/driver-teams.svg" width="22" height="22" alt="" align="absmiddle"> <a href="driver/teams"><strong>Teams</strong></a></td><td>HTTP acceptance</td><td>Protocol tests</td></tr>
 <tr><td width="260" nowrap><img src="docs/assets/badges/driver-telegram.svg" width="22" height="22" alt="" align="absmiddle"> <a href="driver/telegram"><strong>Telegram</strong></a></td><td>Message ID</td><td>Protocol tests</td></tr>
+<tr><td width="260" nowrap><img src="docs/assets/badges/driver-telnyx.svg" width="22" height="22" alt="" align="absmiddle"> <a href="driver/telnyx"><strong>Telnyx</strong></a></td><td>Recipient-correlated message status</td><td>Protocol tests</td></tr>
 <tr><td width="260" nowrap><img src="docs/assets/badges/driver-twilio.svg" width="22" height="22" alt="" align="absmiddle"> <a href="driver/twilio"><strong>Twilio</strong></a></td><td>Message SID and status</td><td>Protocol tests</td></tr>
+<tr><td width="260" nowrap><img src="docs/assets/badges/driver-vonage.svg" width="22" height="22" alt="" align="absmiddle"> <a href="driver/vonage"><strong>Vonage</strong></a></td><td>Per-message native status and ID</td><td>Protocol tests</td></tr>
 <tr><td width="260" nowrap><img src="docs/assets/badges/driver-waha.svg" width="22" height="22" alt="" align="absmiddle"> <a href="driver/waha"><strong>WAHA</strong></a></td><td>HTTP acceptance</td><td>Protocol tests</td></tr>
+<tr><td width="260" nowrap><img src="docs/assets/badges/driver-webpush.svg" width="22" height="22" alt="" align="absmiddle"> <a href="driver/webpush"><strong>Web Push</strong></a></td><td>Encrypted push-service acceptance</td><td>Protocol tests</td></tr>
 <tr><td width="260" nowrap><img src="docs/assets/badges/driver-webhook.svg" width="22" height="22" alt="" align="absmiddle"> <a href="driver/webhook"><strong>Webhook</strong></a></td><td>HTTP acceptance</td><td>Protocol tests</td></tr>
 <tr><td width="260" nowrap><img src="docs/assets/badges/driver-wecom.svg" width="22" height="22" alt="" align="absmiddle"> <a href="driver/wecom"><strong>WeCom</strong></a></td><td>Robot response code</td><td>Protocol tests</td></tr>
 <tr><td width="260" nowrap><img src="docs/assets/badges/driver-whapi.svg" width="22" height="22" alt="" align="absmiddle"> <a href="driver/whapi"><strong>Whapi</strong></a></td><td>Send acknowledgement</td><td>Protocol tests</td></tr>
+<tr><td width="260" nowrap><img src="docs/assets/badges/driver-whatsapp.svg" width="22" height="22" alt="" align="absmiddle"> <a href="driver/whatsapp"><strong>WhatsApp Cloud</strong></a></td><td>Native message and recipient acknowledgement</td><td>Protocol tests</td></tr>
 <tr><td width="260" nowrap><img src="docs/assets/badges/driver-zulip.svg" width="22" height="22" alt="" align="absmiddle"> <a href="driver/zulip"><strong>Zulip</strong></a></td><td>Success result and message ID</td><td>Protocol tests</td></tr>
 </tbody>
 </table>
 
-All drivers have local tests. ntfy and Gotify also pass real-server tests; hosted and paired-session verification remains pending for other providers. See [driver configuration and delivery contracts](docs/drivers.md) for details and [integration evidence](docs/integration-results.json) for exact server versions.
+All drivers have local tests. ntfy, Gotify and Matrix also pass real-server tests; hosted and paired-session verification remains pending for other providers. See [driver configuration and delivery contracts](docs/drivers.md) for details and [integration evidence](docs/integration-results.json) for exact server versions.
 
 Mail reuses your configured GoForj Mailer for SMTP, SendGrid, Resend, Mailgun, Postmark, or Amazon SES (a separate Mail module). Teams uses Workflows, LINE uses the Messaging API, and Opsgenie provides legacy integration support.
 
-The root module uses only the standard library. Mail is an optional module using goforj/mail v0.3.1. Drivers own their configured destinations; a `Message` contains only content. Errors preserve safe cancellation and provider classifications without returning provider prose. See [delivery contracts](docs/contracts.md) for bounds and ownership.
+The root module uses only the standard library. Mail, APNs, SNS and Web Push are optional modules. Mail uses goforj/mail v0.3.1. Drivers own their configured destinations; a `Message` contains only content. Errors preserve safe cancellation and provider classifications without returning provider prose. See [delivery contracts](docs/contracts.md) for bounds and ownership.
 
 ## Installation
 
@@ -112,7 +134,7 @@ go mod edit -replace=github.com/goforj/notification=$HOME/code/notification
 go mod tidy
 ```
 
-HTTP providers and the log driver are included in the root module:
+Most HTTP providers and the log driver are included in the root module:
 
 ```go
 import "github.com/goforj/notification"
@@ -137,7 +159,7 @@ go mod edit -replace=github.com/goforj/notification/driver/mail=$HOME/code/notif
 go mod tidy
 ```
 
-It borrows an ordinary `*mail.Mailer` and configured recipients. Mail continues to own sender defaults, email composition, and transport.
+It borrows an ordinary `*mail.Mailer` and configured recipients. Mail continues to own sender defaults, email composition, and transport. APNs, SNS and Web Push follow the same optional-module pattern: substitute `apns`, `sns` or `webpush` for `mail` in both module paths above. Their cryptographic or AWS SDK dependencies stay outside the root module. See [provider capabilities](docs/provider-capabilities.md) for supported operations and protocol limits.
 
 ## Runnable Examples
 
@@ -146,6 +168,11 @@ It borrows an ordinary `*mail.Mailer` and configured recipients. Mail continues 
 | [Quick start](examples/quickstart/main.go) | `go run ./examples/quickstart` | A title and body through the log driver |
 | [Webhook](examples/webhook/main.go) | `go run ./examples/webhook` | A message sent to a configured local HTTP provider |
 | [Mail](examples/mail/main.go) | `cd examples/mail && go run .` | A real Mail Resend driver and Slack composed through Fanout against local fixtures |
+| [Provider catalog](examples/providers/main.go) | `go run ./examples/providers` | Native root-provider configurations and a push/chat fanout |
+| [WhatsApp templates](examples/whatsapp/main.go) | `go run ./examples/whatsapp` | Explicit approved-template sends against a local fixture |
+| [APNs](examples/apns/main.go) | `cd examples/apns && go run .` | Signed alerts over real HTTP/2 and TLS |
+| [SNS](examples/sns/main.go) | `cd examples/sns && go run .` | A borrowed AWS SDK client and a native local response |
+| [Web Push](examples/webpush/main.go) | `cd examples/webpush && go run .` | Encrypted browser push and VAPID authentication |
 | [Fake](examples/fake/main.go) | `go run ./examples/fake` | Application testing through Sender |
 | [Composition](examples/composition/main.go) | `go run ./examples/composition` | Fanout, conservative fallback and safe retry advice |
 | [Custom HTTP transport](examples/transport/main.go) | `go run ./examples/transport` | Caller-owned transport and TLS trust roots |
@@ -173,6 +200,10 @@ The runner discovers and executes every program and verifies the expected output
 | [notificationfake.New](#application-testing) | Application testing |
 | [Fake.Messages](#application-testing) | Application testing |
 | [notificationmail.New](#mail-delivery) | Mail delivery |
+| [apns.New](#application-push) | Application push |
+| [sns.New](#application-push) | Application push |
+| [webpush.New](#application-push) | Application push |
+| [whatsapp.Driver.SendTemplate](#whatsapp-cloud) | WhatsApp Cloud |
 
 ## Webhook delivery
 
@@ -314,7 +345,7 @@ fmt.Println("attempted sends:", attempts.Load())
 
 ## Incident lifecycle
 
-PagerDuty, JSM and legacy Opsgenie additionally implement `IncidentSender`. Construct keys from stable scoped IDs and use the same key for trigger, acknowledge and resolve. Ordinary `Send` requires a fixed configured key on these drivers. JSM and Opsgenie return asynchronous acceptance, without polling for completion.
+PagerDuty, JSM, legacy Opsgenie, SIGNL4, PagerTree and ilert additionally implement `IncidentSender`. Construct keys from stable scoped IDs and use the same key for trigger, acknowledge and resolve. Ordinary `Send` requires a fixed configured key on these drivers. JSM and Opsgenie return asynchronous acceptance, without polling for completion.
 
 ```go
 ctx := context.Background()
@@ -380,6 +411,167 @@ fmt.Println("accepted email and chat:", emails.Load(), chats.Load())
 ```
 
 See [Mail integration](docs/mail.md) for provider choices, rich email, lifecycle and verification details.
+
+## Native provider configuration
+
+All providers share the same `Sender` interface. Configure destinations once and compose senders with `Fanout` or `Fallback`. The runnable catalog includes each new root driver with readable configuration and local protocol fixtures.
+
+```go
+connection := notification.HTTPConfig{
+	AllowPrivate: true,
+}
+mobile, err := pushover.New(pushover.Config{
+	BaseURL: server.URL + "/pushover",
+	Token:   "fixture-application-token",
+	User:    "fixture-user-key",
+	HTTP:    connection,
+})
+if err != nil {
+	panic(err)
+}
+defer mobile.Close()
+room, err := mattermost.New(mattermost.Config{
+	URL:  server.URL + "/mattermost",
+	HTTP: connection,
+})
+if err != nil {
+	panic(err)
+}
+defer room.Close()
+sender := notification.Fanout(mobile, room)
+err = sender.Send(context.Background(), notification.Message{
+	Title: "Ticket updated",
+	Body:  "Ticket T-42 has a new owner.",
+})
+if err != nil {
+	panic(err)
+}
+fmt.Println("accepted through push and chat:", accepted.Load())
+// accepted through push and chat: 2
+```
+
+## Application push
+
+APNs owns and refreshes its provider JWT, or borrows an explicitly configured certificate transport. SNS borrows an AWS SDK v2 publisher, preserving the SDK credential model. Web Push encrypts the standard browser subscription payload and signs VAPID authentication. These optional modules do not add dependencies to the root module.
+
+```go
+driver, err := apns.New(apns.Config{
+	Key:         key,
+	KeyID:       "KEY0000042",
+	TeamID:      "TEAM000042",
+	Topic:       "example.app",
+	DeviceToken: strings.Repeat("ab", 32),
+	BaseURL:     service.URL,
+	HTTP: notification.HTTPConfig{
+		Transport: service.Client().Transport,
+	},
+})
+if err != nil {
+	panic(err)
+}
+defer driver.Close()
+err = driver.Send(context.Background(), notification.Message{
+	Title: "Ticket updated",
+	Body:  "Ticket T-42 has a new owner.",
+})
+if err != nil {
+	panic(err)
+}
+fmt.Println("APNs accepted over HTTP/2")
+// APNs accepted over HTTP/2
+```
+
+```go
+publisher := sns.New(sns.Options{
+	Region:       "us-east-1",
+	BaseEndpoint: aws.String(service.URL),
+	HTTPClient:   service.Client(),
+	Credentials: aws.CredentialsProviderFunc(func(context.Context) (aws.Credentials, error) {
+		return aws.Credentials{
+			AccessKeyID:     "fixture",
+			SecretAccessKey: "local-fixture-secret",
+		}, nil
+	}),
+})
+driver, err := notificationsns.New(notificationsns.Config{
+	Client:   publisher,
+	TopicARN: "arn:aws:sns:us-east-1:123456789012:alerts",
+})
+if err != nil {
+	panic(err)
+}
+err = driver.Send(context.Background(), notification.Message{
+	Title: "Ticket updated",
+	Body:  "Ticket T-42 has a new owner.",
+})
+if err != nil {
+	panic(err)
+}
+fmt.Println("SNS accepted through the borrowed AWS client")
+// SNS accepted through the borrowed AWS client
+```
+
+```go
+driver, err := webpush.New(webpush.Config{
+	Subscription:    subscription,
+	Subscriber:      "helpdesk@example.com",
+	VAPIDPrivateKey: base64.RawURLEncoding.EncodeToString(signingKey.Bytes()),
+	VAPIDPublicKey:  base64.RawURLEncoding.EncodeToString(signingKey.PublicKey().Bytes()),
+	TTL:             60,
+	Urgency:         webpush.UrgencyHigh,
+	HTTP: notification.HTTPConfig{
+		Transport: service.Client().Transport,
+	},
+})
+if err != nil {
+	panic(err)
+}
+defer driver.Close()
+err = driver.Send(context.Background(), notification.Message{
+	Title: "Ticket updated",
+	Body:  "Ticket T-42 has a new owner.",
+})
+if err != nil {
+	panic(err)
+}
+fmt.Println("encrypted browser push accepted")
+// encrypted browser push accepted
+```
+
+FCM HTTP v1 accepts a caller-supplied `TokenSource` function for refreshed OAuth access tokens. OneSignal and Expo submit native push requests. Acceptance means the service accepted the request or ticket; the library does not poll delivery receipts.
+
+## WhatsApp Cloud
+
+Ordinary `Send` uses free-form text within the recipient's customer-service window. Use `SendTemplate` with an already approved template outside that window. Configure the Graph API version explicitly. The library does not create templates or verify service-window eligibility.
+
+```go
+driver, err := whatsapp.New(whatsapp.Config{
+	Token:         "local-fixture-token",
+	PhoneNumberID: "123456789",
+	To:            "+12125550101",
+	APIVersion:    "v24.0",
+	BaseURL:       service.URL,
+	HTTP: notification.HTTPConfig{
+		AllowPrivate: true,
+	},
+})
+if err != nil {
+	panic(err)
+}
+defer driver.Close()
+err = driver.SendTemplate(context.Background(), whatsapp.Template{
+	Name:     "ticket_updated",
+	Language: "en_US",
+	BodyParameters: []string{
+		"T-42",
+	},
+})
+if err != nil {
+	panic(err)
+}
+fmt.Println("accepted WhatsApp template:", accepted.Load())
+// accepted WhatsApp template: 1
+```
 
 ## Application testing
 

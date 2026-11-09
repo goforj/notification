@@ -2,6 +2,35 @@
   "schema_version": 1,
   "drivers": [
     {
+      "id": "sns",
+      "package": "driver/sns",
+      "configuration": "Optional module; borrowed AWS SDK v2 publisher and one topic, endpoint or phone",
+      "acceptance": "Native SNS message ID",
+      "verification": "Local protocol tests; hosted verification pending",
+      "protocol_source": "https://docs.aws.amazon.com/sns/latest/api/API_Publish.html",
+      "acceptance_summary": "Native SNS message ID",
+      "module": "github.com/goforj/notification/driver/sns"
+    },
+    {
+      "id": "apns",
+      "package": "driver/apns",
+      "configuration": "Optional module; device/topic and ES256 credentials or explicit certificate transport",
+      "acceptance": "HTTP/2 acceptance and request ID",
+      "verification": "Local protocol tests; hosted verification pending",
+      "protocol_source": "https://developer.apple.com/documentation/usernotifications/sending-notification-requests-to-apns",
+      "acceptance_summary": "HTTP/2 acceptance and request ID",
+      "module": "github.com/goforj/notification/driver/apns"
+    },
+    {
+      "id": "apprise",
+      "package": "driver/apprise",
+      "configuration": "Stateful server configuration key and optional credentials/tag",
+      "acceptance": "Non-streaming relay acceptance",
+      "verification": "Local protocol tests; hosted verification pending",
+      "protocol_source": "https://appriseit.com/api/usage/",
+      "acceptance_summary": "Non-streaming relay acceptance"
+    },
+    {
       "id": "bark",
       "package": "driver/bark",
       "configuration": "Server, device key and optional group",
@@ -9,6 +38,24 @@
       "verification": "Local protocol tests; hosted verification pending",
       "protocol_source": "https://github.com/Finb/bark-server",
       "acceptance_summary": "Native response code"
+    },
+    {
+      "id": "betterstack",
+      "package": "driver/betterstack",
+      "configuration": "API token, requester and escalation choices; Create returns a native incident ID",
+      "acceptance": "Native incident ID; actions preserve ID",
+      "verification": "Local protocol tests; hosted verification pending",
+      "protocol_source": "https://betterstack.com/docs/uptime/api/create-a-new-incident/",
+      "acceptance_summary": "Native incident ID; actions preserve ID"
+    },
+    {
+      "id": "clicksend",
+      "package": "driver/clicksend",
+      "configuration": "Username/API key, recipient and optional sender",
+      "acceptance": "Native envelope and per-message result",
+      "verification": "Local protocol tests; hosted verification pending",
+      "protocol_source": "https://developers.clicksend.com/docs/",
+      "acceptance_summary": "Native envelope and per-message result"
     },
     {
       "id": "dingding",
@@ -29,6 +76,15 @@
       "acceptance_summary": "Message ID"
     },
     {
+      "id": "expo",
+      "package": "driver/expo",
+      "configuration": "Expo push token and optional access token",
+      "acceptance": "Native push ticket; not a delivery receipt",
+      "verification": "Local protocol tests; hosted verification pending",
+      "protocol_source": "https://docs.expo.dev/push-notifications/sending-notifications/",
+      "acceptance_summary": "Native push ticket; not a delivery receipt"
+    },
+    {
       "id": "feishu",
       "package": "driver/feishu",
       "configuration": "V2 bot webhook and optional signing secret",
@@ -36,6 +92,33 @@
       "verification": "Local protocol tests; hosted verification pending",
       "protocol_source": "https://open.feishu.cn/document/client-docs/bot-v3/add-custom-bot",
       "acceptance_summary": "Bot response code"
+    },
+    {
+      "id": "fcm",
+      "package": "driver/fcm",
+      "configuration": "Project, device or topic and borrowed refreshing OAuth token function",
+      "acceptance": "Project-scoped native message name",
+      "verification": "Local protocol tests; hosted verification pending",
+      "protocol_source": "https://firebase.google.com/docs/cloud-messaging/send/v1-api",
+      "acceptance_summary": "Project-scoped native message name"
+    },
+    {
+      "id": "firehydrant",
+      "package": "driver/firehydrant",
+      "configuration": "Signals webhook and stable key; OPEN and CLOSED only",
+      "acceptance": "Native Signals acceptance",
+      "verification": "Local protocol tests; hosted verification pending",
+      "protocol_source": "https://docs.firehydrant.com/docs/generic-webhook-event-source",
+      "acceptance_summary": "Native Signals acceptance"
+    },
+    {
+      "id": "goalert",
+      "package": "driver/goalert",
+      "configuration": "Server/integration token and stable key; trigger and close only",
+      "acceptance": "Generic Incoming acceptance",
+      "verification": "Local protocol tests; hosted verification pending",
+      "protocol_source": "https://github.com/target/goalert",
+      "acceptance_summary": "Generic Incoming acceptance"
     },
     {
       "id": "googlechat",
@@ -56,6 +139,15 @@
       "acceptance_summary": "Message ID and content"
     },
     {
+      "id": "homeassistant",
+      "package": "driver/homeassistant",
+      "configuration": "Server, long-lived access token and notify service",
+      "acceptance": "Notify service response",
+      "verification": "Local protocol tests; hosted verification pending",
+      "protocol_source": "https://contributors.home-assistant.io/core/internals/rest-api/",
+      "acceptance_summary": "Notify service response"
+    },
+    {
       "id": "ifttt",
       "package": "driver/ifttt",
       "configuration": "Webhooks key and event; title/body map to value1/value2",
@@ -63,6 +155,24 @@
       "verification": "Local protocol tests; hosted verification pending",
       "protocol_source": "https://ifttt.com/maker_webhooks",
       "acceptance_summary": "Event-trigger acknowledgement"
+    },
+    {
+      "id": "ilert",
+      "package": "driver/ilert",
+      "configuration": "Integration key and stable alert key; ALERT, ACCEPT and RESOLVE",
+      "acceptance": "HTTP 202 event acceptance",
+      "verification": "Local protocol tests; hosted verification pending",
+      "protocol_source": "https://docs.ilert.com/developer-docs/rest-api/api-reference/events",
+      "acceptance_summary": "HTTP 202 event acceptance"
+    },
+    {
+      "id": "incidentio",
+      "package": "driver/incidentio",
+      "configuration": "HTTP alert source, token and stable key; firing and resolve only",
+      "acceptance": "HTTP 202 with native success and deduplication key",
+      "verification": "Local protocol tests; hosted verification pending",
+      "protocol_source": "https://docs.incident.io/openapi/tags/alert-events-v2.json",
+      "acceptance_summary": "Native alert-source acceptance"
     },
     {
       "id": "jiraservicemanagement",
@@ -114,7 +224,7 @@
       "package": "driver/matrix",
       "configuration": "Homeserver, access token and existing unencrypted room ID",
       "acceptance": "Event ID; fresh transaction per Send",
-      "verification": "Local protocol tests; hosted verification pending",
+      "verification": "Real Synapse 1.164.2 server verified",
       "protocol_source": "https://spec.matrix.org/v1.16/client-server-api/",
       "acceptance_summary": "Event ID; fresh transaction per Send"
     },
@@ -128,6 +238,15 @@
       "acceptance_summary": "Native ok acknowledgement"
     },
     {
+      "id": "nextcloudtalk",
+      "package": "driver/nextcloudtalk",
+      "configuration": "Server, user/app password and existing room token",
+      "acceptance": "OCS status and message ID",
+      "verification": "Local protocol tests; hosted verification pending",
+      "protocol_source": "https://github.com/nextcloud/spreed/blob/main/docs/chat.md",
+      "acceptance_summary": "OCS status and message ID"
+    },
+    {
       "id": "ntfy",
       "package": "driver/ntfy",
       "configuration": "Topic, optional authentication and integer priority",
@@ -135,6 +254,15 @@
       "verification": "Real ntfy 2.37.2 server verified",
       "protocol_source": "https://docs.ntfy.sh/publish/",
       "acceptance_summary": "Message ID and topic"
+    },
+    {
+      "id": "onesignal",
+      "package": "driver/onesignal",
+      "configuration": "Application API key and one subscription or external user identity",
+      "acceptance": "Native message ID and recipient checks",
+      "verification": "Local protocol tests; hosted verification pending",
+      "protocol_source": "https://documentation.onesignal.com/reference/create-message",
+      "acceptance_summary": "Native message ID and recipient checks"
     },
     {
       "id": "opsgenie",
@@ -153,6 +281,24 @@
       "verification": "Local protocol tests; hosted verification pending",
       "protocol_source": "https://docs.pagerduty.com/developer/send-alert-event",
       "acceptance_summary": "Event and incident key"
+    },
+    {
+      "id": "pagertree",
+      "package": "driver/pagertree",
+      "configuration": "Incoming integration URL and stable key; full incident lifecycle",
+      "acceptance": "Native integration acceptance",
+      "verification": "Local protocol tests; hosted verification pending",
+      "protocol_source": "https://pagertree.com/docs/integration-guides",
+      "acceptance_summary": "Native integration acceptance"
+    },
+    {
+      "id": "plivo",
+      "package": "driver/plivo",
+      "configuration": "Account ID/token and E.164 sender/recipient",
+      "acceptance": "Native request and message UUID",
+      "verification": "Local protocol tests; hosted verification pending",
+      "protocol_source": "https://docs.plivo.com/docs/messaging/api/message/send-a-message",
+      "acceptance_summary": "Native request and message UUID"
     },
     {
       "id": "pushbullet",
@@ -182,6 +328,24 @@
       "acceptance_summary": "Native success flag"
     },
     {
+      "id": "signal",
+      "package": "driver/signal",
+      "configuration": "Application-owned paired signal-cli REST relay, sender and recipient",
+      "acceptance": "Native send timestamp",
+      "verification": "Local protocol tests; paired-session verification pending",
+      "protocol_source": "https://github.com/bbernhard/signal-cli-rest-api",
+      "acceptance_summary": "Native send timestamp"
+    },
+    {
+      "id": "signl4",
+      "package": "driver/signl4",
+      "configuration": "Webhook and stable key; trigger, acknowledge and resolve",
+      "acceptance": "Native webhook acceptance",
+      "verification": "Local protocol tests; hosted verification pending",
+      "protocol_source": "https://docs.signl4.com/integrations/webhook/",
+      "acceptance_summary": "Native webhook acceptance"
+    },
+    {
       "id": "slack",
       "package": "driver/slack",
       "configuration": "Incoming webhook URL",
@@ -209,6 +373,15 @@
       "acceptance_summary": "Message ID"
     },
     {
+      "id": "telnyx",
+      "package": "driver/telnyx",
+      "configuration": "API token, E.164 sender/recipient and optional messaging profile",
+      "acceptance": "Recipient-correlated message status",
+      "verification": "Local protocol tests; hosted verification pending",
+      "protocol_source": "https://developers.telnyx.com/api-reference/messages/send-a-message",
+      "acceptance_summary": "Recipient-correlated message status"
+    },
+    {
       "id": "twilio",
       "package": "driver/twilio",
       "configuration": "Account, token, E.164 recipient and sender or service",
@@ -218,6 +391,15 @@
       "acceptance_summary": "Message SID and status"
     },
     {
+      "id": "vonage",
+      "package": "driver/vonage",
+      "configuration": "API key/secret, sender and E.164 recipient; Unicode SMS",
+      "acceptance": "Per-message native status and ID",
+      "verification": "Local protocol tests; hosted verification pending",
+      "protocol_source": "https://developer.vonage.com/en/api/sms",
+      "acceptance_summary": "Per-message native status and ID"
+    },
+    {
       "id": "waha",
       "package": "driver/waha",
       "configuration": "Server, API key, existing session and chat",
@@ -225,6 +407,16 @@
       "verification": "Local protocol tests; paired-session verification pending",
       "protocol_source": "https://waha.devlike.pro/docs/how-to/send-messages/",
       "acceptance_summary": "HTTP acceptance"
+    },
+    {
+      "id": "webpush",
+      "package": "driver/webpush",
+      "configuration": "Optional module; browser subscription, VAPID keys/contact and delivery headers",
+      "acceptance": "Encrypted push-service acceptance",
+      "verification": "Local protocol tests; hosted verification pending",
+      "protocol_source": "https://web.dev/articles/push-notifications-web-push-protocol",
+      "acceptance_summary": "Encrypted push-service acceptance",
+      "module": "github.com/goforj/notification/driver/webpush"
     },
     {
       "id": "webhook",
@@ -252,6 +444,15 @@
       "verification": "Local protocol tests; hosted verification pending",
       "protocol_source": "https://whapi.readme.io/reference/sendmessagetext",
       "acceptance_summary": "Send acknowledgement"
+    },
+    {
+      "id": "whatsapp",
+      "package": "driver/whatsapp",
+      "configuration": "Meta token, phone ID, explicit API version and recipient; approved templates are explicit",
+      "acceptance": "Native message and recipient acknowledgement",
+      "verification": "Local protocol tests; hosted verification pending",
+      "protocol_source": "https://www.postman.com/meta/whatsapp-business-platform/request/o65u5m5/send-message-template-text",
+      "acceptance_summary": "Native message and recipient acknowledgement"
     },
     {
       "id": "zulip",

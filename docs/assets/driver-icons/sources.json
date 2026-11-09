@@ -173,6 +173,138 @@
       "source": "Original notification repository domain artwork",
       "license": "MIT (repository LICENSE)",
       "sha256": "f7e42f651e26ad4d1af6da9b327c07080f83c2be11e6319f8bd1804d91c154a5"
+    },
+    {
+      "asset": "homeassistant.svg",
+      "source": "https://raw.githubusercontent.com/simple-icons/simple-icons/16.0.0/icons/homeassistant.svg",
+      "license": "CC0-1.0 (Simple Icons)",
+      "sha256": "fed294bba289ad605cd4cab2df98dd239f52d40e5cb8e03c9487c649a6a62957"
+    },
+    {
+      "asset": "nextcloudtalk.svg",
+      "source": "https://raw.githubusercontent.com/simple-icons/simple-icons/16.0.0/icons/nextcloud.svg",
+      "license": "CC0-1.0 (Simple Icons)",
+      "sha256": "523a9295f2e3a8be7904e9e914ad030a4ae13597421f9ee81122be705b2e60be"
+    },
+    {
+      "asset": "signal.svg",
+      "source": "https://raw.githubusercontent.com/simple-icons/simple-icons/16.0.0/icons/signal.svg",
+      "license": "CC0-1.0 (Simple Icons)",
+      "sha256": "391f46b8feaef281a44dfdf40035d9a4546ded17d2c3eb88d6614762779f1930"
+    },
+    {
+      "asset": "apprise.svg",
+      "source": "Original notification repository domain artwork",
+      "license": "MIT (repository LICENSE)",
+      "sha256": "40c9fcd0b93ef9afb3ae9bf9dca43a522aa6e5f4a2f5179c3d57bacce2186d39"
+    },
+    {
+      "asset": "fcm.svg",
+      "source": "https://raw.githubusercontent.com/simple-icons/simple-icons/16.0.0/icons/firebase.svg",
+      "license": "CC0-1.0 (Simple Icons)",
+      "sha256": "3f46d84a41479d7789cc36b82c2b6852e6bbbfd30ebee5b7a3aef7d49758295a"
+    },
+    {
+      "asset": "apns.svg",
+      "source": "https://raw.githubusercontent.com/simple-icons/simple-icons/16.0.0/icons/apple.svg",
+      "license": "CC0-1.0 (Simple Icons)",
+      "sha256": "2a1509dccd25e6d2bc7a11a8e52941077e1a48555e192ce638699b9f083c2a7c"
+    },
+    {
+      "asset": "webpush.svg",
+      "source": "Original notification repository domain artwork",
+      "license": "MIT (repository LICENSE)",
+      "sha256": "5bd14f3265d8ee3af5fbb9e4663f2a042be4213ff5fb7e2d6b25e56e241a0c32"
+    },
+    {
+      "asset": "sns.svg",
+      "source": "Original notification repository domain artwork",
+      "license": "MIT (repository LICENSE)",
+      "sha256": "063f7196f5183f814ef00e7f79b17db6bc053c90bafe335c6cc6d1e3d2cb2b37"
+    },
+    {
+      "asset": "onesignal.svg",
+      "source": "Original notification repository domain artwork",
+      "license": "MIT (repository LICENSE)",
+      "sha256": "15ae81f7d997c9d7438a234be1aa389948d91c3637d4c8a77311391483205cea"
+    },
+    {
+      "asset": "expo.svg",
+      "source": "https://raw.githubusercontent.com/simple-icons/simple-icons/16.0.0/icons/expo.svg",
+      "license": "CC0-1.0 (Simple Icons)",
+      "sha256": "fe31b54a038878735a20ff497c6b250221707047785a324c4f7ef83228f40c6a"
+    },
+    {
+      "asset": "whatsapp.svg",
+      "source": "https://raw.githubusercontent.com/simple-icons/simple-icons/16.0.0/icons/whatsapp.svg",
+      "license": "CC0-1.0 (Simple Icons)",
+      "sha256": "8fb209a53a61618c3483594b3e070481a35575d6aaecbe00a6fe386670c8fb1c"
+    },
+    {
+      "asset": "plivo.svg",
+      "source": "Original notification repository domain artwork",
+      "license": "MIT (repository LICENSE)",
+      "sha256": "6c7954e9eb5b0ecb14db63e25266d10d77291c3ba4356c21c7bdd2de5a9e3149"
+    },
+    {
+      "asset": "vonage.svg",
+      "source": "https://raw.githubusercontent.com/simple-icons/simple-icons/16.0.0/icons/vonage.svg",
+      "license": "CC0-1.0 (Simple Icons)",
+      "sha256": "9e106bf0ed90c550e938ab4915665eacc03c33413aa5894ccecc366be2bac695"
+    },
+    {
+      "asset": "telnyx.svg",
+      "source": "Original notification repository domain artwork",
+      "license": "MIT (repository LICENSE)",
+      "sha256": "1338d7787fa5fad55f7a059e9fe38d602d26917adc07a69d6169d162a9dd79f9"
+    },
+    {
+      "asset": "clicksend.svg",
+      "source": "Original notification repository domain artwork",
+      "license": "MIT (repository LICENSE)",
+      "sha256": "4d0c43d2cf1f6a2ba2494d59c23f9dcab5c76d773ecd8782414b41929c1d6728"
+    },
+    {
+      "asset": "goalert.svg",
+      "source": "Original notification repository domain artwork",
+      "license": "MIT (repository LICENSE)",
+      "sha256": "883e5d6ba84cd641126a8e59517e1feec08d1c546f99aa3a6869b02bbd7a415e"
+    },
+    {
+      "asset": "signl4.svg",
+      "source": "Original notification repository domain artwork",
+      "license": "MIT (repository LICENSE)",
+      "sha256": "cab57ed946e96d09849cc49e0857a539e036679660b42826917befcc86d0476e"
+    },
+    {
+      "asset": "pagertree.svg",
+      "source": "Original notification repository domain artwork",
+      "license": "MIT (repository LICENSE)",
+      "sha256": "cef9667613805aaf158739080d3510ce1806f4188db1466aefa97755b48436f1"
+    },
+    {
+      "asset": "betterstack.svg",
+      "source": "https://raw.githubusercontent.com/simple-icons/simple-icons/16.0.0/icons/betterstack.svg",
+      "license": "CC0-1.0 (Simple Icons)",
+      "sha256": "641d8d3b8c1bfa3a775f41c2da1f9f47b36358256b05b584653bf070099c302c"
+    },
+    {
+      "asset": "incidentio.svg",
+      "source": "Original notification repository domain artwork",
+      "license": "MIT (repository LICENSE)",
+      "sha256": "dceabc4b3cda89d21755aca77bef1c41d913ab691ec4ade55aedbcc0268c6c7e"
+    },
+    {
+      "asset": "ilert.svg",
+      "source": "Original notification repository domain artwork",
+      "license": "MIT (repository LICENSE)",
+      "sha256": "388d1ac7a7f4416f7e7755fe1438c42f9a72419f9c83678d869b8e5a708063ee"
+    },
+    {
+      "asset": "firehydrant.svg",
+      "source": "Original notification repository domain artwork",
+      "license": "MIT (repository LICENSE)",
+      "sha256": "89485999eee01a93440ce41f4b4b60d2f9228db5d4afb0b6022c97f203a519a5"
     }
   ]
 }

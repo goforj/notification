@@ -62,6 +62,9 @@ func driverGuide(drivers []Driver, presentations map[string]Presentation) string
 	out.WriteString("# Driver configuration and delivery contracts\n\nGenerated from the driver catalog by `go -C docs run ./readme`. See [portable delivery contracts](contracts.md) and [executed integration evidence](integration-results.json). Provider acceptance never proves recipient delivery.\n")
 	for _, driver := range drivers {
 		fmt.Fprintf(&out, "\n## %s\n\n[Package source](../%s)\n\n- Configuration: %s.\n- Accepted when: %s.\n- Verification: %s.\n", presentations[driver.ID].Label, driver.Package, driver.Configuration, driver.Acceptance, driver.Verification)
+		if driver.Module != "" {
+			fmt.Fprintf(&out, "- Optional module: `%s`. See [installation](../README.md#installation).\n", driver.Module)
+		}
 		if driver.ProtocolSource != "" {
 			fmt.Fprintf(&out, "- [Provider protocol reference](%s).\n", driver.ProtocolSource)
 		}

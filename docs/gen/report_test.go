@@ -108,6 +108,14 @@ func TestIntegrationReport(t *testing.T) {
 	if err := json.Unmarshal(data, &evidence); err != nil || len(evidence.PassedTests) != 2 || evidence.Servers["ntfy"].Image != "pinned" {
 		t.Fatal(evidence, err)
 	}
+	putJSON(t, root, "integration/versions.json", map[string]Server{"matrix": {Version: "1", Image: "pinned"}})
+	if err := ReportIntegration(root, path); err == nil {
+		t.Fatal("missing pinned Matrix execution accepted")
+	}
+	put(t, root, ".artifacts/integration.json", `{"Action":"pass","Package":"fixture","Test":"TestNtfy"}`+"\n"+`{"Action":"pass","Package":"fixture","Test":"TestGotify"}`+"\n"+`{"Action":"pass","Package":"fixture","Test":"TestMatrix"}`)
+	if err := ReportIntegration(root, path); err != nil {
+		t.Fatal(err)
+	}
 	put(t, root, "changed.go", "package notification\n")
 	if err := ReportIntegration(root, path); err == nil {
 		t.Fatal("changed source relabelled")

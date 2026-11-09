@@ -253,7 +253,7 @@ func ReportUnit(root string) (UnitEvidence, error) {
 	return evidence, writeJSON(root, "docs/unit-results.json", evidence)
 }
 
-// ReportIntegration accepts only complete successful executions of both native service fixtures.
+// ReportIntegration accepts only complete successful executions of the pinned native service fixtures.
 func ReportIntegration(root, path string) error {
 	data, err := os.ReadFile(path)
 	if err != nil {
@@ -271,7 +271,13 @@ func ReportIntegration(root, path string) error {
 	if !names["TestNtfy"] || !names["TestGotify"] {
 		return fmt.Errorf("required native integration tests did not execute")
 	}
-	evidence := IntegrationEvidence{VerifiedAt: time.Now().UTC().Format(time.RFC3339Nano), Scope: "Real disposable ntfy and Gotify server tests. All other hosted or paired-session verification remains pending."}
+	evidence := IntegrationEvidence{VerifiedAt: time.Now().UTC().Format(time.RFC3339Nano), Scope: "Real disposable server tests listed in servers. All other hosted or paired-session verification remains pending."}
+	if err := readJSON(root, "integration/versions.json", &evidence.Servers); err != nil {
+		return err
+	}
+	if _, required := evidence.Servers["matrix"]; required && !names["TestMatrix"] {
+		return fmt.Errorf("required Matrix integration test did not execute")
+	}
 	for name := range names {
 		evidence.PassedTests = append(evidence.PassedTests, name)
 	}

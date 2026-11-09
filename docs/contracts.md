@@ -20,7 +20,7 @@ Applications own recipient authorization, endpoint verification, preferences, tr
 
 ## Incident capability
 
-`IncidentSender` is optional. PagerDuty, JSM and legacy Opsgenie support explicit Trigger, Acknowledge and Resolve operations with a stable `IncidentKey`. Keys are bounded to 255 bytes and must use application-owned scoped identities. Display names must not determine correlation. Incident titles and bodies follow Message validation, with a required title and additional provider limits. Empty severity and source use configured defaults. Ordinary Send on these drivers requires a fixed configured key.
+`IncidentSender` is optional. PagerDuty, JSM, legacy Opsgenie, SIGNL4, PagerTree and ilert support explicit Trigger, Acknowledge and Resolve operations with a stable `IncidentKey`. Keys are bounded to 255 bytes and must use application-owned scoped identities. Display names must not determine correlation. Incident titles and bodies follow Message validation, with a required title and additional provider limits. Empty severity and source use configured defaults. Ordinary Send on these drivers requires a fixed configured key.
 
 JSM resolves the alias to a native alert ID before acknowledgement or closure. Lookup and mutation are two separate network operations. Asynchronous request acceptance does not prove the alert has been created or changed. No driver polls or waits for workflow completion.
 
@@ -78,7 +78,7 @@ Advanced `Observer` hooks run synchronously and must return promptly. Panic isol
 
 ## HTTP transport ownership
 
-Every HTTP provider accepts `notification.HTTPConfig.Transport`, a standard `http.RoundTripper`. Webhook's existing flat configuration exposes `webhook.Config.Transport`. A nil field selects the library-owned default. A supplied transport is borrowed unchanged, can be shared across drivers, and must support concurrent calls and request cancellation. Construction performs no I/O and does not clone or mutate it. Driver Close never closes a borrowed transport or calls its CloseIdleConnections method. The caller owns its complete lifetime.
+Every direct HTTP driver accepts `notification.HTTPConfig.Transport`, a standard `http.RoundTripper`. Webhook's existing flat configuration exposes `webhook.Config.Transport`. A nil field selects the library-owned default. A supplied transport is borrowed unchanged, can be shared across drivers, and must support concurrent calls and request cancellation. Construction performs no I/O and does not clone or mutate it. Driver Close never closes a borrowed transport or calls its CloseIdleConnections method. The caller owns its complete lifetime.
 
 The library still creates its own http.Client with the configured timeout and redirect rejection. Request URL syntax, request and response body bounds, provider acknowledgement parsing, cancellation handling, and error redaction remain active. The library adds no retries. An injected transport's own retries and logging are application policy, including any logging of credentials or provider metadata.
 
@@ -87,3 +87,7 @@ Connection-time destination checks belong to the default transport. It clones a 
 An explicitly injected transport owns all dialing, DNS, private-address policy, TLS, and proxy behavior. Transport-level settings such as response-header limits also remain caller-owned. AllowPrivate and Resolver configure only the library-owned default; they do not constrain an opaque custom RoundTripper. In particular, the library cannot claim DNS-rebinding protection for a connection made by arbitrary caller code. This is an explicit trusted construction choice, never a message-controlled setting. Wrap or configure the supplied transport to enforce the destination policy your application needs.
 
 The new fields preserve keyed configuration literals and all constructor signatures. Unkeyed HTTPConfig and webhook.Config literals need the additional field or should migrate to keyed literals. Module requirements and minimum Go versions are unchanged.
+
+## Additional provider capabilities
+
+Partial on-call lifecycles, native Better Stack IDs, approved WhatsApp templates, app-push authentication, optional module ownership and provider limits are documented in [provider capabilities](provider-capabilities.md). These capabilities preserve the existing Message and Sender contracts. SNS borrows an AWS SDK Publisher instead of an HTTPConfig; its SDK client owns routing and credentials, while a per-call retry override enforces one Publish attempt.
