@@ -45,5 +45,14 @@ func main() {
 		fmt.Println("retry advice:", failure.RetryAfter())
 		// retry advice: 30s
 	}
+
+	push.Respond(notification.NewDeliveryError("push", notification.Outcome{
+		Status: notification.Unknown,
+	}, notification.ErrRetryable))
+	err = notification.New(push).Send(context.Background(), message)
+	if errors.Is(err, notification.ErrOutcomeUnknown) {
+		fmt.Println("delivery uncertain: reconcile before retrying")
+		// delivery uncertain: reconcile before retrying
+	}
 	// snippet:end
 }

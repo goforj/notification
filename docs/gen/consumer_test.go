@@ -15,14 +15,17 @@ func TestConsumerSource(t *testing.T) {
 			t.Fatal("invalid catalog accepted")
 		}
 	}
-	source, err := consumerSource([]Driver{{Package: "driver/mail"}, {Package: "driver/sns"}})
+	source, err := consumerSource([]Driver{{Package: "driver/mail"}, {Package: "driver/sns"}, {Package: "driver/webhook"}})
 	if err != nil {
 		t.Fatal(err)
 	}
-	for _, want := range []string{`_ "github.com/goforj/notification/driver/mail"`, `_ "github.com/goforj/notification/driver/sns"`, `notification.SenderFunc(`, `sender.Send(nil,`, `calls != 1`} {
+	for _, want := range []string{`_ "github.com/goforj/notification/driver/mail"`, `_ "github.com/goforj/notification/driver/sns"`, `notification.SenderFunc(`, `sender.Send(nil,`, `calls != 1`, `notification.ErrOutcomeUnknown`, `http.StatusRequestTimeout`, `failure.RetryAfter()`} {
 		if !bytes.Contains(source, []byte(want)) {
 			t.Fatal("consumer contract absent", want)
 		}
+	}
+	if bytes.Count(source, []byte(`"github.com/goforj/notification/driver/webhook"`)) != 1 {
+		t.Fatal("webhook imported twice")
 	}
 }
 

@@ -158,16 +158,27 @@ func consumerSource(drivers []Driver) ([]byte, error) {
 		return nil, fmt.Errorf("driver catalog is empty")
 	}
 	var source strings.Builder
-	source.WriteString("package main\nimport (\n\"context\"\n\"fmt\"\n\"github.com/goforj/notification\"\n")
+	source.WriteString("package main\nimport (\n\"context\"\n\"fmt\"\n\"errors\"\n\"io\"\n\"net/http\"\n\"strings\"\n\"time\"\n\"github.com/goforj/notification\"\n\"github.com/goforj/notification/driver/webhook\"\n")
 	seen := map[string]bool{}
 	for _, driver := range drivers {
 		if !regexp.MustCompile(`^driver/[a-z][a-z0-9]*$`).MatchString(driver.Package) || seen[driver.Package] {
 			return nil, fmt.Errorf("invalid or duplicate driver package: %s", driver.Package)
 		}
 		seen[driver.Package] = true
+		if driver.Package == "driver/webhook" {
+			continue
+		}
 		source.WriteString("_ " + strconv.Quote("github.com/goforj/notification/"+driver.Package) + "\n")
 	}
 	source.WriteString(`)
+// failureTransport supplies deterministic error responses without contacting a receiver.
+type failureTransport int
+
+// RoundTrip makes the public consumer verify uncertainty even when its root was selected transitively.
+func (status failureTransport) RoundTrip(request *http.Request)(*http.Response,error){
+ return &http.Response{StatusCode:int(status),Header:http.Header{"Retry-After":{"11"}},Body:io.NopCloser(strings.NewReader("")),Request:request},nil
+}
+
 // main checks the public API without contacting a notification provider.
 func main(){
  calls:=0
@@ -178,6 +189,16 @@ func main(){
  }))
  if err:=sender.Send(nil,notification.Message{Title:"Release check",Body:"All drivers compile"});err!=nil{panic(err)}
  if calls!=1{panic("unexpected send count")}
+ invalid,err:=webhook.New(webhook.Config{URL:"http://:443"})
+ if !errors.Is(err,notification.ErrInvalidRequest){if err==nil{_ = invalid.Close()};panic("public destination validation changed")}
+ for _,status:=range []int{http.StatusRequestTimeout,http.StatusInternalServerError}{
+  driver,err:=webhook.New(webhook.Config{URL:"https://notification.invalid",Transport:failureTransport(status)})
+  if err!=nil{panic(err)}
+  err=driver.Send(nil,notification.Message{Body:"uncertainty check"})
+  _=driver.Close()
+  var failure *notification.DeliveryError
+  if !errors.Is(err,notification.ErrOutcomeUnknown)||!errors.Is(err,notification.ErrRetryable)||!errors.As(err,&failure)||failure.Status()!=notification.Unknown||failure.RetryAfter()!=11*time.Second{panic("public HTTP uncertainty contract changed")}
+ }
  fmt.Println("Public consumer verified")
  // Public consumer verified
 }

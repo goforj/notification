@@ -120,7 +120,7 @@ Webhook exposes the same option directly as `webhook.Config.Transport`. The libr
 
 ## Composition
 
-Use ordinary senders for application-level fanout or conservative fallback. Fanout attempts every target with at most eight concurrent calls. Fallback advances only after permanent rejection, unauthorized access or unsupported rendering; uncertainty and transient failures stop it to avoid accidental duplicates. Both return a `Sender` directly, borrow one to 64 configured senders, and never retry. A `New` wrapper is optional around a composition; use it when wrapping a custom handler that needs common validation and safe errors.
+Use ordinary senders for application-level fanout or conservative fallback. Fanout attempts every target with at most eight concurrent calls. Fallback advances only after permanent rejection, unauthorized access or unsupported rendering; uncertainty and transient failures stop it to avoid accidental duplicates. Both return a `Sender` directly, borrow one to 64 configured senders, and never retry. For transient errors, check `ErrOutcomeUnknown` before considering a retry; server failure can follow provider acceptance. A `New` wrapper is optional around a composition; use it when wrapping a custom handler that needs common validation and safe errors.
 
 {{snippet:composition}}
 
