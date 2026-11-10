@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 	"reflect"
+	"regexp"
 	"sort"
 	"strings"
 )
@@ -59,6 +60,15 @@ func Outputs(root string) (map[string][]byte, error) { return outputsFor(root, a
 
 // outputsFor allows small fixtures to exercise the same validation as the full library.
 func outputsFor(root string, apis []API) (map[string][]byte, error) {
+	var release struct {
+		Version string `json:"version"`
+	}
+	if err := readJSON(root, "docs/release.json", &release); err != nil {
+		return nil, err
+	}
+	if !regexp.MustCompile(`^v[0-9]+\.[0-9]+\.[0-9]+$`).MatchString(release.Version) {
+		return nil, fmt.Errorf("release version must be vMAJOR.MINOR.PATCH")
+	}
 	var unit UnitEvidence
 	if err := readJSON(root, "docs/unit-results.json", &unit); err != nil {
 		return nil, err
@@ -229,12 +239,13 @@ func outputsFor(root string, apis []API) (map[string][]byte, error) {
 	}
 	templates["README.md"] = strings.ReplaceAll(templates["README.md"], "{{api-index}}", index.String())
 	for path, text := range templates {
+		text = strings.ReplaceAll(text, "{{version}}", release.Version)
 		if strings.Contains(text, "{{snippet:") || strings.Contains(text, "{{api-index}}") || strings.Contains(text, "{{drivers}}") || strings.Contains(text, "{{features}}") || strings.Contains(text, "{{constructors}}") {
 			return nil, fmt.Errorf("unresolved README marker")
 		}
 		outputs[path] = []byte(text)
 	}
-	for _, item := range []struct{ Name, Label, Value, Color string }{{"status", "status", "unreleased", "#6e7681"}, {"go", "Go", "1.24+", "#007d9c"}, {"license", "license", "MIT", "#007ec6"}, {"coverage", "coverage", "100%", "#2e8540"}, {"tests", "unit tests", fmt.Sprint(unit.UnitTestsPassed), "#5368bd"}} {
+	for _, item := range []struct{ Name, Label, Value, Color string }{{"status", "version", release.Version, "#5368bd"}, {"go", "Go", "1.24+", "#007d9c"}, {"license", "license", "MIT", "#007ec6"}, {"coverage", "coverage", "100%", "#2e8540"}, {"tests", "unit tests", fmt.Sprint(unit.UnitTestsPassed), "#5368bd"}} {
 		outputs["docs/assets/badges/"+item.Name+".svg"] = StatusBadge(item.Label, item.Value, item.Color)
 	}
 	for name, presentation := range features {

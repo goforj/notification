@@ -7,7 +7,7 @@
 <p align="center">
   <a href="https://github.com/goforj/notification/actions/workflows/ci.yml"><img src="https://github.com/goforj/notification/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <a href="https://github.com/goforj/notification/actions/workflows/security.yml"><img src="https://github.com/goforj/notification/actions/workflows/security.yml/badge.svg" alt="Security"></a>
-  <img src="docs/assets/badges/status.svg" alt="Unreleased">
+  <a href="https://github.com/goforj/notification/releases/tag/{{version}}"><img src="docs/assets/badges/status.svg" alt="{{version}}"></a>
   <img src="docs/assets/badges/go.svg" alt="Go 1.24 or newer">
   <a href="LICENSE"><img src="docs/assets/badges/license.svg" alt="MIT license"></a>
   <a href="docs/unit-results.json"><img src="docs/assets/badges/coverage.svg" alt="Unit statement coverage"></a>
@@ -26,7 +26,7 @@
 Requires Go 1.24+. Try the complete example without credentials or an external service:
 
 ```sh
-git clone https://github.com/goforj/notification.git
+git clone --branch {{version}} --depth 1 https://github.com/goforj/notification.git
 cd notification
 go run ./examples/quickstart
 ```
@@ -37,7 +37,7 @@ Configure a driver once, then send a title and body. The [complete program](exam
 
 The log driver records a local capture without logging message content. Replace it with a provider driver to use the same `Send` call for real notifications. `Send` is synchronous and performs no retries or background work. Success means the driver handled the message, not that the recipient received it.
 
-For your own application, use the [installation commands](#installation) below. The library is currently unreleased; the commands pin a publicly verified revision.
+For your own application, use the [installation commands](#installation) below. The commands select {{version}} for the root module and each optional adapter.
 
 ## Drivers
 
@@ -51,10 +51,10 @@ The root module uses only the standard library. Mail, APNs, SNS and Web Push are
 
 ## Installation
 
-Install the verified unreleased revision through the public Go module proxy:
+Install {{version}}:
 
 ```sh
-go get github.com/goforj/notification@v0.0.0-20261109224653-6d077e3cda12
+go get github.com/goforj/notification@{{version}}
 ```
 
 All drivers except Mail, APNs, SNS and Web Push are packages in the root module. Import them from `github.com/goforj/notification/driver/<name>`; they need no separate installation.
@@ -63,16 +63,16 @@ Install only the optional modules you use:
 
 ```sh
 # Mail
-go get github.com/goforj/notification/driver/mail@v0.0.0-20261109224653-6d077e3cda12
+go get github.com/goforj/notification/driver/mail@{{version}}
 
 # Apple APNs
-go get github.com/goforj/notification/driver/apns@v0.0.0-20261109224653-6d077e3cda12
+go get github.com/goforj/notification/driver/apns@{{version}}
 
 # Amazon SNS
-go get github.com/goforj/notification/driver/sns@v0.0.0-20261109224653-6d077e3cda12
+go get github.com/goforj/notification/driver/sns@{{version}}
 
 # Web Push
-go get github.com/goforj/notification/driver/webpush@v0.0.0-20261109224653-6d077e3cda12
+go get github.com/goforj/notification/driver/webpush@{{version}}
 ```
 
 Mail borrows an application-owned `*mail.Mailer` and configured recipients. Mail owns sender defaults, email composition and transport. The other optional modules isolate their AWS SDK or cryptographic dependencies from the root module. See [Mail integration](docs/mail.md) and [provider capabilities](docs/provider-capabilities.md) for supported operations and limits.

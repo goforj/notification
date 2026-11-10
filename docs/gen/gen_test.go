@@ -58,6 +58,7 @@ func main(){
 }`)
 	put(t, root, "docs/readme.tmpl.md", "{{integration-badge}}\n## Demo\n{{snippet:demo}}\n{{drivers}}\n{{api-index}}\n")
 	put(t, root, "docs/advanced.tmpl.md", "# Advanced\n")
+	putJSON(t, root, "docs/release.json", map[string]string{"version": "v0.1.0"})
 	putJSON(t, root, "docs/providers/drivers.json", map[string]any{"drivers": []Driver{}})
 	putJSON(t, root, "docs/assets/driver-icons/presentation.json", map[string]Presentation{})
 	putJSON(t, root, "docs/assets/feature-icons/presentation.json", map[string]Presentation{})
@@ -97,11 +98,19 @@ func TestExamplesAndAPIs(t *testing.T) {
 
 // TestProjectionFailures rejects stale, incomplete and misleading documentation inputs.
 func TestProjectionFailures(t *testing.T) {
-	for _, defect := range []string{"stale", "coverage", "duplicate", "missing-target", "missing-heading", "missing-api", "outside-snippet", "invalid-source", "unresolved", "missing-category", "wrong-section"} {
+	for _, defect := range []string{"stale", "coverage", "duplicate", "missing-target", "missing-heading", "missing-api", "outside-snippet", "invalid-source", "unresolved", "missing-category", "wrong-section", "missing-release", "invalid-release-json", "invalid-release-version"} {
 		t.Run(defect, func(t *testing.T) {
 			root := fixture(t)
 			apis := demoAPI()
 			switch defect {
+			case "missing-release":
+				if err := os.Remove(filepath.Join(root, "docs/release.json")); err != nil {
+					t.Fatal(err)
+				}
+			case "invalid-release-json":
+				put(t, root, "docs/release.json", "invalid")
+			case "invalid-release-version":
+				putJSON(t, root, "docs/release.json", map[string]string{"version": "unreleased"})
 			case "missing-category":
 				apis[0].Category = ""
 			case "wrong-section":
@@ -320,5 +329,19 @@ func TestSectionContainsExample(t *testing.T) {
 				t.Fatal("example destination mismatch", got)
 			}
 		})
+	}
+}
+
+// TestReleaseVersion projects one authoritative version into installation text and the release badge.
+func TestReleaseVersion(t *testing.T) {
+	root := fixture(t)
+	put(t, root, "docs/readme.tmpl.md", "## Demo\n{{snippet:demo}}\n{{api-index}}\ngo get example.com/library@{{version}}\n")
+	putJSON(t, root, "docs/release.json", map[string]string{"version": "v0.2.1"})
+	outputs, err := outputsFor(root, demoAPI())
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !bytes.Contains(outputs["README.md"], []byte("go get example.com/library@v0.2.1")) || !bytes.Contains(outputs["docs/assets/badges/status.svg"], []byte("version: v0.2.1")) {
+		t.Fatal("release version did not reach all generated surfaces")
 	}
 }
