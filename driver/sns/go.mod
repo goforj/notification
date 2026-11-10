@@ -6,7 +6,7 @@ require (
 	github.com/aws/aws-sdk-go-v2 v1.47.8
 	github.com/aws/aws-sdk-go-v2/service/sns v1.47.10
 	github.com/aws/smithy-go v1.28.8
-	github.com/goforj/notification v0.0.0-20261109224454-a1a26f8d3182
+	github.com/goforj/notification v0.1.0
 )
 
 require (

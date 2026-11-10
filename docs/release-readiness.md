@@ -6,11 +6,11 @@ This record separates tested source, installable modules, hosted-provider verifi
 | --- | --- |
 | Consumer API | Message, Sender, construction, transport ownership and minimum Go 1.24 preserved. No public API or persisted-format migration introduced by these reviews. |
 | Delivery evidence | WhatsApp encoded-body bounds, incident.io request-key correlation, Vonage multi-segment acceptance and ClickSend rejection classifications have direct regressions. Missing or partial evidence stops fallback. |
-| Module requirements | The four runtime adapters, four example modules and integration module now pin an actual public revision instead of the nonexistent v0.0.0. Relative development replacements remain intact. |
+| Module requirements | The four runtime adapters, four example modules and integration module now require v0.1.0. Relative development replacements remain intact. |
 | Public consumer | Passed at 6d077e3cda12 on Go 1.24: all five modules resolved through the public proxy and checksum database, all 51 drivers compiled together, and each of the five modules also compiled independently with its declared dependencies. Sender, invalid-destination validation and HTTP 408/500 uncertainty checks executed in all six consumers without replacements. The old eafcce8 revision failed this same check. |
 | Source validation | Passed: 388 tests, exact 2146/2146 library statement coverage, all-module race/vet, pinned real ntfy/Gotify/Synapse tests, deterministic generation and no reachable vulnerabilities. Measured reports are linked below. |
 | Hosted providers | Live hosted-provider tests and paired Signal verification remain pending, as recorded per driver. Native protocol fixtures are not live delivery evidence. |
-| Publication | Version v0.1.0 is selected. Publication completes after the root and four optional module tags are independently verified through the public proxy and checksum database. |
+| Publication | Root v0.1.0 is published at 130ded513a5fe673a35dbca6a806e90a6d2d5aac and verified through the public proxy and checksum database. The four optional module tags and coordinated GitHub release are the remaining publication steps. |
 
 The second SMS pass found that Vonage returns one result for each generated SMS segment. Requiring exactly one result incorrectly rejected successful multipart sends. The driver now verifies the declared count, every recipient and distinct accepted message IDs. Mixed accepted/rejected segments remain unknown to avoid replaying accepted parts. ClickSend now preserves documented throttling and credential errors; missing, unfamiliar or internal-error evidence cannot trigger fallback.
 
