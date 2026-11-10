@@ -37,7 +37,7 @@ Configure a driver once, then send a title and body. The [complete program](exam
 
 The log driver records a local capture without logging message content. Replace it with a provider driver to use the same `Send` call for real notifications. `Send` is synchronous and performs no retries or background work. Success means the driver handled the message, not that the recipient received it.
 
-For your own application, use the [installation commands](#installation) below. The commands select {{version}} for the root module and each optional adapter.
+For your own application, use the [installation commands](#installation) below. The commands use `@latest` to select the newest published release.
 
 ## Drivers
 
@@ -51,10 +51,10 @@ The root module uses only the standard library. Mail, APNs, SNS and Web Push are
 
 ## Installation
 
-Install {{version}}:
+Install the latest release:
 
 ```sh
-go get github.com/goforj/notification@{{version}}
+go get github.com/goforj/notification@latest
 ```
 
 All drivers except Mail, APNs, SNS and Web Push are packages in the root module. Import them from `github.com/goforj/notification/driver/<name>`; they need no separate installation.
@@ -63,16 +63,16 @@ Install only the optional modules you use:
 
 ```sh
 # Mail
-go get github.com/goforj/notification/driver/mail@{{version}}
+go get github.com/goforj/notification/driver/mail@latest
 
 # Apple APNs
-go get github.com/goforj/notification/driver/apns@{{version}}
+go get github.com/goforj/notification/driver/apns@latest
 
 # Amazon SNS
-go get github.com/goforj/notification/driver/sns@{{version}}
+go get github.com/goforj/notification/driver/sns@latest
 
 # Web Push
-go get github.com/goforj/notification/driver/webpush@{{version}}
+go get github.com/goforj/notification/driver/webpush@latest
 ```
 
 Mail borrows an application-owned `*mail.Mailer` and configured recipients. Mail owns sender defaults, email composition and transport. The other optional modules isolate their AWS SDK or cryptographic dependencies from the root module. See [Mail integration](docs/mail.md) and [provider capabilities](docs/provider-capabilities.md) for supported operations and limits.
