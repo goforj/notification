@@ -7,10 +7,10 @@ This record separates tested source, installable modules, hosted-provider verifi
 | Consumer API | Message, Sender, construction, transport ownership and minimum Go 1.24 preserved. No public API or persisted-format migration introduced by these reviews. |
 | Delivery evidence | WhatsApp encoded-body bounds, incident.io request-key correlation, Vonage multi-segment acceptance and ClickSend rejection classifications have direct regressions. Missing or partial evidence stops fallback. |
 | Module requirements | The four runtime adapters, four example modules and integration module now require v0.1.0. Relative development replacements remain intact. |
-| Public consumer | Passed at 6d077e3cda12 on Go 1.24: all five modules resolved through the public proxy and checksum database, all 51 drivers compiled together, and each of the five modules also compiled independently with its declared dependencies. Sender, invalid-destination validation and HTTP 408/500 uncertainty checks executed in all six consumers without replacements. The old eafcce8 revision failed this same check. |
+| Public consumer | The final candidate passed all six independent consumers in CI on Go 1.24. Published v0.1.0 verification is pending a cached SNS lookup failure in the public proxy and checksum service. Root, Mail, APNs and Web Push archives resolve with checksums; no checksum bypass is used. |
 | Source validation | Passed: 388 tests, exact 2146/2146 library statement coverage, all-module race/vet, pinned real ntfy/Gotify/Synapse tests, deterministic generation and no reachable vulnerabilities. Measured reports are linked below. |
 | Hosted providers | Live hosted-provider tests and paired Signal verification remain pending, as recorded per driver. Native protocol fixtures are not live delivery evidence. |
-| Publication | Root v0.1.0 is published at 130ded513a5fe673a35dbca6a806e90a6d2d5aac and verified through the public proxy and checksum database. The four optional module tags and coordinated GitHub release are the remaining publication steps. |
+| Publication | Root v0.1.0 and all four driver module tags are published at the reviewed commits below. The coordinated GitHub release remains a draft until published SNS checksum verification succeeds. |
 
 The second SMS pass found that Vonage returns one result for each generated SMS segment. Requiring exactly one result incorrectly rejected successful multipart sends. The driver now verifies the declared count, every recipient and distinct accepted message IDs. Mixed accepted/rejected segments remain unknown to avoid replaying accepted parts. ClickSend now preserves documented throttling and credential errors; missing, unfamiliar or internal-error evidence cannot trigger fallback.
 
@@ -28,6 +28,20 @@ The native response pass found that Better Stack action responses accepted an un
 
 A suspected Zulip form-encoding issue was ruled out against the actual [server parser](https://github.com/zulip/zulip/blob/main/zerver/actions/message_send.py): it explicitly supports raw channel names and JSON-encoded names or IDs. Existing configuration remains intact.
 
-The stronger consumer check passed the combined and root-only cases at 881453f, then failed the isolated Mail case because its old transitive root accepted an invalid HTTP authority. Compiling the APIs had hidden that behavioral minimum mismatch. Runtime adapter, example and integration requirements now pin the public root correction v0.0.0-20261109224454-a1a26f8d3182. The public consumers additionally check HTTP 408/500 uncertainty, retry advice and invalid-destination rejection, using a local transport with no provider calls.
+The stronger consumer check passed the combined and root-only cases at 881453f, then failed the isolated Mail case because its old transitive root accepted an invalid HTTP authority. Compiling the APIs had hidden that behavioral minimum mismatch. That review pinned runtime adapter, example and integration requirements to the public root correction v0.0.0-20261109224454-a1a26f8d3182. Release requirements subsequently advanced to v0.1.0. The public consumers additionally check HTTP 408/500 uncertainty, retry advice and invalid-destination rejection, using a local transport with no provider calls.
 
 The cancellation pass reproduced a native acknowledgement interrupted after HTTP 200 headers: the outcome remained unknown but the caller's cancellation was lost. The provider boundary now preserves context cancellation without treating incomplete native evidence as acceptance. Deterministic response-reader regressions cover native and Slack acknowledgements and transient webhook/Web Push failures without network timing. Header-only generic acceptance remains successful.
+
+## v0.1.0 publication
+
+| Module tag | Reviewed commit |
+| --- | --- |
+| v0.1.0 | 130ded513a5fe673a35dbca6a806e90a6d2d5aac |
+| driver/mail/v0.1.0 | 0cceb76a42102452e0441c702a1a3a95919775f9 |
+| driver/apns/v0.1.0 | 0cceb76a42102452e0441c702a1a3a95919775f9 |
+| driver/sns/v0.1.0 | 0cceb76a42102452e0441c702a1a3a95919775f9 |
+| driver/webpush/v0.1.0 | 0cceb76a42102452e0441c702a1a3a95919775f9 |
+
+CI and Security passed for both reviewed commits. The root was published and checksum-verified before the optional module requirements advanced to v0.1.0. All four optional tags were then pushed atomically and their remote targets verified, including annotated-tag resolution.
+
+At publication, the public proxy and checksum service returned a cached GitHub DNS failure for SNS v0.1.0. The proxy response expires at 2026-11-10 18:22:24 UTC. Root, Mail, APNs and Web Push downloads already returned public checksums. The GitHub release is held as a draft while the normal public consumer check awaits SNS propagation. Checksums, module requirements and tags are not bypassed or rewritten to conceal that external failure.
