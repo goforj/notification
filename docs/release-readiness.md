@@ -7,10 +7,10 @@ This record separates tested source, installable modules, hosted-provider verifi
 | Consumer API | Message, Sender, construction, transport ownership and minimum Go 1.24 preserved. No public API or persisted-format migration introduced by these reviews. |
 | Delivery evidence | WhatsApp encoded-body bounds, incident.io request-key correlation, Vonage multi-segment acceptance and ClickSend rejection classifications have direct regressions. Missing or partial evidence stops fallback. |
 | Module requirements | The four runtime adapters, four example modules and integration module now require v0.1.0. Relative development replacements remain intact. |
-| Public consumer | The final candidate passed all six independent consumers in CI on Go 1.24. Published v0.1.0 verification is pending a cached SNS lookup failure in the public proxy and checksum service. Root, Mail, APNs and Web Push archives resolve with checksums; no checksum bypass is used. |
+| Public consumer | Published v0.1.0 passed all six fresh public consumers on Go 1.24.13 and Go 1.27.3: all 51 drivers together, the root alone, and each optional module with its declared dependencies. Behavior checks pass with normal checksums, no workspace, no replacements and no source overlays. @latest selects v0.1.0 for all five modules. |
 | Source validation | Passed: 388 tests, exact 2146/2146 library statement coverage, all-module race/vet, pinned real ntfy/Gotify/Synapse tests, deterministic generation and no reachable vulnerabilities. Measured reports are linked below. |
 | Hosted providers | Live hosted-provider tests and paired Signal verification remain pending, as recorded per driver. Native protocol fixtures are not live delivery evidence. |
-| Publication | Root v0.1.0 and all four driver module tags are published at the reviewed commits below. The coordinated GitHub release remains a draft until published SNS checksum verification succeeds. |
+| Publication | Complete: root v0.1.0 and all four driver module tags are published and independently checksum-verified at the commits below. The [GitHub release](https://github.com/goforj/notification/releases/tag/v0.1.0) is public, is marked latest, and targets the reviewed root tag. |
 
 The second SMS pass found that Vonage returns one result for each generated SMS segment. Requiring exactly one result incorrectly rejected successful multipart sends. The driver now verifies the declared count, every recipient and distinct accepted message IDs. Mixed accepted/rejected segments remain unknown to avoid replaying accepted parts. ClickSend now preserves documented throttling and credential errors; missing, unfamiliar or internal-error evidence cannot trigger fallback.
 
@@ -44,4 +44,16 @@ The cancellation pass reproduced a native acknowledgement interrupted after HTTP
 
 CI and Security passed for both reviewed commits. The root was published and checksum-verified before the optional module requirements advanced to v0.1.0. All four optional tags were then pushed atomically and their remote targets verified, including annotated-tag resolution.
 
-At publication, the public proxy and checksum service returned a cached GitHub DNS failure for SNS v0.1.0. The proxy response expires at 2026-11-10 18:22:24 UTC. Root, Mail, APNs and Web Push downloads already returned public checksums. The GitHub release is held as a draft while the normal public consumer check awaits SNS propagation. Checksums, module requirements and tags are not bypassed or rewritten to conceal that external failure.
+The initial SNS lookup hit a cached GitHub DNS failure in the public proxy and checksum service. The release stayed in draft until that response expired and normal checksum verification succeeded. All five archives now resolve at v0.1.0, match the reviewed commits, include LICENSE, and carry verified module and go.mod checksums. All four optional modules declare root v0.1.0. No checksum, requirement or tag was bypassed or rewritten to conceal the external failure.
+
+The release was published on 2026-11-10 after both toolchains passed all six public consumers. Each consumer executes Sender, invalid-destination validation and HTTP 408/500 uncertainty checks. README installation commands use @latest, which was separately verified to select v0.1.0 for every runtime module.
+
+### Public module checksums
+
+| Module | Version | Module checksum | go.mod checksum |
+| --- | --- | --- | --- |
+| github.com/goforj/notification | v0.1.0 | h1:AkeInbltueQSCIm+4M77TgPNfa9EobUiBJDjVGU4ixI= | h1:pWKJZS6hFR8ZWqBKN+6pnKBI7Jy5Sckz5xjGNj0opJ8= |
+| github.com/goforj/notification/driver/mail | v0.1.0 | h1:kOBPBQjZoDxw8NxJ1eiOjy8OHCgvgHPIXKA9MeBNHqI= | h1:cu0vO+ENgBkAk5rBmqu/OkabwEMbOttc9eZ+b39saAQ= |
+| github.com/goforj/notification/driver/apns | v0.1.0 | h1:Prx9LovCpFIk/KGWiBaN3UlGkv1pw2XZy+mhcXuk1Ko= | h1:3rB0w7Jsg1Vl8DrJmMer7oIwaIccoTMAcM4ZUTfhYz4= |
+| github.com/goforj/notification/driver/sns | v0.1.0 | h1:tQZ8VDVCnJ1HTHQhVo/j81ME8LfnAE0wNFnkYRtU3ns= | h1:ujDq+BnhE9CSDGoEeZcLTPro8HMTA/4W7Q8+VAk4Y1g= |
+| github.com/goforj/notification/driver/webpush | v0.1.0 | h1:MhU0QxOCNEBydRttOzeSUmuOsE8DAxhtxNxYHI7hcuo= | h1:d3ZV4L4GF0D9YDiFNhvkqGO1QH0mwpZ7WcT8STwuDhc= |
