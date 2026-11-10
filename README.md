@@ -159,20 +159,20 @@ Mail borrows an application-owned `*mail.Mailer` and configured recipients. Mail
 
 | Program | Run from the repository root | Demonstrates |
 | --- | --- | --- |
-| [Quick start](examples/quickstart/main.go) | `go run ./examples/quickstart` | A title and body through the log driver |
-| [Webhook](examples/webhook/main.go) | `go run ./examples/webhook` | A message sent to a configured local HTTP provider |
-| [Mail](examples/mail/main.go) | `cd examples/mail && go run .` | A real Mail Resend driver and Slack composed through Fanout against local fixtures |
-| [Provider catalog](examples/providers/main.go) | `go run ./examples/providers` | Native root-provider configurations and a push/chat fanout |
-| [WhatsApp templates](examples/whatsapp/main.go) | `go run ./examples/whatsapp` | Explicit approved-template sends against a local fixture |
-| [APNs](examples/apns/main.go) | `cd examples/apns && go run .` | Signed alerts over real HTTP/2 and TLS |
-| [SNS](examples/sns/main.go) | `cd examples/sns && go run .` | A borrowed AWS SDK client and a native local response |
-| [Web Push](examples/webpush/main.go) | `cd examples/webpush && go run .` | Encrypted browser push and VAPID authentication |
-| [Fake](examples/fake/main.go) | `go run ./examples/fake` | Application testing through Sender |
-| [Composition](examples/composition/main.go) | `go run ./examples/composition` | Fanout, conservative fallback and safe retry advice |
-| [Custom HTTP transport](examples/transport/main.go) | `go run ./examples/transport` | Caller-owned transport and TLS trust roots |
-| [Decorator](examples/decorator/main.go) | `go run ./examples/decorator` | Application metrics through SenderFunc |
-| [Incident](examples/incident/main.go) | `go run ./examples/incident` | Stable lifecycle keys with a local PagerDuty protocol fixture |
-| [Advanced fallback](examples/fallback/main.go) | `go run ./examples/fallback` | Optional recipient planning, fallback, and identity |
+| [Quick start](examples/quickstart/main.go) | go run ./examples/quickstart | A title and body through the log driver |
+| [Webhook](examples/webhook/main.go) | go run ./examples/webhook | A message sent to a configured local HTTP provider |
+| [Mail](examples/mail/main.go) | cd examples/mail && go run . | A real Mail Resend driver and Slack composed through Fanout against local fixtures |
+| [Provider catalog](examples/providers/main.go) | go run ./examples/providers | Native root-provider configurations and a push/chat fanout |
+| [WhatsApp templates](examples/whatsapp/main.go) | go run ./examples/whatsapp | Explicit approved-template sends against a local fixture |
+| [APNs](examples/apns/main.go) | cd examples/apns && go run . | Signed alerts over real HTTP/2 and TLS |
+| [SNS](examples/sns/main.go) | cd examples/sns && go run . | A borrowed AWS SDK client and a native local response |
+| [Web Push](examples/webpush/main.go) | cd examples/webpush && go run . | Encrypted browser push and VAPID authentication |
+| [Fake](examples/fake/main.go) | go run ./examples/fake | Application testing through Sender |
+| [Composition](examples/composition/main.go) | go run ./examples/composition | Fanout, conservative fallback and safe retry advice |
+| [Custom HTTP transport](examples/transport/main.go) | go run ./examples/transport | Caller-owned transport and TLS trust roots |
+| [Decorator](examples/decorator/main.go) | go run ./examples/decorator | Application metrics through SenderFunc |
+| [Incident](examples/incident/main.go) | go run ./examples/incident | Stable lifecycle keys with a local PagerDuty protocol fixture |
+| [Advanced fallback](examples/fallback/main.go) | go run ./examples/fallback | Optional recipient planning, fallback, and identity |
 
 These programs run locally without hosted-provider credentials. The test suite executes them and checks their output. Provider examples use local protocol fixtures, which verify request and response handling rather than live delivery.
 
