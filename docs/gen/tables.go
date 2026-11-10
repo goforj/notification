@@ -71,3 +71,29 @@ func driverGuide(drivers []Driver, presentations map[string]Presentation) string
 	}
 	return out.String()
 }
+
+// sectionContainsExample keeps API links attached to the section that actually demonstrates them.
+func sectionContainsExample(markdown, heading, snippet string) bool {
+	lines := strings.Split(markdown, "\n")
+	start, level := -1, 0
+	fenced := false
+	for index, line := range lines {
+		if strings.HasPrefix(line, "```") {
+			fenced = !fenced
+		}
+		if fenced {
+			continue
+		}
+		depth := len(line) - len(strings.TrimLeft(line, "#"))
+		if depth < 2 || depth > 3 || !strings.HasPrefix(line[depth:], " ") {
+			continue
+		}
+		if start >= 0 && depth <= level {
+			return strings.Contains(strings.Join(lines[start:index], "\n"), snippet)
+		}
+		if strings.TrimSpace(line[depth:]) == heading {
+			start, level = index+1, depth
+		}
+	}
+	return start >= 0 && strings.Contains(strings.Join(lines[start:], "\n"), snippet)
+}

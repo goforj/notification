@@ -12,28 +12,28 @@ import (
 )
 
 // API connects a documented operation to the authoritative program demonstrating it.
-type API struct{ Label, Package, Symbol, Example, Heading string }
+type API struct{ Label, Package, Symbol, Example, Heading, Category string }
 
 // applicationAPI limits navigation to operations an application developer uses.
 var applicationAPI = []API{
-	{"New", ".", "New", "quickstart", "Quick Start"},
-	{"Fanout", ".", "Fanout", "composition", "Composition"},
-	{"Fallback", ".", "Fallback", "composition", "Composition"},
-	{"SenderFunc.Send", ".", "SenderFunc.Send", "decorator", "Custom senders"},
-	{"DeliveryError.RetryAfter", ".", "DeliveryError.RetryAfter", "composition", "Composition"},
-	{"pagerduty.Driver.Trigger", "driver/pagerduty", "Driver.Trigger", "incident", "Incident lifecycle"},
-	{"pagerduty.Driver.Acknowledge", "driver/pagerduty", "Driver.Acknowledge", "incident", "Incident lifecycle"},
-	{"pagerduty.Driver.Resolve", "driver/pagerduty", "Driver.Resolve", "incident", "Incident lifecycle"},
-	{"Notifier.Send", ".", "Notifier.Send", "quickstart", "Quick Start"},
-	{"webhook.New", "driver/webhook", "New", "webhook", "Webhook delivery"},
-	{"slack.New", "driver/slack", "New", "transport", "Custom HTTP transport"},
-	{"notificationfake.New", "notificationfake", "New", "fake", "Application testing"},
-	{"Fake.Messages", "notificationfake", "Fake.Messages", "fake", "Application testing"},
-	{"notificationmail.New", "driver/mail", "New", "mail", "Mail delivery"},
-	{"apns.New", "driver/apns", "New", "apns", "Application push"},
-	{"sns.New", "driver/sns", "New", "sns", "Application push"},
-	{"webpush.New", "driver/webpush", "New", "webpush", "Application push"},
-	{"whatsapp.Driver.SendTemplate", "driver/whatsapp", "Driver.SendTemplate", "whatsapp", "WhatsApp Cloud"},
+	{"New", ".", "New", "quickstart", "Quick Start", "Construction"},
+	{"Notifier.Send", ".", "Notifier.Send", "quickstart", "Quick Start", "Sending"},
+	{"Fanout", ".", "Fanout", "composition", "Composition", "Composition"},
+	{"Fallback", ".", "Fallback", "composition", "Composition", "Composition"},
+	{"SenderFunc.Send", ".", "SenderFunc.Send", "decorator", "Custom senders", "Custom senders"},
+	{"DeliveryError.RetryAfter", ".", "DeliveryError.RetryAfter", "composition", "Composition", "Errors"},
+	{"webhook.New", "driver/webhook", "New", "webhook", "Webhook delivery", "Driver constructors"},
+	{"slack.New", "driver/slack", "New", "transport", "Custom HTTP transport", "Driver constructors"},
+	{"notificationmail.New", "driver/mail", "New", "mail", "Mail delivery", "Driver constructors"},
+	{"apns.New", "driver/apns", "New", "apns", "Apple APNs", "Driver constructors"},
+	{"sns.New", "driver/sns", "New", "sns", "Amazon SNS", "Driver constructors"},
+	{"webpush.New", "driver/webpush", "New", "webpush", "Web Push", "Driver constructors"},
+	{"pagerduty.Driver.Trigger", "driver/pagerduty", "Driver.Trigger", "incident", "Incident lifecycle", "Incident lifecycle"},
+	{"pagerduty.Driver.Acknowledge", "driver/pagerduty", "Driver.Acknowledge", "incident", "Incident lifecycle", "Incident lifecycle"},
+	{"pagerduty.Driver.Resolve", "driver/pagerduty", "Driver.Resolve", "incident", "Incident lifecycle", "Incident lifecycle"},
+	{"whatsapp.Driver.SendTemplate", "driver/whatsapp", "Driver.SendTemplate", "whatsapp", "WhatsApp Cloud", "Templates"},
+	{"notificationfake.New", "notificationfake", "New", "fake", "Application testing", "Testing"},
+	{"Fake.Messages", "notificationfake", "Fake.Messages", "fake", "Application testing", "Testing"},
 }
 
 // Driver records provider-owned handling semantics and executed verification scope.
@@ -184,8 +184,13 @@ func outputsFor(root string, apis []API) (map[string][]byte, error) {
 	}
 	templates["README.md"] = strings.ReplaceAll(templates["README.md"], "{{features}}", featureTable)
 	var index strings.Builder
-	index.WriteString("| API | Example |\n| --- | --- |")
+	index.WriteString("| Category | Functions |\n| ---: | --- |")
+	var categories []string
+	functions := map[string][]string{}
 	for _, api := range apis {
+		if strings.TrimSpace(api.Category) == "" {
+			return nil, fmt.Errorf("missing category for %s", api.Label)
+		}
 		if err := HasSymbol(root, api.Package, api.Symbol); err != nil {
 			return nil, err
 		}
@@ -195,10 +200,16 @@ func outputsFor(root string, apis []API) (map[string][]byte, error) {
 			return nil, fmt.Errorf("%s is absent from its linked example", api.Label)
 		}
 		anchor := strings.ReplaceAll(strings.ToLower(api.Heading), " ", "-")
-		if !strings.Contains(templates["README.md"], "## "+api.Heading+"\n") {
+		if !sectionContainsExample(templates["README.md"], api.Heading, example.Snippet) {
 			return nil, fmt.Errorf("missing anchor %s", anchor)
 		}
-		fmt.Fprintf(&index, "\n| [%s](#%s) | %s |", api.Label, anchor, api.Heading)
+		if _, exists := functions[api.Category]; !exists {
+			categories = append(categories, api.Category)
+		}
+		functions[api.Category] = append(functions[api.Category], fmt.Sprintf("[%s](#%s)", api.Label, anchor))
+	}
+	for _, category := range categories {
+		fmt.Fprintf(&index, "\n| %s | %s |", category, strings.Join(functions[category], " · "))
 	}
 	templates["README.md"] = strings.ReplaceAll(templates["README.md"], "{{api-index}}", index.String())
 	for path, text := range templates {

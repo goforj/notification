@@ -66,7 +66,7 @@ func main(){
 }
 
 // demoAPI selects the actual operation present inside the authoritative fixture snippet.
-func demoAPI() []API { return []API{{"New", ".", "New", "demo", "Demo"}} }
+func demoAPI() []API { return []API{{"New", ".", "New", "demo", "Demo", "Construction"}} }
 
 // TestExamplesAndAPIs keeps output comments and API navigation bound to one runnable source.
 func TestExamplesAndAPIs(t *testing.T) {
@@ -97,11 +97,15 @@ func TestExamplesAndAPIs(t *testing.T) {
 
 // TestProjectionFailures rejects stale, incomplete and misleading documentation inputs.
 func TestProjectionFailures(t *testing.T) {
-	for _, defect := range []string{"stale", "coverage", "duplicate", "missing-target", "missing-heading", "missing-api", "outside-snippet", "invalid-source", "unresolved"} {
+	for _, defect := range []string{"stale", "coverage", "duplicate", "missing-target", "missing-heading", "missing-api", "outside-snippet", "invalid-source", "unresolved", "missing-category", "wrong-section"} {
 		t.Run(defect, func(t *testing.T) {
 			root := fixture(t)
 			apis := demoAPI()
 			switch defect {
+			case "missing-category":
+				apis[0].Category = ""
+			case "wrong-section":
+				put(t, root, "docs/readme.tmpl.md", "## Demo\n## Other\n{{snippet:demo}}\n{{api-index}}")
 			case "stale":
 				put(t, root, "changed.go", "package notification\n")
 			case "coverage":
@@ -264,5 +268,47 @@ func TestArtworkAndStatusBadges(t *testing.T) {
 	}
 	if !strings.Contains(string(StatusBadge("A & B", "100%", "#123456")), "A &amp; B") {
 		t.Fatal("status title not escaped")
+	}
+}
+
+// TestGroupedAPIIndex keeps categories compact while preserving each operation's own destination.
+func TestGroupedAPIIndex(t *testing.T) {
+	root := fixture(t)
+	apis := demoAPI()
+	apis = append(apis,
+		API{"Notifier.Send", ".", "New", "demo", "Demo", "Sending"},
+		API{"driver.New", ".", "New", "demo", "Demo", "Construction"},
+	)
+	outputs, err := outputsFor(root, apis)
+	if err != nil {
+		t.Fatal(err)
+	}
+	readme := string(outputs["README.md"])
+	want := "| Category | Functions |\n| ---: | --- |\n| Construction | [New](#demo) · [driver.New](#demo) |\n| Sending | [Notifier.Send](#demo) |"
+	if !strings.Contains(readme, want) {
+		t.Fatal("grouped navigation changed", readme)
+	}
+}
+
+// TestSectionContainsExample rejects unrelated headings and accepts nested examples at their actual destination.
+func TestSectionContainsExample(t *testing.T) {
+	for _, entry := range []struct {
+		name, markdown, heading string
+		found                   bool
+	}{
+		{"section", "## Sending\ncall()\n## Next\n", "Sending", true},
+		{"subsection", "## Push\n### APNs\ncall()\n### SNS\nother()", "APNs", true},
+		{"last subsection", "## Push\n### APNs\ncall()", "APNs", true},
+		{"wrong section", "## Sending\nother()\n## Next\ncall()", "Sending", false},
+		{"wrong subsection", "## Push\n### APNs\nother()\n### SNS\ncall()", "APNs", false},
+		{"missing", "## Sending\ncall()", "Unknown", false},
+		{"fenced heading", "## Sending\n```go\n### Sending\ncall()\n```\n## Next", "Sending", true},
+		{"fenced target", "```go\n## Sending\ncall()\n```", "Sending", false},
+	} {
+		t.Run(entry.name, func(t *testing.T) {
+			if got := sectionContainsExample(entry.markdown, entry.heading, "call()"); got != entry.found {
+				t.Fatal("example destination mismatch", got)
+			}
+		})
 	}
 }

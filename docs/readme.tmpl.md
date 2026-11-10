@@ -156,15 +156,15 @@ All providers share the same `Sender` interface. Configure destinations once and
 
 APNs owns and refreshes its provider JWT, or borrows an explicitly configured certificate transport. SNS borrows an AWS SDK v2 publisher, preserving the SDK credential model. Web Push encrypts the standard browser subscription payload and signs VAPID authentication. These optional modules do not add dependencies to the root module.
 
-Apple APNs:
+### Apple APNs
 
 {{snippet:apns}}
 
-Amazon SNS:
+### Amazon SNS
 
 {{snippet:sns}}
 
-Web Push:
+### Web Push
 
 {{snippet:webpush}}
 

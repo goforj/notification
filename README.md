@@ -178,26 +178,17 @@ These programs run locally without hosted-provider credentials. The test suite e
 
 ## API Index
 
-| API | Example |
-| --- | --- |
-| [New](#quick-start) | Quick Start |
-| [Fanout](#composition) | Composition |
-| [Fallback](#composition) | Composition |
-| [SenderFunc.Send](#custom-senders) | Custom senders |
-| [DeliveryError.RetryAfter](#composition) | Composition |
-| [pagerduty.Driver.Trigger](#incident-lifecycle) | Incident lifecycle |
-| [pagerduty.Driver.Acknowledge](#incident-lifecycle) | Incident lifecycle |
-| [pagerduty.Driver.Resolve](#incident-lifecycle) | Incident lifecycle |
-| [Notifier.Send](#quick-start) | Quick Start |
-| [webhook.New](#webhook-delivery) | Webhook delivery |
-| [slack.New](#custom-http-transport) | Custom HTTP transport |
-| [notificationfake.New](#application-testing) | Application testing |
-| [Fake.Messages](#application-testing) | Application testing |
-| [notificationmail.New](#mail-delivery) | Mail delivery |
-| [apns.New](#application-push) | Application push |
-| [sns.New](#application-push) | Application push |
-| [webpush.New](#application-push) | Application push |
-| [whatsapp.Driver.SendTemplate](#whatsapp-cloud) | WhatsApp Cloud |
+| Category | Functions |
+| ---: | --- |
+| Construction | [New](#quick-start) |
+| Sending | [Notifier.Send](#quick-start) |
+| Composition | [Fanout](#composition) · [Fallback](#composition) |
+| Custom senders | [SenderFunc.Send](#custom-senders) |
+| Errors | [DeliveryError.RetryAfter](#composition) |
+| Driver constructors | [webhook.New](#webhook-delivery) · [slack.New](#custom-http-transport) · [notificationmail.New](#mail-delivery) · [apns.New](#apple-apns) · [sns.New](#amazon-sns) · [webpush.New](#web-push) |
+| Incident lifecycle | [pagerduty.Driver.Trigger](#incident-lifecycle) · [pagerduty.Driver.Acknowledge](#incident-lifecycle) · [pagerduty.Driver.Resolve](#incident-lifecycle) |
+| Templates | [whatsapp.Driver.SendTemplate](#whatsapp-cloud) |
+| Testing | [notificationfake.New](#application-testing) · [Fake.Messages](#application-testing) |
 
 ## Webhook delivery
 
@@ -461,7 +452,7 @@ fmt.Println("accepted through push and chat:", accepted.Load())
 
 APNs owns and refreshes its provider JWT, or borrows an explicitly configured certificate transport. SNS borrows an AWS SDK v2 publisher, preserving the SDK credential model. Web Push encrypts the standard browser subscription payload and signs VAPID authentication. These optional modules do not add dependencies to the root module.
 
-Apple APNs:
+### Apple APNs
 
 ```go
 driver, err := apns.New(apns.Config{
@@ -490,7 +481,7 @@ fmt.Println("APNs accepted over HTTP/2")
 // APNs accepted over HTTP/2
 ```
 
-Amazon SNS:
+### Amazon SNS
 
 ```go
 publisher := sns.New(sns.Options{
@@ -522,7 +513,7 @@ fmt.Println("SNS accepted through the borrowed AWS client")
 // SNS accepted through the borrowed AWS client
 ```
 
-Web Push:
+### Web Push
 
 ```go
 driver, err := webpush.New(webpush.Config{
