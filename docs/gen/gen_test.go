@@ -169,7 +169,17 @@ func TestFingerprintAndRoot(t *testing.T) {
 // TestDriverEvidenceAndSearchableNames preserves native evidence and searchable names beside aligned icons.
 func TestDriverEvidenceAndSearchableNames(t *testing.T) {
 	root := fixture(t)
-	put(t, root, "driver/ntfy/ntfy.go", "package ntfy\n")
+	put(t, root, "driver/ntfy/ntfy.go", "package ntfy\n// New constructs a fixture driver.\nfunc New(){}\n")
+	put(t, root, "examples/providers/main.go", `package main
+import "github.com/goforj/notification/driver/ntfy"
+func main(){
+// snippet:start
+ntfy.New()
+fmt.Println("provider")
+// provider
+// snippet:end
+}`)
+	put(t, root, "docs/readme.tmpl.md", "{{integration-badge}}\n## Demo\n{{snippet:demo}}\n{{drivers}}\n{{api-index}}\n## Providers\n{{snippet:providers}}\n## Driver constructors\n{{constructors}}\n")
 	put(t, root, "docs/assets/driver-icons/ntfy.svg", `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M0 0h24v24z"/></svg>`)
 	putJSON(t, root, "docs/assets/driver-icons/presentation.json", map[string]Presentation{"ntfy": {Label: "ntfy", Icon: "ntfy.svg", Accent: "#317F6F"}})
 	putJSON(t, root, "docs/providers/drivers.json", map[string]any{"drivers": []Driver{{ID: "ntfy", Package: "driver/ntfy", Verification: "Real server verified"}}})

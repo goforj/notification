@@ -1,4 +1,4 @@
-// Command providers demonstrates every standard-library provider added by the coverage review.
+// Command providers demonstrates native provider configurations against local fixtures.
 package main
 
 import (
@@ -15,19 +15,28 @@ import (
 	"github.com/goforj/notification/driver/bark"
 	"github.com/goforj/notification/driver/betterstack"
 	"github.com/goforj/notification/driver/clicksend"
+	"github.com/goforj/notification/driver/dingtalk"
+	"github.com/goforj/notification/driver/discord"
 	"github.com/goforj/notification/driver/expo"
 	"github.com/goforj/notification/driver/fcm"
+	"github.com/goforj/notification/driver/feishu"
 	"github.com/goforj/notification/driver/firehydrant"
 	"github.com/goforj/notification/driver/goalert"
+	"github.com/goforj/notification/driver/googlechat"
+	"github.com/goforj/notification/driver/gotify"
 	"github.com/goforj/notification/driver/homeassistant"
 	"github.com/goforj/notification/driver/ifttt"
 	"github.com/goforj/notification/driver/ilert"
 	"github.com/goforj/notification/driver/incidentio"
 	"github.com/goforj/notification/driver/join"
+	"github.com/goforj/notification/driver/jsm"
+	"github.com/goforj/notification/driver/line"
 	"github.com/goforj/notification/driver/matrix"
 	"github.com/goforj/notification/driver/mattermost"
 	"github.com/goforj/notification/driver/nextcloudtalk"
+	"github.com/goforj/notification/driver/ntfy"
 	"github.com/goforj/notification/driver/onesignal"
+	"github.com/goforj/notification/driver/opsgenie"
 	"github.com/goforj/notification/driver/pagertree"
 	"github.com/goforj/notification/driver/plivo"
 	"github.com/goforj/notification/driver/pushbullet"
@@ -35,8 +44,14 @@ import (
 	"github.com/goforj/notification/driver/rocketchat"
 	"github.com/goforj/notification/driver/signal"
 	"github.com/goforj/notification/driver/signl4"
+	"github.com/goforj/notification/driver/teams"
+	"github.com/goforj/notification/driver/telegram"
 	"github.com/goforj/notification/driver/telnyx"
+	"github.com/goforj/notification/driver/twilio"
 	"github.com/goforj/notification/driver/vonage"
+	"github.com/goforj/notification/driver/waha"
+	"github.com/goforj/notification/driver/wecom"
+	"github.com/goforj/notification/driver/whapi"
 	"github.com/goforj/notification/driver/whatsapp"
 	"github.com/goforj/notification/driver/zulip"
 )
@@ -48,14 +63,171 @@ type configuredProvider struct {
 }
 
 // configured lists complete constructor examples while preserving provider-specific configuration.
-func configured(base string, h notification.HTTPConfig) []configuredProvider {
+func configured(baseURL string, connection notification.HTTPConfig) []configuredProvider {
 	return []configuredProvider{
+		{
+			name: "dingtalk",
+			open: func() (notification.Sender, error) {
+				return dingtalk.New(dingtalk.Config{
+					URL:  baseURL + "/dingtalk",
+					HTTP: connection,
+				})
+			},
+		},
+		{
+			name: "discord",
+			open: func() (notification.Sender, error) {
+				return discord.New(discord.Config{
+					URL:  baseURL + "/discord",
+					HTTP: connection,
+				})
+			},
+		},
+		{
+			name: "feishu",
+			open: func() (notification.Sender, error) {
+				return feishu.New(feishu.Config{
+					URL:  baseURL + "/feishu",
+					HTTP: connection,
+				})
+			},
+		},
+		{
+			name: "googlechat",
+			open: func() (notification.Sender, error) {
+				return googlechat.New(googlechat.Config{
+					URL:  baseURL + "/googlechat",
+					HTTP: connection,
+				})
+			},
+		},
+		{
+			name: "gotify",
+			open: func() (notification.Sender, error) {
+				return gotify.New(gotify.Config{
+					URL:      baseURL + "/gotify",
+					Token:    "fixture",
+					Priority: 5,
+					HTTP:     connection,
+				})
+			},
+		},
+		{
+			name: "jsm",
+			open: func() (notification.Sender, error) {
+				return jsm.New(jsm.Config{
+					BaseURL: baseURL + "/jsm",
+					CloudID: "cloud",
+					Email:   "bot@example.com",
+					Token:   "fixture",
+					Key:     "monitor/42",
+					HTTP:    connection,
+				})
+			},
+		},
+		{
+			name: "line",
+			open: func() (notification.Sender, error) {
+				return line.New(line.Config{
+					BaseURL: baseURL + "/line",
+					Token:   "fixture",
+					To:      "U00000000000000000000000000000000",
+					HTTP:    connection,
+				})
+			},
+		},
+		{
+			name: "ntfy",
+			open: func() (notification.Sender, error) {
+				return ntfy.New(ntfy.Config{
+					URL:   baseURL + "/ntfy",
+					Topic: "alerts",
+					HTTP:  connection,
+				})
+			},
+		},
+		{
+			name: "opsgenie",
+			open: func() (notification.Sender, error) {
+				return opsgenie.New(opsgenie.Config{
+					BaseURL: baseURL + "/opsgenie",
+					Token:   "fixture",
+					Key:     "monitor/42",
+					HTTP:    connection,
+				})
+			},
+		},
+		{
+			name: "teams",
+			open: func() (notification.Sender, error) {
+				return teams.New(teams.Config{
+					URL:  baseURL + "/teams",
+					HTTP: connection,
+				})
+			},
+		},
+		{
+			name: "telegram",
+			open: func() (notification.Sender, error) {
+				return telegram.New(telegram.Config{
+					BaseURL: baseURL + "/telegram",
+					Token:   "123456:fixture",
+					ChatID:  "42",
+					HTTP:    connection,
+				})
+			},
+		},
+		{
+			name: "twilio",
+			open: func() (notification.Sender, error) {
+				return twilio.New(twilio.Config{
+					BaseURL:    baseURL + "/twilio",
+					AccountSID: "AC00000000000000000000000000000000",
+					AuthToken:  "fixture",
+					From:       "+12125550100",
+					To:         "+12125550101",
+					HTTP:       connection,
+				})
+			},
+		},
+		{
+			name: "waha",
+			open: func() (notification.Sender, error) {
+				return waha.New(waha.Config{
+					URL:     baseURL + "/waha",
+					APIKey:  "fixture",
+					Session: "default",
+					ChatID:  "12125550101@c.us",
+					HTTP:    connection,
+				})
+			},
+		},
+		{
+			name: "wecom",
+			open: func() (notification.Sender, error) {
+				return wecom.New(wecom.Config{
+					URL:  baseURL + "/wecom",
+					HTTP: connection,
+				})
+			},
+		},
+		{
+			name: "whapi",
+			open: func() (notification.Sender, error) {
+				return whapi.New(whapi.Config{
+					BaseURL: baseURL + "/whapi",
+					Token:   "fixture",
+					To:      "12125550101",
+					HTTP:    connection,
+				})
+			},
+		},
 		{
 			name: "mattermost",
 			open: func() (notification.Sender, error) {
 				return mattermost.New(mattermost.Config{
-					URL:  base + "/mattermost",
-					HTTP: h,
+					URL:  baseURL + "/mattermost",
+					HTTP: connection,
 				})
 			},
 		},
@@ -63,8 +235,8 @@ func configured(base string, h notification.HTTPConfig) []configuredProvider {
 			name: "rocketchat",
 			open: func() (notification.Sender, error) {
 				return rocketchat.New(rocketchat.Config{
-					URL:  base + "/rocketchat",
-					HTTP: h,
+					URL:  baseURL + "/rocketchat",
+					HTTP: connection,
 				})
 			},
 		},
@@ -72,10 +244,10 @@ func configured(base string, h notification.HTTPConfig) []configuredProvider {
 			name: "bark",
 			open: func() (notification.Sender, error) {
 				return bark.New(bark.Config{
-					URL:       base + "/bark",
+					URL:       baseURL + "/bark",
 					DeviceKey: "fixture",
 					Group:     "alerts",
-					HTTP:      h,
+					HTTP:      connection,
 				})
 			},
 		},
@@ -83,10 +255,10 @@ func configured(base string, h notification.HTTPConfig) []configuredProvider {
 			name: "pushbullet",
 			open: func() (notification.Sender, error) {
 				return pushbullet.New(pushbullet.Config{
-					BaseURL:  base + "/pushbullet",
+					BaseURL:  baseURL + "/pushbullet",
 					Token:    "fixture",
 					DeviceID: "device",
-					HTTP:     h,
+					HTTP:     connection,
 				})
 			},
 		},
@@ -94,11 +266,11 @@ func configured(base string, h notification.HTTPConfig) []configuredProvider {
 			name: "pushover",
 			open: func() (notification.Sender, error) {
 				return pushover.New(pushover.Config{
-					BaseURL: base + "/pushover",
+					BaseURL: baseURL + "/pushover",
 					Token:   "fixture",
 					User:    "user",
 					Device:  "phone",
-					HTTP:    h,
+					HTTP:    connection,
 				})
 			},
 		},
@@ -106,10 +278,10 @@ func configured(base string, h notification.HTTPConfig) []configuredProvider {
 			name: "matrix",
 			open: func() (notification.Sender, error) {
 				return matrix.New(matrix.Config{
-					URL:    base + "/matrix",
+					URL:    baseURL + "/matrix",
 					Token:  "fixture",
 					RoomID: "!room:example.com",
-					HTTP:   h,
+					HTTP:   connection,
 				})
 			},
 		},
@@ -117,12 +289,12 @@ func configured(base string, h notification.HTTPConfig) []configuredProvider {
 			name: "zulip",
 			open: func() (notification.Sender, error) {
 				return zulip.New(zulip.Config{
-					URL:     base + "/zulip",
+					URL:     baseURL + "/zulip",
 					Email:   "bot@example.com",
 					APIKey:  "fixture",
 					Channel: "alerts",
 					Topic:   "Tickets",
-					HTTP:    h,
+					HTTP:    connection,
 				})
 			},
 		},
@@ -130,10 +302,10 @@ func configured(base string, h notification.HTTPConfig) []configuredProvider {
 			name: "ifttt",
 			open: func() (notification.Sender, error) {
 				return ifttt.New(ifttt.Config{
-					BaseURL: base + "/ifttt",
+					BaseURL: baseURL + "/ifttt",
 					Key:     "fixture",
 					Event:   "ticket_updated",
-					HTTP:    h,
+					HTTP:    connection,
 				})
 			},
 		},
@@ -141,10 +313,10 @@ func configured(base string, h notification.HTTPConfig) []configuredProvider {
 			name: "join",
 			open: func() (notification.Sender, error) {
 				return join.New(join.Config{
-					BaseURL:  base + "/join",
+					BaseURL:  baseURL + "/join",
 					APIKey:   "fixture",
 					DeviceID: "device",
-					HTTP:     h,
+					HTTP:     connection,
 				})
 			},
 		},
@@ -152,10 +324,10 @@ func configured(base string, h notification.HTTPConfig) []configuredProvider {
 			name: "homeassistant",
 			open: func() (notification.Sender, error) {
 				return homeassistant.New(homeassistant.Config{
-					URL:     base + "/homeassistant",
+					URL:     baseURL + "/homeassistant",
 					Token:   "fixture",
 					Service: "mobile_app_phone",
-					HTTP:    h,
+					HTTP:    connection,
 				})
 			},
 		},
@@ -163,11 +335,11 @@ func configured(base string, h notification.HTTPConfig) []configuredProvider {
 			name: "nextcloudtalk",
 			open: func() (notification.Sender, error) {
 				return nextcloudtalk.New(nextcloudtalk.Config{
-					URL:       base + "/nextcloudtalk",
+					URL:       baseURL + "/nextcloudtalk",
 					Username:  "fixture",
 					Password:  "secret",
 					RoomToken: "room42",
-					HTTP:      h,
+					HTTP:      connection,
 				})
 			},
 		},
@@ -175,11 +347,11 @@ func configured(base string, h notification.HTTPConfig) []configuredProvider {
 			name: "signal",
 			open: func() (notification.Sender, error) {
 				return signal.New(signal.Config{
-					URL:       base + "/signal",
+					URL:       baseURL + "/signal",
 					Number:    "+12125550100",
 					Recipient: "+12125550101",
 					Token:     "fixture",
-					HTTP:      h,
+					HTTP:      connection,
 				})
 			},
 		},
@@ -187,12 +359,12 @@ func configured(base string, h notification.HTTPConfig) []configuredProvider {
 			name: "apprise",
 			open: func() (notification.Sender, error) {
 				return apprise.New(apprise.Config{
-					URL:      base + "/apprise",
+					URL:      baseURL + "/apprise",
 					Key:      "fixture",
 					Tag:      "alerts",
 					Username: "fixture",
 					Password: "secret",
-					HTTP:     h,
+					HTTP:     connection,
 				})
 			},
 		},
@@ -200,12 +372,12 @@ func configured(base string, h notification.HTTPConfig) []configuredProvider {
 			name: "plivo",
 			open: func() (notification.Sender, error) {
 				return plivo.New(plivo.Config{
-					BaseURL:   base + "/plivo",
+					BaseURL:   baseURL + "/plivo",
 					AuthID:    "fixture",
 					AuthToken: "secret",
 					From:      "+12125550100",
 					To:        "+12125550101",
-					HTTP:      h,
+					HTTP:      connection,
 				})
 			},
 		},
@@ -213,12 +385,12 @@ func configured(base string, h notification.HTTPConfig) []configuredProvider {
 			name: "vonage",
 			open: func() (notification.Sender, error) {
 				return vonage.New(vonage.Config{
-					BaseURL:   base + "/vonage",
+					BaseURL:   baseURL + "/vonage",
 					APIKey:    "fixture1",
 					APISecret: "secret",
 					From:      "Helpdesk",
 					To:        "+12125550101",
-					HTTP:      h,
+					HTTP:      connection,
 				})
 			},
 		},
@@ -226,12 +398,12 @@ func configured(base string, h notification.HTTPConfig) []configuredProvider {
 			name: "telnyx",
 			open: func() (notification.Sender, error) {
 				return telnyx.New(telnyx.Config{
-					BaseURL:            base + "/telnyx",
+					BaseURL:            baseURL + "/telnyx",
 					Token:              "fixture",
 					From:               "+12125550100",
 					To:                 "+12125550101",
 					MessagingProfileID: "profile",
-					HTTP:               h,
+					HTTP:               connection,
 				})
 			},
 		},
@@ -239,12 +411,12 @@ func configured(base string, h notification.HTTPConfig) []configuredProvider {
 			name: "clicksend",
 			open: func() (notification.Sender, error) {
 				return clicksend.New(clicksend.Config{
-					BaseURL:  base + "/clicksend",
+					BaseURL:  baseURL + "/clicksend",
 					Username: "fixture",
 					APIKey:   "secret",
 					From:     "Helpdesk",
 					To:       "+12125550101",
-					HTTP:     h,
+					HTTP:     connection,
 				})
 			},
 		},
@@ -252,10 +424,10 @@ func configured(base string, h notification.HTTPConfig) []configuredProvider {
 			name: "goalert",
 			open: func() (notification.Sender, error) {
 				return goalert.New(goalert.Config{
-					URL:   base + "/goalert",
+					URL:   baseURL + "/goalert",
 					Token: "fixture",
 					Key:   "monitor/42",
-					HTTP:  h,
+					HTTP:  connection,
 				})
 			},
 		},
@@ -263,9 +435,9 @@ func configured(base string, h notification.HTTPConfig) []configuredProvider {
 			name: "signl4",
 			open: func() (notification.Sender, error) {
 				return signl4.New(signl4.Config{
-					URL:  base + "/signl4",
+					URL:  baseURL + "/signl4",
 					Key:  "monitor/42",
-					HTTP: h,
+					HTTP: connection,
 				})
 			},
 		},
@@ -273,9 +445,9 @@ func configured(base string, h notification.HTTPConfig) []configuredProvider {
 			name: "pagertree",
 			open: func() (notification.Sender, error) {
 				return pagertree.New(pagertree.Config{
-					URL:  base + "/pagertree",
+					URL:  baseURL + "/pagertree",
 					Key:  "monitor/42",
-					HTTP: h,
+					HTTP: connection,
 				})
 			},
 		},
@@ -283,10 +455,10 @@ func configured(base string, h notification.HTTPConfig) []configuredProvider {
 			name: "ilert",
 			open: func() (notification.Sender, error) {
 				return ilert.New(ilert.Config{
-					URL:            base + "/ilert",
+					URL:            baseURL + "/ilert",
 					IntegrationKey: "fixture",
 					Key:            "monitor/42",
-					HTTP:           h,
+					HTTP:           connection,
 				})
 			},
 		},
@@ -294,11 +466,11 @@ func configured(base string, h notification.HTTPConfig) []configuredProvider {
 			name: "incidentio",
 			open: func() (notification.Sender, error) {
 				return incidentio.New(incidentio.Config{
-					BaseURL:  base + "/incidentio",
+					BaseURL:  baseURL + "/incidentio",
 					Token:    "fixture",
 					SourceID: "source",
 					Key:      "monitor/42",
-					HTTP:     h,
+					HTTP:     connection,
 				})
 			},
 		},
@@ -306,9 +478,9 @@ func configured(base string, h notification.HTTPConfig) []configuredProvider {
 			name: "firehydrant",
 			open: func() (notification.Sender, error) {
 				return firehydrant.New(firehydrant.Config{
-					URL:  base + "/firehydrant",
+					URL:  baseURL + "/firehydrant",
 					Key:  "monitor/42",
-					HTTP: h,
+					HTTP: connection,
 				})
 			},
 		},
@@ -316,13 +488,13 @@ func configured(base string, h notification.HTTPConfig) []configuredProvider {
 			name: "betterstack",
 			open: func() (notification.Sender, error) {
 				return betterstack.New(betterstack.Config{
-					BaseURL:        base + "/betterstack",
+					BaseURL:        baseURL + "/betterstack",
 					Token:          "fixture",
 					RequesterEmail: "user@example.com",
 					PolicyID:       "policy",
 					TeamName:       "Helpdesk",
 					Email:          true,
-					HTTP:           h,
+					HTTP:           connection,
 				})
 			},
 		},
@@ -330,11 +502,11 @@ func configured(base string, h notification.HTTPConfig) []configuredProvider {
 			name: "fcm",
 			open: func() (notification.Sender, error) {
 				return fcm.New(fcm.Config{
-					BaseURL:     base + "/fcm",
+					BaseURL:     baseURL + "/fcm",
 					ProjectID:   "project",
 					DeviceToken: "device",
 					TokenSource: func(context.Context) (string, error) { return "fixture", nil },
-					HTTP:        h,
+					HTTP:        connection,
 				})
 			},
 		},
@@ -342,11 +514,11 @@ func configured(base string, h notification.HTTPConfig) []configuredProvider {
 			name: "onesignal",
 			open: func() (notification.Sender, error) {
 				return onesignal.New(onesignal.Config{
-					BaseURL:        base + "/onesignal",
+					BaseURL:        baseURL + "/onesignal",
 					AppID:          "application",
 					Token:          "fixture",
 					SubscriptionID: "device",
-					HTTP:           h,
+					HTTP:           connection,
 				})
 			},
 		},
@@ -354,10 +526,10 @@ func configured(base string, h notification.HTTPConfig) []configuredProvider {
 			name: "expo",
 			open: func() (notification.Sender, error) {
 				return expo.New(expo.Config{
-					BaseURL:     base + "/expo",
+					BaseURL:     baseURL + "/expo",
 					PushToken:   "ExpoPushToken[fixture]",
 					AccessToken: "fixture",
-					HTTP:        h,
+					HTTP:        connection,
 				})
 			},
 		},
@@ -365,12 +537,12 @@ func configured(base string, h notification.HTTPConfig) []configuredProvider {
 			name: "whatsapp",
 			open: func() (notification.Sender, error) {
 				return whatsapp.New(whatsapp.Config{
-					BaseURL:       base + "/whatsapp",
+					BaseURL:       baseURL + "/whatsapp",
 					Token:         "fixture",
 					PhoneNumberID: "123456789",
 					To:            "+12125550101",
 					APIVersion:    "v24.0",
-					HTTP:          h,
+					HTTP:          connection,
 				})
 			},
 		},
@@ -380,6 +552,22 @@ func configured(base string, h notification.HTTPConfig) []configuredProvider {
 // main verifies native acknowledgements without contacting a hosted provider.
 func main() {
 	acknowledgements := map[string]string{
+		"dingtalk":   `{"errcode":0}`,
+		"discord":    `{"id":"message42","channel_id":"channel42"}`,
+		"feishu":     `{"code":0}`,
+		"googlechat": `{"name":"spaces/room/messages/message42"}`,
+		"gotify":     `{"id":42,"title":"Ticket","message":"T-42 changed"}`,
+		"jsm":        `{"requestId":"request42"}`,
+		"line":       `{"sentMessages":[{"id":"message42"}]}`,
+		"ntfy":       `{"id":"message42","event":"message","topic":"alerts"}`,
+		"opsgenie":   `{"requestId":"request42"}`,
+		"teams":      `{}`,
+		"telegram":   `{"ok":true,"result":{"message_id":42}}`,
+		"twilio":     `{"sid":"SM00000000000000000000000000000000","status":"queued"}`,
+		"waha":       `{}`,
+		"wecom":      `{"errcode":0}`,
+		"whapi":      `{"sent":true}`,
+
 		"mattermost":    "ok",
 		"rocketchat":    `{"success":true}`,
 		"bark":          `{"code":200}`,
@@ -418,7 +606,7 @@ func main() {
 			return
 		}
 		accepted.Add(1)
-		if name == "ilert" || name == "incidentio" {
+		if name == "ilert" || name == "incidentio" || name == "jsm" || name == "opsgenie" {
 			w.WriteHeader(202)
 		} else if name == "betterstack" {
 			w.WriteHeader(201)
@@ -478,5 +666,5 @@ func main() {
 		verified++
 	}
 	fmt.Println("native provider examples verified:", verified)
-	// native provider examples verified: 28
+	// native provider examples verified: 43
 }

@@ -22,12 +22,6 @@ var applicationAPI = []API{
 	{"Fallback", ".", "Fallback", "composition", "Composition", "Composition"},
 	{"SenderFunc.Send", ".", "SenderFunc.Send", "decorator", "Custom senders", "Custom senders"},
 	{"DeliveryError.RetryAfter", ".", "DeliveryError.RetryAfter", "composition", "Composition", "Errors"},
-	{"webhook.New", "driver/webhook", "New", "webhook", "Webhook delivery", "Driver constructors"},
-	{"slack.New", "driver/slack", "New", "transport", "Custom HTTP transport", "Driver constructors"},
-	{"notificationmail.New", "driver/mail", "New", "mail", "Mail delivery", "Driver constructors"},
-	{"apns.New", "driver/apns", "New", "apns", "Apple APNs", "Driver constructors"},
-	{"sns.New", "driver/sns", "New", "sns", "Amazon SNS", "Driver constructors"},
-	{"webpush.New", "driver/webpush", "New", "webpush", "Web Push", "Driver constructors"},
 	{"pagerduty.Driver.Trigger", "driver/pagerduty", "Driver.Trigger", "incident", "Incident lifecycle", "Incident lifecycle"},
 	{"pagerduty.Driver.Acknowledge", "driver/pagerduty", "Driver.Acknowledge", "incident", "Incident lifecycle", "Incident lifecycle"},
 	{"pagerduty.Driver.Resolve", "driver/pagerduty", "Driver.Resolve", "incident", "Incident lifecycle", "Incident lifecycle"},
@@ -183,6 +177,28 @@ func outputsFor(root string, apis []API) (map[string][]byte, error) {
 		return nil, err
 	}
 	templates["README.md"] = strings.ReplaceAll(templates["README.md"], "{{features}}", featureTable)
+	constructors, constructorExamples, constructorContent, err := constructorCatalog(root, catalog.Drivers)
+	if err != nil {
+		return nil, err
+	}
+	for name, example := range constructorExamples {
+		byExample[name] = example
+	}
+	templates["README.md"] = strings.ReplaceAll(templates["README.md"], "{{constructors}}", constructorContent)
+	combined := make([]API, 0, len(apis)+len(constructors))
+	inserted := false
+	for _, api := range apis {
+		if !inserted && api.Category == "Incident lifecycle" {
+			combined = append(combined, constructors...)
+			inserted = true
+		}
+		combined = append(combined, api)
+	}
+	if !inserted {
+		combined = append(combined, constructors...)
+	}
+	apis = combined
+
 	var index strings.Builder
 	index.WriteString("| Category | Functions |\n| ---: | --- |")
 	var categories []string
@@ -199,7 +215,7 @@ func outputsFor(root string, apis []API) (map[string][]byte, error) {
 		if !ok || !example.Calls[operation] || !strings.Contains(example.Snippet, "."+operation+"(") {
 			return nil, fmt.Errorf("%s is absent from its linked example", api.Label)
 		}
-		anchor := strings.ReplaceAll(strings.ToLower(api.Heading), " ", "-")
+		anchor := strings.ReplaceAll(strings.ReplaceAll(strings.ToLower(api.Heading), ".", ""), " ", "-")
 		if !sectionContainsExample(templates["README.md"], api.Heading, example.Snippet) {
 			return nil, fmt.Errorf("missing anchor %s", anchor)
 		}
@@ -213,7 +229,7 @@ func outputsFor(root string, apis []API) (map[string][]byte, error) {
 	}
 	templates["README.md"] = strings.ReplaceAll(templates["README.md"], "{{api-index}}", index.String())
 	for path, text := range templates {
-		if strings.Contains(text, "{{snippet:") || strings.Contains(text, "{{api-index}}") || strings.Contains(text, "{{drivers}}") || strings.Contains(text, "{{features}}") {
+		if strings.Contains(text, "{{snippet:") || strings.Contains(text, "{{api-index}}") || strings.Contains(text, "{{drivers}}") || strings.Contains(text, "{{features}}") || strings.Contains(text, "{{constructors}}") {
 			return nil, fmt.Errorf("unresolved README marker")
 		}
 		outputs[path] = []byte(text)

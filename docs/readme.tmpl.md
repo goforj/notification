@@ -186,6 +186,12 @@ Application services depend on `notification.Sender`. The fake validates and cap
 
 Applications that need recipient lookup, preferences, localized templates, per-recipient fallback, or deduplication can use `NewDispatcher`. These capabilities are optional and keep their explicit delivery results. Use `Fallback` for ordered configured destinations; use `NewDispatcher` when fallback must follow application recipient policy. See [advanced dispatch](docs/advanced.md) for the complete runnable example and migration from the earlier API.
 
+## Driver constructors
+
+The API index includes every driver in the [driver table](#drivers). These constructor expressions are extracted from the executable programs in [Runnable Examples](#runnable-examples). Their local fixture URLs, HTTP settings, credentials and borrowed clients are defined in those programs. Replace fixture values with your own configuration, and handle returned errors and resource ownership as shown in the complete examples.
+
+{{constructors}}
+
 ## Development
 
 ```sh

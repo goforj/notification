@@ -185,7 +185,7 @@ These programs run locally without hosted-provider credentials. The test suite e
 | Composition | [Fanout](#composition) · [Fallback](#composition) |
 | Custom senders | [SenderFunc.Send](#custom-senders) |
 | Errors | [DeliveryError.RetryAfter](#composition) |
-| Driver constructors | [webhook.New](#webhook-delivery) · [slack.New](#custom-http-transport) · [notificationmail.New](#mail-delivery) · [apns.New](#apple-apns) · [sns.New](#amazon-sns) · [webpush.New](#web-push) |
+| Driver constructors | [notificationsns.New](#notificationsnsnew) · [apns.New](#apnsnew) · [apprise.New](#apprisenew) · [bark.New](#barknew) · [betterstack.New](#betterstacknew) · [clicksend.New](#clicksendnew) · [dingtalk.New](#dingtalknew) · [discord.New](#discordnew) · [expo.New](#exponew) · [feishu.New](#feishunew) · [fcm.New](#fcmnew) · [firehydrant.New](#firehydrantnew) · [goalert.New](#goalertnew) · [googlechat.New](#googlechatnew) · [gotify.New](#gotifynew) · [homeassistant.New](#homeassistantnew) · [ifttt.New](#iftttnew) · [ilert.New](#ilertnew) · [incidentio.New](#incidentionew) · [jsm.New](#jsmnew) · [join.New](#joinnew) · [line.New](#linenew) · [log.New](#lognew) · [notificationmail.New](#notificationmailnew) · [matrix.New](#matrixnew) · [mattermost.New](#mattermostnew) · [nextcloudtalk.New](#nextcloudtalknew) · [ntfy.New](#ntfynew) · [onesignal.New](#onesignalnew) · [opsgenie.New](#opsgenienew) · [pagerduty.New](#pagerdutynew) · [pagertree.New](#pagertreenew) · [plivo.New](#plivonew) · [pushbullet.New](#pushbulletnew) · [pushover.New](#pushovernew) · [rocketchat.New](#rocketchatnew) · [signal.New](#signalnew) · [signl4.New](#signl4new) · [slack.New](#slacknew) · [teams.New](#teamsnew) · [telegram.New](#telegramnew) · [telnyx.New](#telnyxnew) · [twilio.New](#twilionew) · [vonage.New](#vonagenew) · [waha.New](#wahanew) · [webpush.New](#webpushnew) · [webhook.New](#webhooknew) · [wecom.New](#wecomnew) · [whapi.New](#whapinew) · [whatsapp.New](#whatsappnew) · [zulip.New](#zulipnew) |
 | Incident lifecycle | [pagerduty.Driver.Trigger](#incident-lifecycle) · [pagerduty.Driver.Acknowledge](#incident-lifecycle) · [pagerduty.Driver.Resolve](#incident-lifecycle) |
 | Templates | [whatsapp.Driver.SendTemplate](#whatsapp-cloud) |
 | Testing | [notificationfake.New](#application-testing) · [Fake.Messages](#application-testing) |
@@ -599,6 +599,576 @@ fmt.Println("captured messages:", len(fake.Messages()))
 ## Advanced dispatch
 
 Applications that need recipient lookup, preferences, localized templates, per-recipient fallback, or deduplication can use `NewDispatcher`. These capabilities are optional and keep their explicit delivery results. Use `Fallback` for ordered configured destinations; use `NewDispatcher` when fallback must follow application recipient policy. See [advanced dispatch](docs/advanced.md) for the complete runnable example and migration from the earlier API.
+
+## Driver constructors
+
+The API index includes every driver in the [driver table](#drivers). These constructor expressions are extracted from the executable programs in [Runnable Examples](#runnable-examples). Their local fixture URLs, HTTP settings, credentials and borrowed clients are defined in those programs. Replace fixture values with your own configuration, and handle returned errors and resource ownership as shown in the complete examples.
+
+### notificationsns.New
+
+```go
+notificationsns.New(notificationsns.Config{
+	Client:   publisher,
+	TopicARN: "arn:aws:sns:us-east-1:123456789012:alerts",
+})
+```
+
+### apns.New
+
+```go
+apns.New(apns.Config{
+	Key:         key,
+	KeyID:       "KEY0000042",
+	TeamID:      "TEAM000042",
+	Topic:       "example.app",
+	DeviceToken: strings.Repeat("ab", 32),
+	BaseURL:     service.URL,
+	HTTP: notification.HTTPConfig{
+		Transport: service.Client().Transport,
+	},
+})
+```
+
+### apprise.New
+
+```go
+apprise.New(apprise.Config{
+	URL:      baseURL + "/apprise",
+	Key:      "fixture",
+	Tag:      "alerts",
+	Username: "fixture",
+	Password: "secret",
+	HTTP:     connection,
+})
+```
+
+### bark.New
+
+```go
+bark.New(bark.Config{
+	URL:       baseURL + "/bark",
+	DeviceKey: "fixture",
+	Group:     "alerts",
+	HTTP:      connection,
+})
+```
+
+### betterstack.New
+
+```go
+betterstack.New(betterstack.Config{
+	BaseURL:        baseURL + "/betterstack",
+	Token:          "fixture",
+	RequesterEmail: "user@example.com",
+	PolicyID:       "policy",
+	TeamName:       "Helpdesk",
+	Email:          true,
+	HTTP:           connection,
+})
+```
+
+### clicksend.New
+
+```go
+clicksend.New(clicksend.Config{
+	BaseURL:  baseURL + "/clicksend",
+	Username: "fixture",
+	APIKey:   "secret",
+	From:     "Helpdesk",
+	To:       "+12125550101",
+	HTTP:     connection,
+})
+```
+
+### dingtalk.New
+
+```go
+dingtalk.New(dingtalk.Config{
+	URL:  baseURL + "/dingtalk",
+	HTTP: connection,
+})
+```
+
+### discord.New
+
+```go
+discord.New(discord.Config{
+	URL:  baseURL + "/discord",
+	HTTP: connection,
+})
+```
+
+### expo.New
+
+```go
+expo.New(expo.Config{
+	BaseURL:     baseURL + "/expo",
+	PushToken:   "ExpoPushToken[fixture]",
+	AccessToken: "fixture",
+	HTTP:        connection,
+})
+```
+
+### feishu.New
+
+```go
+feishu.New(feishu.Config{
+	URL:  baseURL + "/feishu",
+	HTTP: connection,
+})
+```
+
+### fcm.New
+
+```go
+fcm.New(fcm.Config{
+	BaseURL:     baseURL + "/fcm",
+	ProjectID:   "project",
+	DeviceToken: "device",
+	TokenSource: func(context.Context) (string, error) { return "fixture", nil },
+	HTTP:        connection,
+})
+```
+
+### firehydrant.New
+
+```go
+firehydrant.New(firehydrant.Config{
+	URL:  baseURL + "/firehydrant",
+	Key:  "monitor/42",
+	HTTP: connection,
+})
+```
+
+### goalert.New
+
+```go
+goalert.New(goalert.Config{
+	URL:   baseURL + "/goalert",
+	Token: "fixture",
+	Key:   "monitor/42",
+	HTTP:  connection,
+})
+```
+
+### googlechat.New
+
+```go
+googlechat.New(googlechat.Config{
+	URL:  baseURL + "/googlechat",
+	HTTP: connection,
+})
+```
+
+### gotify.New
+
+```go
+gotify.New(gotify.Config{
+	URL:      baseURL + "/gotify",
+	Token:    "fixture",
+	Priority: 5,
+	HTTP:     connection,
+})
+```
+
+### homeassistant.New
+
+```go
+homeassistant.New(homeassistant.Config{
+	URL:     baseURL + "/homeassistant",
+	Token:   "fixture",
+	Service: "mobile_app_phone",
+	HTTP:    connection,
+})
+```
+
+### ifttt.New
+
+```go
+ifttt.New(ifttt.Config{
+	BaseURL: baseURL + "/ifttt",
+	Key:     "fixture",
+	Event:   "ticket_updated",
+	HTTP:    connection,
+})
+```
+
+### ilert.New
+
+```go
+ilert.New(ilert.Config{
+	URL:            baseURL + "/ilert",
+	IntegrationKey: "fixture",
+	Key:            "monitor/42",
+	HTTP:           connection,
+})
+```
+
+### incidentio.New
+
+```go
+incidentio.New(incidentio.Config{
+	BaseURL:  baseURL + "/incidentio",
+	Token:    "fixture",
+	SourceID: "source",
+	Key:      "monitor/42",
+	HTTP:     connection,
+})
+```
+
+### jsm.New
+
+```go
+jsm.New(jsm.Config{
+	BaseURL: baseURL + "/jsm",
+	CloudID: "cloud",
+	Email:   "bot@example.com",
+	Token:   "fixture",
+	Key:     "monitor/42",
+	HTTP:    connection,
+})
+```
+
+### join.New
+
+```go
+join.New(join.Config{
+	BaseURL:  baseURL + "/join",
+	APIKey:   "fixture",
+	DeviceID: "device",
+	HTTP:     connection,
+})
+```
+
+### line.New
+
+```go
+line.New(line.Config{
+	BaseURL: baseURL + "/line",
+	Token:   "fixture",
+	To:      "U00000000000000000000000000000000",
+	HTTP:    connection,
+})
+```
+
+### log.New
+
+```go
+log.New(slog.New(slog.NewTextHandler(io.Discard, nil)))
+```
+
+### notificationmail.New
+
+```go
+notificationmail.New(mailer, "recipient@example.com")
+```
+
+### matrix.New
+
+```go
+matrix.New(matrix.Config{
+	URL:    baseURL + "/matrix",
+	Token:  "fixture",
+	RoomID: "!room:example.com",
+	HTTP:   connection,
+})
+```
+
+### mattermost.New
+
+```go
+mattermost.New(mattermost.Config{
+	URL:  baseURL + "/mattermost",
+	HTTP: connection,
+})
+```
+
+### nextcloudtalk.New
+
+```go
+nextcloudtalk.New(nextcloudtalk.Config{
+	URL:       baseURL + "/nextcloudtalk",
+	Username:  "fixture",
+	Password:  "secret",
+	RoomToken: "room42",
+	HTTP:      connection,
+})
+```
+
+### ntfy.New
+
+```go
+ntfy.New(ntfy.Config{
+	URL:   baseURL + "/ntfy",
+	Topic: "alerts",
+	HTTP:  connection,
+})
+```
+
+### onesignal.New
+
+```go
+onesignal.New(onesignal.Config{
+	BaseURL:        baseURL + "/onesignal",
+	AppID:          "application",
+	Token:          "fixture",
+	SubscriptionID: "device",
+	HTTP:           connection,
+})
+```
+
+### opsgenie.New
+
+```go
+opsgenie.New(opsgenie.Config{
+	BaseURL: baseURL + "/opsgenie",
+	Token:   "fixture",
+	Key:     "monitor/42",
+	HTTP:    connection,
+})
+```
+
+### pagerduty.New
+
+```go
+pagerduty.New(pagerduty.Config{
+	RoutingKey: strings.Repeat("a", 32),
+	URL:        server.URL,
+	HTTP: notification.HTTPConfig{
+		AllowPrivate: true,
+	},
+})
+```
+
+### pagertree.New
+
+```go
+pagertree.New(pagertree.Config{
+	URL:  baseURL + "/pagertree",
+	Key:  "monitor/42",
+	HTTP: connection,
+})
+```
+
+### plivo.New
+
+```go
+plivo.New(plivo.Config{
+	BaseURL:   baseURL + "/plivo",
+	AuthID:    "fixture",
+	AuthToken: "secret",
+	From:      "+12125550100",
+	To:        "+12125550101",
+	HTTP:      connection,
+})
+```
+
+### pushbullet.New
+
+```go
+pushbullet.New(pushbullet.Config{
+	BaseURL:  baseURL + "/pushbullet",
+	Token:    "fixture",
+	DeviceID: "device",
+	HTTP:     connection,
+})
+```
+
+### pushover.New
+
+```go
+pushover.New(pushover.Config{
+	BaseURL: baseURL + "/pushover",
+	Token:   "fixture",
+	User:    "user",
+	Device:  "phone",
+	HTTP:    connection,
+})
+```
+
+### rocketchat.New
+
+```go
+rocketchat.New(rocketchat.Config{
+	URL:  baseURL + "/rocketchat",
+	HTTP: connection,
+})
+```
+
+### signal.New
+
+```go
+signal.New(signal.Config{
+	URL:       baseURL + "/signal",
+	Number:    "+12125550100",
+	Recipient: "+12125550101",
+	Token:     "fixture",
+	HTTP:      connection,
+})
+```
+
+### signl4.New
+
+```go
+signl4.New(signl4.Config{
+	URL:  baseURL + "/signl4",
+	Key:  "monitor/42",
+	HTTP: connection,
+})
+```
+
+### slack.New
+
+```go
+slack.New(slack.Config{
+	URL: provider.URL,
+	HTTP: notification.HTTPConfig{
+		Transport: transport,
+	},
+})
+```
+
+### teams.New
+
+```go
+teams.New(teams.Config{
+	URL:  baseURL + "/teams",
+	HTTP: connection,
+})
+```
+
+### telegram.New
+
+```go
+telegram.New(telegram.Config{
+	BaseURL: baseURL + "/telegram",
+	Token:   "123456:fixture",
+	ChatID:  "42",
+	HTTP:    connection,
+})
+```
+
+### telnyx.New
+
+```go
+telnyx.New(telnyx.Config{
+	BaseURL:            baseURL + "/telnyx",
+	Token:              "fixture",
+	From:               "+12125550100",
+	To:                 "+12125550101",
+	MessagingProfileID: "profile",
+	HTTP:               connection,
+})
+```
+
+### twilio.New
+
+```go
+twilio.New(twilio.Config{
+	BaseURL:    baseURL + "/twilio",
+	AccountSID: "AC00000000000000000000000000000000",
+	AuthToken:  "fixture",
+	From:       "+12125550100",
+	To:         "+12125550101",
+	HTTP:       connection,
+})
+```
+
+### vonage.New
+
+```go
+vonage.New(vonage.Config{
+	BaseURL:   baseURL + "/vonage",
+	APIKey:    "fixture1",
+	APISecret: "secret",
+	From:      "Helpdesk",
+	To:        "+12125550101",
+	HTTP:      connection,
+})
+```
+
+### waha.New
+
+```go
+waha.New(waha.Config{
+	URL:     baseURL + "/waha",
+	APIKey:  "fixture",
+	Session: "default",
+	ChatID:  "12125550101@c.us",
+	HTTP:    connection,
+})
+```
+
+### webpush.New
+
+```go
+webpush.New(webpush.Config{
+	Subscription:    subscription,
+	Subscriber:      "helpdesk@example.com",
+	VAPIDPrivateKey: base64.RawURLEncoding.EncodeToString(signingKey.Bytes()),
+	VAPIDPublicKey:  base64.RawURLEncoding.EncodeToString(signingKey.PublicKey().Bytes()),
+	TTL:             60,
+	Urgency:         webpush.UrgencyHigh,
+	HTTP: notification.HTTPConfig{
+		Transport: service.Client().Transport,
+	},
+})
+```
+
+### webhook.New
+
+```go
+webhook.New(webhook.Config{
+	URL:          provider.URL,
+	AllowPrivate: true,
+})
+```
+
+### wecom.New
+
+```go
+wecom.New(wecom.Config{
+	URL:  baseURL + "/wecom",
+	HTTP: connection,
+})
+```
+
+### whapi.New
+
+```go
+whapi.New(whapi.Config{
+	BaseURL: baseURL + "/whapi",
+	Token:   "fixture",
+	To:      "12125550101",
+	HTTP:    connection,
+})
+```
+
+### whatsapp.New
+
+```go
+whatsapp.New(whatsapp.Config{
+	BaseURL:       baseURL + "/whatsapp",
+	Token:         "fixture",
+	PhoneNumberID: "123456789",
+	To:            "+12125550101",
+	APIVersion:    "v24.0",
+	HTTP:          connection,
+})
+```
+
+### zulip.New
+
+```go
+zulip.New(zulip.Config{
+	URL:     baseURL + "/zulip",
+	Email:   "bot@example.com",
+	APIKey:  "fixture",
+	Channel: "alerts",
+	Topic:   "Tickets",
+	HTTP:    connection,
+})
+```
 
 ## Development
 
